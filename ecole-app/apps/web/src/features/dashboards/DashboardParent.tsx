@@ -1,0 +1,122 @@
+import React from 'react';
+import { TopnavLayout } from '../../shared/components/layout/TopnavLayout';
+import { KPICard } from '../../shared/components/ui/KPICard';
+import { Card } from '../../shared/components/ui/Card';
+import { BulletinPreview } from '../../shared/components/business/BulletinPreview';
+import { GraduationCap, CreditCard, Bell, TrendingUp } from 'lucide-react';
+
+const recentGrades = [
+  { cours: 'Mathématiques', note: 16, max: 20, date: '20/05/2026' },
+  { cours: 'Français', note: 14, max: 20, date: '18/05/2026' },
+  { cours: 'Anglais', note: 17, max: 20, date: '15/05/2026' },
+  { cours: 'Sciences', note: 12, max: 20, date: '14/05/2026' },
+];
+
+const alerts = [
+  { message: 'Réunion parents-professeurs le 05/06/2026 à 14h', type: 'info' as const },
+  { message: 'Paiement Trimestre 3 en attente — Échéance: 30/05/2026', type: 'warning' as const },
+  { message: 'Bulletin Trimestre 2 disponible au téléchargement', type: 'success' as const },
+];
+
+export const DashboardParent: React.FC = () => {
+  return (
+    <TopnavLayout>
+      <div className="space-y-8">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">Espace Parent &mdash; Suivi Scolaire</h1>
+          <p className="text-sm text-slate-400 font-semibold">Suivez les résultats et la scolarité de votre enfant</p>
+        </div>
+
+        {/* KPIs */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <KPICard value="14.8" label="Moyenne Générale" icon={<TrendingUp className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="6ème A" label="Classe Actuelle" icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="2/3" label="Trimestres Payés" icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="3" label="Notifications" icon={<Bell className="w-5 h-5 text-digi-purple" />} />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Recent Grades */}
+          <Card className="shadow-sm border border-slate-100 lg:col-span-2">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-digi-purple" />
+              Dernières Notes
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-100 text-sm">
+                <thead className="bg-slate-50 font-bold text-slate-700">
+                  <tr>
+                    <th className="px-4 py-3 text-left">Matière</th>
+                    <th className="px-4 py-3 text-left">Note</th>
+                    <th className="px-4 py-3 text-left">Barème</th>
+                    <th className="px-4 py-3 text-left">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
+                  {recentGrades.map((g, i) => (
+                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3 font-semibold">{g.cours}</td>
+                      <td className="px-4 py-3">
+                        <span className={`font-bold ${g.note >= 14 ? 'text-digi-success' : g.note >= 10 ? 'text-digi-warning' : 'text-digi-danger'}`}>
+                          {g.note}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-slate-400">/{g.max}</td>
+                      <td className="px-4 py-3">{g.date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+
+          {/* Alerts & Notifications */}
+          <Card className="shadow-sm border border-slate-100">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
+              <Bell className="w-4 h-4 text-digi-purple" />
+              Alertes
+            </h3>
+            <div className="space-y-3">
+              {alerts.map((a, i) => (
+                <div
+                  key={i}
+                  className={`p-3 rounded-lg border text-sm font-medium ${
+                    a.type === 'warning'
+                      ? 'bg-amber-50 border-amber-200 text-amber-700'
+                      : a.type === 'success'
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                      : 'bg-blue-50 border-blue-200 text-blue-700'
+                  }`}
+                >
+                  {a.message}
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
+
+        {/* Bulletin Preview */}
+        <Card className="shadow-sm border border-slate-100">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4">
+            Aperçu Bulletin &mdash; Trimestre 2
+          </h3>
+          <BulletinPreview
+            eleve="DUPONT Jean"
+            classe="6ème A"
+            trimestre="Trimestre 2"
+            moyenne={14.8}
+            rang={5}
+            effectif={32}
+            matieres={[
+              { nom: 'Mathématiques', note: 16, coefficient: 4 },
+              { nom: 'Français', note: 14, coefficient: 3 },
+              { nom: 'Anglais', note: 17, coefficient: 2 },
+              { nom: 'Sciences', note: 12, coefficient: 3 },
+            ]}
+          />
+        </Card>
+      </div>
+    </TopnavLayout>
+  );
+};
+export default DashboardParent;

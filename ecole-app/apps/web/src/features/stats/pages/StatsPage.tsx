@@ -1,0 +1,218 @@
+import React, { useState } from 'react';
+import { Card } from '../../../shared/components/ui/Card';
+import { KPICard } from '../../../shared/components/ui/KPICard';
+import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
+import { BarChart3, TrendingUp, Users, GraduationCap, CreditCard, PieChart } from 'lucide-react';
+
+/* ──── Simple SVG chart helpers ──── */
+const BarChartSimple: React.FC<{ data: { label: string; value: number; color: string }[]; maxVal?: number }> = ({ data, maxVal }) => {
+  const max = maxVal || Math.max(...data.map((d) => d.value));
+  return (
+    <div className="flex items-end gap-3 h-48">
+      {data.map((d, i) => (
+        <div key={i} className="flex flex-col items-center flex-1">
+          <div
+            className="w-full rounded-t-lg transition-all duration-500 min-h-[4px]"
+            style={{
+              height: `${(d.value / max) * 100}%`,
+              backgroundColor: d.color,
+            }}
+          />
+          <span className="text-xs font-bold mt-2 text-slate-600">{d.value}</span>
+          <span className="text-xs text-slate-400 mt-1 truncate max-w-full">{d.label}</span>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const DonutChart: React.FC<{ segments: { label: string; value: number; color: string }[] }> = ({ segments }) => {
+  const total = segments.reduce((s, seg) => s + seg.value, 0);
+  let cumulative = 0;
+  const size = 140;
+  const radius = 55;
+  const strokeWidth = 20;
+
+  return (
+    <div className="flex items-center gap-6">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        {segments.map((seg, i) => {
+          const circumference = 2 * Math.PI * radius;
+          const segmentLength = (seg.value / total) * circumference;
+          const offset = (cumulative / total) * circumference;
+          cumulative += seg.value;
+          return (
+            <circle
+              key={i}
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              fill="none"
+              stroke={seg.color}
+              strokeWidth={strokeWidth}
+              strokeDasharray={`${segmentLength} ${circumference - segmentLength}`}
+              strokeDashoffset={-offset}
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+              className="transition-all duration-500"
+            />
+          );
+        })}
+        <text x={size / 2} y={size / 2} textAnchor="middle" dy="0.35em" className="text-lg font-bold fill-slate-700">
+          {total}
+        </text>
+      </svg>
+      <div className="space-y-2">
+        {segments.map((seg, i) => (
+          <div key={i} className="flex items-center gap-2 text-sm">
+            <div className="w-3 h-3 rounded-full" style={{ backgroundColor: seg.color }} />
+            <span className="text-slate-600">{seg.label}</span>
+            <span className="font-bold text-slate-800 ml-auto">{seg.value}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export const StatsPage: React.FC = () => {
+  const [period, setPeriod] = useState('2025-2026');
+
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">Statistiques & Graphiques</h1>
+          <p className="text-sm text-slate-400 font-semibold">Vue d'ensemble chiffrée de l'établissement</p>
+        </div>
+        <FilterDropdown label="Année" value={period} options={['2025-2026', '2024-2025', '2023-2024']} onChange={setPeriod} />
+      </div>
+
+      {/* Summary KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <KPICard value="450" label="Élèves Inscrits" icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="24" label="Personnel" icon={<Users className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="13.6" label="Moyenne Générale" icon={<TrendingUp className="w-5 h-5 text-digi-success" />} />
+        <KPICard value="78%" label="Taux Recouvrement" icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Effectifs par classe */}
+        <Card className="shadow-sm border border-slate-100">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-digi-purple" />
+            Effectifs par Classe
+          </h3>
+          <BarChartSimple
+            data={[
+              { label: '6ème', value: 70, color: '#534AB7' },
+              { label: '5ème', value: 65, color: '#7F77DD' },
+              { label: '4ème', value: 58, color: '#AFA9EC' },
+              { label: '3ème', value: 52, color: '#534AB7' },
+              { label: '2nde', value: 80, color: '#7F77DD' },
+              { label: '1ère', value: 68, color: '#AFA9EC' },
+              { label: 'Tle', value: 57, color: '#534AB7' },
+            ]}
+          />
+        </Card>
+
+        {/* Répartition garçons/filles */}
+        <Card className="shadow-sm border border-slate-100">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
+            <PieChart className="w-4 h-4 text-digi-purple" />
+            Répartition par Genre
+          </h3>
+          <div className="flex justify-center">
+            <DonutChart
+              segments={[
+                { label: 'Garçons', value: 248, color: '#534AB7' },
+                { label: 'Filles', value: 202, color: '#AFA9EC' },
+              ]}
+            />
+          </div>
+        </Card>
+
+        {/* Moyennes par matière */}
+        <Card className="shadow-sm border border-slate-100">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-digi-purple" />
+            Moyennes par Matière
+          </h3>
+          <BarChartSimple
+            maxVal={20}
+            data={[
+              { label: 'Maths', value: 13.2, color: '#534AB7' },
+              { label: 'Français', value: 14.1, color: '#10B981' },
+              { label: 'Anglais', value: 15.3, color: '#F59E0B' },
+              { label: 'Physique', value: 11.8, color: '#EF4444' },
+              { label: 'SVT', value: 14.5, color: '#7F77DD' },
+              { label: 'Histoire', value: 13.9, color: '#AFA9EC' },
+            ]}
+          />
+        </Card>
+
+        {/* Statut des paiements */}
+        <Card className="shadow-sm border border-slate-100">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
+            <CreditCard className="w-4 h-4 text-digi-purple" />
+            Statut des Paiements
+          </h3>
+          <div className="flex justify-center">
+            <DonutChart
+              segments={[
+                { label: 'Complet', value: 285, color: '#10B981' },
+                { label: 'Partiel', value: 105, color: '#F59E0B' },
+                { label: 'Impayé', value: 60, color: '#EF4444' },
+              ]}
+            />
+          </div>
+        </Card>
+      </div>
+
+      {/* Results Summary Table */}
+      <Card className="shadow-sm border border-slate-100 overflow-hidden">
+        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-digi-purple" />
+          Synthèse des Résultats par Classe
+        </h3>
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-slate-100 text-sm">
+            <thead className="bg-slate-50 font-bold text-slate-700">
+              <tr>
+                <th className="px-4 py-3 text-left">Classe</th>
+                <th className="px-4 py-3 text-center">Effectif</th>
+                <th className="px-4 py-3 text-center">Moyenne</th>
+                <th className="px-4 py-3 text-center">Réussite</th>
+                <th className="px-4 py-3 text-center">Admis</th>
+                <th className="px-4 py-3 text-center">Refusés</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
+              {[
+                { classe: '6ème A', effectif: 35, moyenne: 14.2, reussite: 88, admis: 31, refuses: 4 },
+                { classe: '6ème B', effectif: 35, moyenne: 13.1, reussite: 80, admis: 28, refuses: 7 },
+                { classe: '5ème A', effectif: 33, moyenne: 12.8, reussite: 76, admis: 25, refuses: 8 },
+                { classe: '5ème B', effectif: 32, moyenne: 13.5, reussite: 81, admis: 26, refuses: 6 },
+                { classe: '4ème C', effectif: 30, moyenne: 11.9, reussite: 70, admis: 21, refuses: 9 },
+                { classe: '3ème A', effectif: 28, moyenne: 13.8, reussite: 82, admis: 23, refuses: 5 },
+              ].map((row) => (
+                <tr key={row.classe} className="hover:bg-slate-50 transition-colors">
+                  <td className="px-4 py-3 font-semibold">{row.classe}</td>
+                  <td className="px-4 py-3 text-center">{row.effectif}</td>
+                  <td className="px-4 py-3 text-center font-bold text-digi-purple">{row.moyenne}</td>
+                  <td className="px-4 py-3 text-center">
+                    <span className={`font-bold ${row.reussite >= 80 ? 'text-digi-success' : row.reussite >= 70 ? 'text-digi-warning' : 'text-digi-danger'}`}>
+                      {row.reussite}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-center text-digi-success font-bold">{row.admis}</td>
+                  <td className="px-4 py-3 text-center text-digi-danger font-bold">{row.refuses}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+};
+export default StatsPage;
