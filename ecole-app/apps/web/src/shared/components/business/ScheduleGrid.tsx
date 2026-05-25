@@ -25,7 +25,7 @@ export interface ScheduleGridProps {
 
 const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'] as const;
 
-export const ScheduleGrid: React.FC<ScheduleGridProps> = ({ entries, items, onItemClick }) => {
+export const ScheduleGrid: React.FC<ScheduleGridProps> = ({ entries, items, onItemClick: _onItemClick }) => {
   // Normalize both APIs into a unified shape
   type NormalizedItem = { day: string; start: string; end: string; title: string; subtitle: string };
 

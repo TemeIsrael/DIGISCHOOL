@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { KPICard } from '../../../shared/components/ui/KPICard';
-import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
-import { BookOpen, Layers, Home, GraduationCap, Calendar, Settings, FilePlus, Pencil, Trash2 } from 'lucide-react';
+import { Layers, Home, GraduationCap, Calendar, FilePlus, Pencil, Trash2 } from 'lucide-react';
 
 /* ──── Mock Data ──── */
 const cycles = [
