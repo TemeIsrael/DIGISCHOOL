@@ -1,104 +1,169 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   GraduationCap,
   CreditCard,
   MessageSquare,
   BarChart3,
-  MapPin,
-  ShieldAlert,
-  ArrowRight
+  BookOpen,
+  ShieldCheck,
+  ArrowRight,
+  Users,
+  Clock,
+  CheckCircle2
 } from 'lucide-react';
 import { Button } from '../shared/components/ui/Button';
 import { Card } from '../shared/components/ui/Card';
+import { PublicNavbar } from '../shared/components/layout/PublicNavbar';
+import { PublicFooter } from '../shared/components/layout/PublicFooter';
 
 export const LandingPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const features = [
     {
       title: 'Gestion académique',
       desc: 'Suivi rigoureux des matières, classes, inscriptions et emplois du temps.',
-      icon: <GraduationCap className="w-6 h-6 text-digi-purple" />
+      icon: <GraduationCap className="w-6 h-6" />,
+      color: 'bg-digi-purple-bg text-digi-purple'
     },
     {
       title: 'Suivi Financier',
       desc: 'Immuabilité des versements, rappels automatiques et reçus PDF instantanés.',
-      icon: <CreditCard className="w-6 h-6 text-digi-purple" />
+      icon: <CreditCard className="w-6 h-6" />,
+      color: 'bg-emerald-50 text-emerald-600'
     },
     {
       title: 'Communication',
       desc: 'Messagerie interne directe avec les parents et alertes validées par la direction.',
-      icon: <MessageSquare className="w-6 h-6 text-digi-purple" />
+      icon: <MessageSquare className="w-6 h-6" />,
+      color: 'bg-sky-50 text-sky-600'
     },
     {
       title: 'Statistiques & rapports',
       desc: 'Visualisation des indicateurs financiers et des moyennes pédagogiques.',
-      icon: <BarChart3 className="w-6 h-6 text-digi-purple" />
+      icon: <BarChart3 className="w-6 h-6" />,
+      color: 'bg-amber-50 text-amber-600'
     },
     {
-      title: 'Géolocalisation',
-      desc: 'Optimisation de la sectorisation par quartier de résidence des élèves.',
-      icon: <MapPin className="w-6 h-6 text-digi-purple" />
+      title: 'Bibliothèque numérique',
+      desc: 'Catalogue en ligne avec gestion des prêts et inventaire en temps réel.',
+      icon: <BookOpen className="w-6 h-6" />,
+      color: 'bg-rose-50 text-rose-600'
     },
     {
       title: 'Sécurité & rôles',
-      desc: 'Authentification JWT double facteur, tokens rotatifs et traçabilité complète des logs.',
-      icon: <ShieldAlert className="w-6 h-6 text-digi-purple" />
+      desc: 'Authentification JWT, tokens rotatifs et traçabilité complète des actions.',
+      icon: <ShieldCheck className="w-6 h-6" />,
+      color: 'bg-violet-50 text-violet-600'
     }
+  ];
+
+  const stats = [
+    { value: '5+', label: 'Rôles utilisateurs', icon: <Users className="w-5 h-5" /> },
+    { value: '12+', label: 'Modules intégrés', icon: <CheckCircle2 className="w-5 h-5" /> },
+    { value: '24/7', label: 'Disponibilité', icon: <Clock className="w-5 h-5" /> },
   ];
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col">
-      {/* Navbar */}
-      <nav className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-100 px-8 flex items-center justify-between sticky top-0 z-50">
-        <span className="text-2xl font-black text-digi-purple tracking-tight cursor-pointer" onClick={() => navigate('/')}>
-          DIGISCHOOL
-        </span>
-        <div className="hidden md:flex items-center gap-8 font-semibold text-sm text-slate-600">
-          <span className="hover:text-digi-purple cursor-pointer transition-colors" onClick={() => navigate('/')}>Accueil</span>
-          <span className="hover:text-digi-purple cursor-pointer transition-colors" onClick={() => navigate('/livres')}>Livres</span>
-          <span className="hover:text-digi-purple cursor-pointer transition-colors" onClick={() => navigate('/a-propos')}>À propos</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" onClick={() => navigate('/s-inscrire')}>S'inscrire</Button>
-          <Button variant="primary" size="sm" onClick={() => navigate('/login')}>Connexion</Button>
-        </div>
-      </nav>
+      <PublicNavbar />
 
-      {/* Hero Section */}
-      <section className="relative h-[550px] bg-slate-950 flex items-center justify-center overflow-hidden">
-        {/* Abstract Blur Graphic */}
-        <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=1200')] bg-cover bg-center blur-sm" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/80 to-slate-950/20" />
+      {/* ═══ Hero Section ═══ */}
+      <section className="relative min-h-[560px] bg-slate-950 flex items-center justify-center overflow-hidden">
+        {/* Gradient overlay — no external image dependency */}
+        <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-dark via-slate-900 to-slate-950" />
+        {/* Decorative shapes */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-digi-purple/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-digi-purple-light/10 rounded-full blur-3xl" />
+        {/* Grid pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
+            backgroundSize: '32px 32px'
+          }}
+        />
 
-        <div className="relative z-10 max-w-4xl text-center px-6 space-y-6">
-          <h1 className="font-serif text-5xl md:text-6xl font-extrabold text-white leading-tight tracking-tight">
-            Des outils pensés pour l'efficacité
+        <div className="relative z-10 max-w-4xl text-center px-6 space-y-8 py-20">
+          {/* Pill badge */}
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-4 py-1.5 text-xs font-bold text-white/80 animate-fade-in">
+            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+            Plateforme opérationnelle 2026
+          </div>
+
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight animate-fade-in">
+            {t('landing.hero')}
           </h1>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto font-medium">
-            Pilotez votre établissement scolaire avec la solution de gestion de nouvelle génération de DIGISCHOOL.
+          <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed animate-fade-in">
+            {t('landing.heroSub')}
           </p>
-          <div className="flex items-center justify-center gap-4 pt-4">
-            <Button variant="primary" size="lg" onClick={() => navigate('/login')} className="gap-2">
-              <span>Accéder à l'Espace</span>
-              <ArrowRight className="w-5 h-5" />
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate('/login')}
+              rightIcon={<ArrowRight className="w-5 h-5" />}
+              className="shadow-lg shadow-digi-purple/30"
+            >
+              {t('landing.cta')}
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={() => navigate('/s-inscrire')}
+              className="border-white/20 text-white hover:bg-white/10"
+            >
+              {t('landing.createAccount')}
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="py-24 px-8 max-w-7xl mx-auto w-full">
+      {/* ═══ Stats Bar ═══ */}
+      <section className="relative -mt-12 z-20 px-6 md:px-8">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {stats.map((stat, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl shadow-lg border border-slate-100 p-5 flex items-center gap-4 animate-fade-in"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              <div className="p-3 bg-digi-purple-bg text-digi-purple rounded-xl border border-digi-purple-border/20">
+                {stat.icon}
+              </div>
+              <div>
+                <p className="text-2xl font-extrabold text-digi-purple tracking-tight">{stat.value}</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ Features Section ═══ */}
+      <section className="py-24 px-6 md:px-8 max-w-7xl mx-auto w-full">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-800">Découvrez nos fonctionnalités clés</h2>
-          <p className="text-slate-500 font-medium">Une suite applicative complète pour les élèves, enseignants, parents et administrateurs.</p>
+          <span className="text-xs font-extrabold text-digi-purple uppercase tracking-widest bg-digi-purple-bg px-3 py-1 rounded-full border border-digi-purple-border/20">
+            Fonctionnalités
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-800 mt-4">
+            {t('landing.featuresTitle')}
+          </h2>
+          <p className="text-slate-500 font-medium">{t('landing.featuresSub')}</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feat, index) => (
-            <Card key={index} className="border border-slate-100 hover:shadow-xl hover:border-slate-200 transition-all duration-300" hover>
-              <div className="p-3 bg-digi-purple-bg rounded-xl w-fit mb-5">
+            <Card
+              key={index}
+              className="border border-slate-100 hover:shadow-xl hover:border-slate-200 transition-all duration-300 group"
+              hover
+            >
+              <div className={`p-3 rounded-xl w-fit mb-5 ${feat.color} transition-transform duration-300 group-hover:scale-110`}>
                 {feat.icon}
               </div>
               <h3 className="text-lg font-bold text-slate-800 tracking-tight mb-2">{feat.title}</h3>
@@ -108,51 +173,48 @@ export const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="bg-digi-purple py-20 px-8 text-center text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full -mr-40 -mt-40 blur-3xl" />
+      {/* ═══ CTA Section ═══ */}
+      <section className="bg-digi-purple py-20 px-6 md:px-8 text-center text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48 blur-3xl" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-white/5 rounded-full -ml-40 -mb-40 blur-3xl" />
+        {/* Grid pattern */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+            backgroundSize: '24px 24px'
+          }}
+        />
 
         <div className="relative z-10 max-w-2xl mx-auto space-y-6">
-          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Prêt à nous rejoindre ?</h2>
+          <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            {t('landing.ctaTitle')}
+          </h2>
           <p className="text-digi-purple-bg opacity-90 max-w-md mx-auto text-sm leading-relaxed">
-            Boostez la performance de votre écosystème scolaire dès maintenant avec DIGISCHOOL.
+            {t('landing.ctaSub')}
           </p>
-          <div className="flex items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Button
               variant="outline"
               size="lg"
               onClick={() => navigate('/s-inscrire')}
-              className="bg-white border-0 text-digi-purple hover:bg-slate-50"
+              className="bg-white border-0 text-digi-purple hover:bg-slate-50 shadow-lg"
             >
-              Créer un compte
+              {t('landing.createAccount')}
             </Button>
             <Button
               variant="outline"
               size="lg"
               onClick={() => navigate('/login')}
-              className="border-white text-white hover:bg-white/10"
+              className="border-white/30 text-white hover:bg-white/10"
             >
-              Se connecter
+              {t('landing.signIn')}
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-100 py-12 px-8 mt-auto">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center md:text-left">
-            <span className="text-lg font-black text-digi-purple tracking-tight">DIGISCHOOL</span>
-            <p className="text-xs text-slate-400 font-semibold">© 2026 DIGISCHOOL. Tous droits réservés.</p>
-          </div>
-          <div className="flex gap-8 text-xs font-bold text-slate-500">
-            <span className="hover:text-digi-purple cursor-pointer transition-colors" onClick={() => navigate('/a-propos')}>À propos</span>
-            <span className="hover:text-digi-purple cursor-pointer transition-colors">Aide</span>
-            <span className="hover:text-digi-purple cursor-pointer transition-colors">Contact</span>
-          </div>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 };

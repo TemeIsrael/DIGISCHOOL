@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Topbar } from './Topbar';
-import { Menu, X } from 'lucide-react';
+
 import { useMediaQuery } from '../../lib/hooks';
 
 export interface SidebarLayoutProps {

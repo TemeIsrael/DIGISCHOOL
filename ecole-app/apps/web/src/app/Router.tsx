@@ -24,6 +24,7 @@ const LibraryPage = lazy(() => import('../pages/LibraryPage'));
 const RegisterPage = lazy(() => import('../pages/RegisterPage'));
 const LoginPage = lazy(() => import('../features/auth/pages/LoginPage'));
 const ForgotPasswordPage = lazy(() => import('../features/auth/pages/ForgotPasswordPage'));
+const ChangePasswordPage = lazy(() => import('../features/auth/pages/ChangePasswordPage'));
 const About = lazy(() => import('../pages/About'));
 const NotFound = lazy(() => import('../pages/NotFound'));
 const Forbidden = lazy(() => import('../pages/Forbidden'));
@@ -139,6 +140,7 @@ export const Router: React.FC = () => {
             <Route path="/audit" element={<AuditLogPage />} />
             <Route path="/stats" element={<StatsPage />} />
             <Route path="/schedules" element={<SchedulePage />} />
+            <Route path="/change-password" element={<ChangePasswordPage />} />
           </Route>
 
           {/* ═══ Teacher Routes (Topnav Layout) ═══ */}
@@ -155,6 +157,7 @@ export const Router: React.FC = () => {
             <Route path="/teacher/grades" element={<GradeEntryPage />} />
             <Route path="/teacher/schedules" element={<SchedulePage />} />
             <Route path="/teacher/messages" element={<MessageListPage />} />
+            <Route path="/teacher/change-password" element={<ChangePasswordPage />} />
           </Route>
 
           {/* ═══ Parent Routes (Topnav Layout) ═══ */}
@@ -171,6 +174,7 @@ export const Router: React.FC = () => {
             <Route path="/parent/bulletins" element={<BulletinPage />} />
             <Route path="/parent/payments" element={<PaymentListPage />} />
             <Route path="/parent/messages" element={<MessageListPage />} />
+            <Route path="/parent/change-password" element={<ChangePasswordPage />} />
           </Route>
 
           {/* ═══ Global Error Boundaries ═══ */}
