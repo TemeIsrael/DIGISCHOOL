@@ -7,11 +7,11 @@ import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown
 import { ShieldCheck, AlertTriangle, FilePlus, Search, Eye, UserX } from 'lucide-react';
 
 const mockIncidents = [
-  { id: 1, date: '24/05/2026', eleve: 'TAMBA Isaac', classe: '3ème A', type: 'Retard', gravite: 'Mineur', description: 'Arrivé 20 min en retard sans justificatif', sanction: 'Avertissement oral' },
-  { id: 2, date: '23/05/2026', eleve: 'NGONO Marie', classe: '4ème C', type: 'Bagarre', gravite: 'Majeur', description: 'Altercation physique dans la cour', sanction: '3 jours d\'exclusion' },
-  { id: 3, date: '22/05/2026', eleve: 'DUPONT Jean', classe: '6ème A', type: 'Tricherie', gravite: 'Majeur', description: 'Utilisation de notes pendant l\'examen', sanction: '0/20 à l\'épreuve' },
-  { id: 4, date: '20/05/2026', eleve: 'BELLA Sarah', classe: '6ème A', type: 'Absence', gravite: 'Mineur', description: 'Absence non justifiée — 2 jours', sanction: 'Convocation des parents' },
-  { id: 5, date: '18/05/2026', eleve: 'FOUDA Pierre', classe: '5ème B', type: 'Insolence', gravite: 'Moyen', description: 'Manque de respect envers un enseignant', sanction: 'Avertissement écrit' },
+  { id: 1, date: '24/05/2026', eleve: 'TAMBA Isaac', classe: 'CM2 A', type: 'Retard', gravite: 'Mineur', description: 'Arrivé 20 min en retard sans justificatif', sanction: 'Avertissement oral' },
+  { id: 2, date: '23/05/2026', eleve: 'NGONO Marie', classe: 'CE2 A', type: 'Bagarre', gravite: 'Majeur', description: 'Altercation physique dans la cour', sanction: '3 jours d\'exclusion' },
+  { id: 3, date: '22/05/2026', eleve: 'NGUEMA Jean', classe: 'CM1 A', type: 'Tricherie', gravite: 'Majeur', description: 'Utilisation de notes pendant l\'examen', sanction: '0/10 à l\'épreuve' },
+  { id: 4, date: '20/05/2026', eleve: 'BELLA Sarah', classe: 'Class 5 A', type: 'Absence', gravite: 'Mineur', description: 'Absence non justifiée — 2 jours', sanction: 'Convocation des parents' },
+  { id: 5, date: '18/05/2026', eleve: 'FOUDA Pierre', classe: 'CP A', type: 'Insolence', gravite: 'Moyen', description: 'Manque de respect envers un enseignant', sanction: 'Avertissement écrit' },
 ];
 
 const graviteColors: Record<string, string> = {

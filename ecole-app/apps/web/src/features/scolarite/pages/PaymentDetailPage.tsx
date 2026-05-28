@@ -22,8 +22,8 @@ const PaymentDetailPage: React.FC = () => {
           <h3 className="text-sm font-bold uppercase text-slate-700">{t('scolarite.studentInfo')}</h3>
           <div className="text-sm space-y-2">
             <p><span className="text-slate-400">{t('scolarite.studentId')}:</span> <span className="font-bold">EL-001</span></p>
-            <p><span className="text-slate-400">{t('scolarite.studentName')}:</span> <span className="font-bold">DUPONT Jean</span></p>
-            <p><span className="text-slate-400">{t('scolarite.class')}:</span> <span className="font-bold">6ème A</span></p>
+            <p><span className="text-slate-400">{t('scolarite.studentName')}:</span> <span className="font-bold">NGUEMA Jean</span></p>
+            <p><span className="text-slate-400">{t('scolarite.class')}:</span> <span className="font-bold">CM2 A</span></p>
           </div>
         </Card>
         <Card className="shadow-sm border border-slate-100 p-6 space-y-3">

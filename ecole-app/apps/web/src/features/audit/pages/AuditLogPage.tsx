@@ -10,11 +10,11 @@ const mockLogs = [
   { id: 1, date: '24/05/2026 08:30:12', user: 'root', action: 'LOGIN', resource: 'auth', ip: '192.168.1.10', details: 'Connexion réussie' },
   { id: 2, date: '24/05/2026 08:32:05', user: 'admin01', action: 'CREATE', resource: 'eleves', ip: '192.168.1.15', details: 'Nouvel élève DUPONT Jean créé' },
   { id: 3, date: '24/05/2026 09:15:33', user: 'admin01', action: 'UPDATE', resource: 'paiements', ip: '192.168.1.15', details: 'Paiement EL-002 marqué comme complet' },
-  { id: 4, date: '24/05/2026 10:00:00', user: 'admin02', action: 'DELETE', resource: 'cours', ip: '192.168.1.22', details: 'Suppression logique cours SVT (archivé)' },
+  { id: 4, date: '24/05/2026 10:00:00', user: 'admin02', action: 'DELETE', resource: 'cours', ip: '192.168.1.22', details: 'Suppression logique cours Sciences & Tech. (archivé)' },
   { id: 5, date: '23/05/2026 16:45:20', user: 'fondateur', action: 'EXPORT', resource: 'rapports', ip: '10.0.0.5', details: 'Export PDF rapport financier T2' },
   { id: 6, date: '23/05/2026 14:30:00', user: 'admin01', action: 'LOGIN', resource: 'auth', ip: '192.168.1.15', details: 'Connexion réussie' },
   { id: 7, date: '23/05/2026 11:20:10', user: 'root', action: 'UPDATE', resource: 'config', ip: '192.168.1.10', details: 'Modification année académique courante' },
-  { id: 8, date: '22/05/2026 09:00:00', user: 'admin02', action: 'CREATE', resource: 'enseignants', ip: '192.168.1.22', details: 'Nouvel enseignant assigné à Physique' },
+  { id: 8, date: '22/05/2026 09:00:00', user: 'admin02', action: 'CREATE', resource: 'enseignants', ip: '192.168.1.22', details: 'Nouvel enseignant assigné à Éd. Civique' },
 ];
 
 const actionColors: Record<string, string> = {

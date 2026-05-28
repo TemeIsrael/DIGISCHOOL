@@ -3,11 +3,14 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 
 const mockData = [
-  { classe: '6ème A', moyenne: 12.5, tauxReussite: 82, effectif: 35 },
-  { classe: '6ème B', moyenne: 11.8, tauxReussite: 75, effectif: 32 },
-  { classe: '5ème A', moyenne: 13.1, tauxReussite: 88, effectif: 30 },
-  { classe: '4ème A', moyenne: 10.9, tauxReussite: 68, effectif: 28 },
-  { classe: '3ème A', moyenne: 11.2, tauxReussite: 72, effectif: 25 },
+  { classe: 'SIL A', moyenne: 7.5, tauxReussite: 88, effectif: 45, section: 'FR' },
+  { classe: 'CP A', moyenne: 7.1, tauxReussite: 80, effectif: 42, section: 'FR' },
+  { classe: 'CE1 A', moyenne: 6.8, tauxReussite: 76, effectif: 38, section: 'FR' },
+  { classe: 'CE2 A', moyenne: 7.3, tauxReussite: 82, effectif: 35, section: 'FR' },
+  { classe: 'CM1 A', moyenne: 6.5, tauxReussite: 70, effectif: 32, section: 'FR' },
+  { classe: 'CM2 A', moyenne: 7.4, tauxReussite: 85, effectif: 30, section: 'FR' },
+  { classe: 'Class 1 A', moyenne: 7.2, tauxReussite: 85, effectif: 40, section: 'EN' },
+  { classe: 'Class 6 A', moyenne: 7.0, tauxReussite: 78, effectif: 25, section: 'EN' },
 ];
 
 const PerfClassesPage: React.FC = () => {
@@ -33,7 +36,7 @@ const PerfClassesPage: React.FC = () => {
               {mockData.map((c) => (
                 <tr key={c.classe} className="hover:bg-slate-50">
                   <td className="px-6 py-3 font-bold">{c.classe}</td>
-                  <td className="px-6 py-3">{c.moyenne}/20</td>
+                  <td className="px-6 py-3">{c.moyenne}/10</td>
                   <td className="px-6 py-3"><span className={`font-bold ${c.tauxReussite >= 80 ? 'text-emerald-600' : c.tauxReussite >= 70 ? 'text-amber-600' : 'text-red-600'}`}>{c.tauxReussite}%</span></td>
                   <td className="px-6 py-3">{c.effectif}</td>
                 </tr>

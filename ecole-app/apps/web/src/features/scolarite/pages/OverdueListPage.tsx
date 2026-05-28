@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 
 const mockOverdue = [
-  { matricule: 'EL-003', nom: 'NGONO Marie', classe: '4ème C', montantDu: 175000, paye: 0, retard: 175000, tranche: 'Tranche 1' },
-  { matricule: 'EL-001', nom: 'DUPONT Jean', classe: '6ème A', montantDu: 150000, paye: 100000, retard: 50000, tranche: 'Tranche 3' },
-  { matricule: 'EL-005', nom: 'BELLA Sarah', classe: '6ème A', montantDu: 150000, paye: 75000, retard: 75000, tranche: 'Tranche 2' },
+  { matricule: 'EL-003', nom: 'NGONO Marie', classe: 'CM1 A', montantDu: 65000, paye: 0, retard: 65000, tranche: 'Tranche 1' },
+  { matricule: 'EL-001', nom: 'NGUEMA Jean', classe: 'CM2 A', montantDu: 70000, paye: 45000, retard: 25000, tranche: 'Tranche 3' },
+  { matricule: 'EL-005', nom: 'BELLA Sarah', classe: 'SIL A', montantDu: 50000, paye: 25000, retard: 25000, tranche: 'Tranche 2' },
 ];
 
 const OverdueListPage: React.FC = () => {

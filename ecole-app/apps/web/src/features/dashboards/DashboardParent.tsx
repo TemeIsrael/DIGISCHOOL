@@ -7,10 +7,10 @@ import { BulletinPreview } from '../../shared/components/business/BulletinPrevie
 import { GraduationCap, CreditCard, Bell, TrendingUp } from 'lucide-react';
 
 const recentGrades = [
-  { cours: 'Mathématiques', note: 16, max: 20, date: '20/05/2026' },
-  { cours: 'Français', note: 14, max: 20, date: '18/05/2026' },
-  { cours: 'Anglais', note: 17, max: 20, date: '15/05/2026' },
-  { cours: 'Sciences', note: 12, max: 20, date: '14/05/2026' },
+  { cours: 'Mathématiques', note: 8, max: 10, date: '20/05/2026' },
+  { cours: 'Français', note: 7, max: 10, date: '18/05/2026' },
+  { cours: 'Anglais', note: 9, max: 10, date: '15/05/2026' },
+  { cours: 'Sciences & Technologie', note: 6, max: 10, date: '14/05/2026' },
 ];
 
 const alerts = [
@@ -32,8 +32,8 @@ export const DashboardParent: React.FC = () => {
 
         {/* KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <KPICard value="14.8" label={t('dashboard.generalAverage')} icon={<TrendingUp className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="6ème A" label={t('dashboard.currentClass')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="7.5/10" label={t('dashboard.generalAverage')} icon={<TrendingUp className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="CM1 A" label={t('dashboard.currentClass')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
           <KPICard value="2/3" label={t('dashboard.trimestersPaid')} icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
           <KPICard value="3" label={t('dashboard.notifications')} icon={<Bell className="w-5 h-5 text-digi-purple" />} />
         </div>
@@ -60,7 +60,7 @@ export const DashboardParent: React.FC = () => {
                     <tr key={i} className="hover:bg-slate-50 transition-colors">
                       <td className="px-4 py-3 font-semibold">{g.cours}</td>
                       <td className="px-4 py-3">
-                        <span className={`font-bold ${g.note >= 14 ? 'text-digi-success' : g.note >= 10 ? 'text-digi-warning' : 'text-digi-danger'}`}>
+                        <span className={`font-bold ${g.note >= 7 ? 'text-digi-success' : g.note >= 5 ? 'text-digi-warning' : 'text-digi-danger'}`}>
                           {g.note}
                         </span>
                       </td>
@@ -104,17 +104,17 @@ export const DashboardParent: React.FC = () => {
             {t('dashboard.bulletinPreviewTitle')}
           </h3>
           <BulletinPreview
-            eleve="DUPONT Jean"
-            classe="6ème A"
+            eleve="NGUEMA Jean"
+            classe="CM1 A"
             trimestre="Trimestre 2"
-            moyenne={14.8}
+            moyenne={7.5}
             rang={5}
             effectif={32}
             matieres={[
-              { nom: 'Mathématiques', note: 16, coefficient: 4 },
-              { nom: 'Français', note: 14, coefficient: 3 },
-              { nom: 'Anglais', note: 17, coefficient: 2 },
-              { nom: 'Sciences', note: 12, coefficient: 3 },
+              { nom: 'Mathématiques', note: 8, coefficient: 4 },
+              { nom: 'Français', note: 7, coefficient: 3 },
+              { nom: 'Anglais', note: 9, coefficient: 2 },
+              { nom: 'Sciences & Technologie', note: 6, coefficient: 3 },
             ]}
           />
         </Card>

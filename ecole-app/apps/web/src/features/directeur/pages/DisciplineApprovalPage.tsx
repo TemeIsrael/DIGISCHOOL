@@ -5,9 +5,9 @@ import { Button } from '../../../shared/components/ui/Button';
 import { CheckCircle, XCircle } from 'lucide-react';
 
 const mockCases = [
-  { id: 1, eleve: 'TAMBA Roger (3ème A)', motif: 'Bagarre', sanction: 'Exclusion 3 jours', date: '20/05/2026', status: 'pending' },
-  { id: 2, eleve: 'BELLA Sarah (6ème A)', motif: 'Retards répétés', sanction: 'Avertissement', date: '18/05/2026', status: 'pending' },
-  { id: 3, eleve: 'KAMGA Paul (6ème B)', motif: 'Tricherie examen', sanction: 'Exclusion 1 semaine', date: '15/05/2026', status: 'approved' },
+  { id: 1, eleve: 'TAMBA Roger (CM2 A)', motif: 'Bagarre', sanction: 'Exclusion 3 jours', date: '20/05/2026', status: 'pending' },
+  { id: 2, eleve: 'BELLA Sarah (CE1 A)', motif: 'Retards répétés', sanction: 'Avertissement', date: '18/05/2026', status: 'pending' },
+  { id: 3, eleve: 'KAMGA Paul (Class 5 A)', motif: 'Tricherie examen', sanction: 'Exclusion 1 semaine', date: '15/05/2026', status: 'approved' },
 ];
 
 const DisciplineApprovalPage: React.FC = () => {

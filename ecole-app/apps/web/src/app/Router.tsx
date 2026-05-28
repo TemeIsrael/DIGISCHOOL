@@ -100,6 +100,8 @@ const TeacherOverviewPage = lazy(() => import('../features/directeur/pages/Teach
 const StudentOverviewPage = lazy(() => import('../features/directeur/pages/StudentOverviewPage'));
 const DemographicsPage = lazy(() => import('../features/directeur/pages/DemographicsPage'));
 const SyntheticReportsPage = lazy(() => import('../features/directeur/pages/SyntheticReportsPage'));
+const ExamStatsCEPPage = lazy(() => import('../features/directeur/pages/ExamStatsCEPPage'));
+const ExamStatsFSLCPage = lazy(() => import('../features/directeur/pages/ExamStatsFSLCPage'));
 
 // ─── Auditeur Pages ─────────────────────────────────────────────────
 const AllListingsPage = lazy(() => import('../features/auditeur/pages/AllListingsPage'));
@@ -295,6 +297,8 @@ export const Router: React.FC = () => {
             <Route path="/directeur/students" element={<StudentOverviewPage />} />
             <Route path="/directeur/demographics" element={<DemographicsPage />} />
             <Route path="/directeur/reports" element={<SyntheticReportsPage />} />
+            <Route path="/directeur/exam-stats/cep" element={<ExamStatsCEPPage />} />
+            <Route path="/directeur/exam-stats/fslc" element={<ExamStatsFSLCPage />} />
             <Route path="/directeur/change-password" element={<ChangePasswordPage />} />
           </Route>
 

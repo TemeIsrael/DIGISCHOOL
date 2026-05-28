@@ -5,9 +5,9 @@ import { Button } from '../../../shared/components/ui/Button';
 import { CheckCircle, XCircle } from 'lucide-react';
 
 const mockMessages = [
-  { id: 1, from: 'M. NKOULOU', to: 'Parents 6ème A', subject: 'Sortie pédagogique', date: '25/05/2026', status: 'pending' },
+  { id: 1, from: 'M. NKOULOU', to: 'Parents CM2 A', subject: 'Sortie pédagogique', date: '25/05/2026', status: 'pending' },
   { id: 2, from: 'Mme FOUDA', to: 'Tous les parents', subject: 'Réunion trimestrielle', date: '24/05/2026', status: 'pending' },
-  { id: 3, from: 'Admin', to: 'Parents 3ème', subject: 'Examen blanc', date: '23/05/2026', status: 'approved' },
+  { id: 3, from: 'Admin', to: 'Parents CM2', subject: 'Préparation CEP', date: '23/05/2026', status: 'approved' },
 ];
 
 const MessageValidationPage: React.FC = () => {

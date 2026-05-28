@@ -8,12 +8,12 @@ import { BookOpen, Search, FilePlus, Star, Eye, Users } from 'lucide-react';
 import { BookCard } from '../../../shared/components/business/BookCard';
 
 const mockBooks = [
-  { id: 1, title: 'Mathématiques 6ème', author: 'CIAM', isbn: '978-2-01-111', category: 'Sciences', copies: 25, available: 18, rating: 4.2 },
-  { id: 2, title: 'Grammaire Française', author: 'Bescherelle', isbn: '978-2-01-222', category: 'Lettres', copies: 30, available: 12, rating: 4.5 },
-  { id: 3, title: 'English Grammar in Use', author: 'R. Murphy', isbn: '978-0-52-333', category: 'Langues', copies: 20, available: 20, rating: 4.8 },
-  { id: 4, title: 'Physique-Chimie 4ème', author: 'Hachette', isbn: '978-2-01-444', category: 'Sciences', copies: 15, available: 5, rating: 3.9 },
-  { id: 5, title: 'Histoire-Géographie 3ème', author: 'Nathan', isbn: '978-2-09-555', category: 'Humanités', copies: 22, available: 22, rating: 4.0 },
-  { id: 6, title: 'SVT Terminale', author: 'Bordas', isbn: '978-2-04-666', category: 'Sciences', copies: 18, available: 10, rating: 4.3 },
+  { id: 1, title: 'Mon livre de Calcul CP-CE1', author: 'EDICEF', isbn: '978-2-01-111', category: 'Sciences', copies: 25, available: 18, rating: 4.2 },
+  { id: 2, title: 'Grammaire Française CM', author: 'Bescherelle', isbn: '978-2-01-222', category: 'Lettres', copies: 30, available: 12, rating: 4.5 },
+  { id: 3, title: 'English for Primary Schools', author: 'Macmillan', isbn: '978-0-52-333', category: 'Langues', copies: 20, available: 20, rating: 4.8 },
+  { id: 4, title: 'Sciences & Technologie CE2-CM1', author: 'Hachette', isbn: '978-2-01-444', category: 'Sciences', copies: 15, available: 5, rating: 3.9 },
+  { id: 5, title: 'Histoire-Géographie CM2', author: 'Nathan', isbn: '978-2-09-555', category: 'Humanités', copies: 22, available: 22, rating: 4.0 },
+  { id: 6, title: 'Éducation Civique Primaire', author: 'EDICEF', isbn: '978-2-04-666', category: 'Sciences', copies: 18, available: 10, rating: 4.3 },
 ];
 
 export const LibraryManagePage: React.FC = () => {

@@ -31,10 +31,10 @@ const AnnualBalancePage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-              <tr><td className="px-6 py-3 font-bold">Maternelle</td><td className="px-6 py-3">3 000 000 F</td><td className="px-6 py-3">2 200 000 F</td><td className="px-6 py-3">73.3%</td></tr>
-              <tr><td className="px-6 py-3 font-bold">Primaire</td><td className="px-6 py-3">6 000 000 F</td><td className="px-6 py-3">4 500 000 F</td><td className="px-6 py-3">75.0%</td></tr>
-              <tr><td className="px-6 py-3 font-bold">Secondaire 1er</td><td className="px-6 py-3">8 500 000 F</td><td className="px-6 py-3">5 200 000 F</td><td className="px-6 py-3">61.2%</td></tr>
-              <tr><td className="px-6 py-3 font-bold">Secondaire 2nd</td><td className="px-6 py-3">5 000 000 F</td><td className="px-6 py-3">2 750 000 F</td><td className="px-6 py-3">55.0%</td></tr>
+              <tr><td className="px-6 py-3 font-bold">Cycle 1 FR (SIL, CP)</td><td className="px-6 py-3">5 200 000 F</td><td className="px-6 py-3">3 800 000 F</td><td className="px-6 py-3">73.1%</td></tr>
+              <tr><td className="px-6 py-3 font-bold">Cycle 2 FR (CE1, CE2)</td><td className="px-6 py-3">4 400 000 F</td><td className="px-6 py-3">3 300 000 F</td><td className="px-6 py-3">75.0%</td></tr>
+              <tr><td className="px-6 py-3 font-bold">Cycle 3 FR (CM1, CM2)</td><td className="px-6 py-3">4 200 000 F</td><td className="px-6 py-3">2 600 000 F</td><td className="px-6 py-3">61.9%</td></tr>
+              <tr><td className="px-6 py-3 font-bold">Anglophone (Cl. 1-6)</td><td className="px-6 py-3">8 700 000 F</td><td className="px-6 py-3">4 950 000 F</td><td className="px-6 py-3">56.9%</td></tr>
             </tbody>
           </table>
         </div>

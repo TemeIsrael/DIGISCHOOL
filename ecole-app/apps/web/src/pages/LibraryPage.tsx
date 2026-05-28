@@ -15,7 +15,7 @@ export const LibraryPage: React.FC = () => {
 
   const books = [
     { id: 1, titre: 'Algèbre Linéaire II', auteur: 'Jean Dupont', specialty: 'Sciences', cover: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=400' },
-    { id: 2, titre: 'Physique Fondamentale', auteur: 'Marie Curie', specialty: 'Sciences', cover: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400' },
+    { id: 2, titre: 'Sciences & Technologie', auteur: 'EDICEF', specialty: 'Sciences', cover: 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400' },
     { id: 3, titre: 'Histoire Contemporaine', auteur: 'Marc Bloch', specialty: 'Lettres', cover: 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?q=80&w=400' },
     { id: 4, titre: 'Introduction à la Programmation', auteur: 'Alan Turing', specialty: 'Informatique', cover: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=400' },
     { id: 5, titre: 'Grammaire Française Avancée', auteur: 'Maurice Grevisse', specialty: 'Lettres', cover: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?q=80&w=400' },

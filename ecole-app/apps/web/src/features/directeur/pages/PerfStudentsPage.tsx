@@ -3,11 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 
 const mockData = [
-  { matricule: 'EL-001', nom: 'DUPONT Jean', classe: '6ème A', moyenne: 16.2, rang: 1 },
-  { matricule: 'EL-012', nom: 'NGONO Marie', classe: '5ème A', moyenne: 15.8, rang: 1 },
-  { matricule: 'EL-045', nom: 'BELLA Sarah', classe: '6ème A', moyenne: 15.5, rang: 2 },
-  { matricule: 'EL-089', nom: 'KAMGA Paul', classe: '3ème A', moyenne: 14.9, rang: 1 },
-  { matricule: 'EL-003', nom: 'TAMBA Roger', classe: '4ème A', moyenne: 14.7, rang: 1 },
+  { matricule: 'EL-001', nom: 'NGUEMA Jean', classe: 'CM2 A', moyenne: 9.2, rang: 1 },
+  { matricule: 'EL-012', nom: 'NGONO Marie', classe: 'CE2 A', moyenne: 8.8, rang: 1 },
+  { matricule: 'EL-045', nom: 'BELLA Sarah', classe: 'CM1 A', moyenne: 8.5, rang: 1 },
+  { matricule: 'EL-089', nom: 'KAMGA Paul', classe: 'Class 6 A', moyenne: 8.3, rang: 1 },
+  { matricule: 'EL-003', nom: 'TAMBA Roger', classe: 'CP A', moyenne: 8.1, rang: 1 },
 ];
 
 const PerfStudentsPage: React.FC = () => {
@@ -37,7 +37,7 @@ const PerfStudentsPage: React.FC = () => {
                   <td className="px-6 py-3 font-mono text-xs">{s.matricule}</td>
                   <td className="px-6 py-3 font-semibold">{s.nom}</td>
                   <td className="px-6 py-3">{s.classe}</td>
-                  <td className="px-6 py-3 font-bold text-digi-purple">{s.moyenne}/20</td>
+                  <td className="px-6 py-3 font-bold text-digi-purple">{s.moyenne}/10</td>
                 </tr>
               ))}
             </tbody>

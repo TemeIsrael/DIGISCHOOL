@@ -9,10 +9,10 @@ import { Users, Search, FilePlus, Pencil, Trash2, Shield, BookOpen } from 'lucid
 const mockPersonnel = [
   { id: 1, nom: 'FOUDA', prenom: 'Pierre', type: 'Enseignant', cours: 'Mathématiques', login: 'fouda.p', actif: true },
   { id: 2, nom: 'EKANGA', prenom: 'Lise', type: 'Enseignant', cours: 'Français', login: 'ekanga.l', actif: true },
-  { id: 3, nom: 'MBARGA', prenom: 'Joseph', type: 'Enseignant', cours: 'Physique', login: 'mbarga.j', actif: true },
-  { id: 4, nom: 'ATANGANA', prenom: 'Michel', type: 'Titulaire', cours: '6ème A', login: 'atangana.m', actif: true },
+  { id: 3, nom: 'MBARGA', prenom: 'Joseph', type: 'Enseignant', cours: 'Sciences & Tech.', login: 'mbarga.j', actif: true },
+  { id: 4, nom: 'ATANGANA', prenom: 'Michel', type: 'Titulaire', cours: 'CM2 A', login: 'atangana.m', actif: true },
   { id: 5, nom: 'NDJE', prenom: 'Carine', type: 'Enseignant', cours: 'Anglais', login: 'ndje.c', actif: false },
-  { id: 6, nom: 'BIYA', prenom: 'Georges', type: 'Enseignant', cours: 'SVT', login: 'biya.g', actif: true },
+  { id: 6, nom: 'BIYA', prenom: 'Georges', type: 'Enseignant', cours: 'Éd. Civique', login: 'biya.g', actif: true },
 ];
 
 export const PersonnelListPage: React.FC = () => {

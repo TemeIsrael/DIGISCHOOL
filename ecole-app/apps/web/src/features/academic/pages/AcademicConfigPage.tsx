@@ -7,27 +7,36 @@ import { Layers, Home, GraduationCap, Calendar, FilePlus, Pencil, Trash2 } from 
 
 /* ──── Mock Data ──── */
 const cycles = [
-  { id: 1, libelle: 'Premier Cycle', classes: 4 },
-  { id: 2, libelle: 'Second Cycle', classes: 3 },
+  { id: 1, libelle: 'Cycle 1 — Francophone (SIL, CP)', classes: 4, section: 'FR' },
+  { id: 2, libelle: 'Cycle 2 — Francophone (CE1, CE2)', classes: 4, section: 'FR' },
+  { id: 3, libelle: 'Cycle 3 — Francophone (CM1, CM2)', classes: 4, section: 'FR' },
+  { id: 4, libelle: 'Level 1 — Anglophone (Class 1, 2)', classes: 4, section: 'EN' },
+  { id: 5, libelle: 'Level 2 — Anglophone (Class 3, 4)', classes: 4, section: 'EN' },
+  { id: 6, libelle: 'Level 3 — Anglophone (Class 5, 6)', classes: 4, section: 'EN' },
 ];
 
 const classes = [
-  { id: 1, cycle: 'Premier Cycle', libelle: '6ème', salles: 2 },
-  { id: 2, cycle: 'Premier Cycle', libelle: '5ème', salles: 2 },
-  { id: 3, cycle: 'Premier Cycle', libelle: '4ème', salles: 1 },
-  { id: 4, cycle: 'Premier Cycle', libelle: '3ème', salles: 1 },
-  { id: 5, cycle: 'Second Cycle', libelle: '2nde', salles: 2 },
-  { id: 6, cycle: 'Second Cycle', libelle: '1ère', salles: 1 },
-  { id: 7, cycle: 'Second Cycle', libelle: 'Tle', salles: 1 },
+  { id: 1, cycle: 'Cycle 1 — FR', libelle: 'SIL', salles: 2, section: 'FR' },
+  { id: 2, cycle: 'Cycle 1 — FR', libelle: 'CP', salles: 2, section: 'FR' },
+  { id: 3, cycle: 'Cycle 2 — FR', libelle: 'CE1', salles: 1, section: 'FR' },
+  { id: 4, cycle: 'Cycle 2 — FR', libelle: 'CE2', salles: 1, section: 'FR' },
+  { id: 5, cycle: 'Cycle 3 — FR', libelle: 'CM1', salles: 2, section: 'FR' },
+  { id: 6, cycle: 'Cycle 3 — FR', libelle: 'CM2', salles: 1, section: 'FR' },
+  { id: 7, cycle: 'Level 1 — EN', libelle: 'Class 1', salles: 2, section: 'EN' },
+  { id: 8, cycle: 'Level 1 — EN', libelle: 'Class 2', salles: 1, section: 'EN' },
+  { id: 9, cycle: 'Level 2 — EN', libelle: 'Class 3', salles: 1, section: 'EN' },
+  { id: 10, cycle: 'Level 2 — EN', libelle: 'Class 4', salles: 1, section: 'EN' },
+  { id: 11, cycle: 'Level 3 — EN', libelle: 'Class 5', salles: 1, section: 'EN' },
+  { id: 12, cycle: 'Level 3 — EN', libelle: 'Class 6', salles: 1, section: 'EN' },
 ];
 
 const salles = [
-  { id: 1, classe: '6ème', libelle: '6ème A', surface: '45m²', position: 'Bât. A - RDC' },
-  { id: 2, classe: '6ème', libelle: '6ème B', surface: '40m²', position: 'Bât. A - 1er' },
-  { id: 3, classe: '5ème', libelle: '5ème A', surface: '42m²', position: 'Bât. B - RDC' },
-  { id: 4, classe: '5ème', libelle: '5ème B', surface: '38m²', position: 'Bât. B - 1er' },
-  { id: 5, classe: '4ème', libelle: '4ème C', surface: '50m²', position: 'Bât. C - RDC' },
-  { id: 6, classe: '3ème', libelle: '3ème A', surface: '48m²', position: 'Bât. C - 1er' },
+  { id: 1, classe: 'SIL', libelle: 'SIL A', surface: '45m²', position: 'Bât. A - RDC' },
+  { id: 2, classe: 'SIL', libelle: 'SIL B', surface: '40m²', position: 'Bât. A - 1er' },
+  { id: 3, classe: 'CP', libelle: 'CP A', surface: '42m²', position: 'Bât. B - RDC' },
+  { id: 4, classe: 'CE1', libelle: 'CE1 A', surface: '38m²', position: 'Bât. B - 1er' },
+  { id: 5, classe: 'CM2', libelle: 'CM2 A', surface: '50m²', position: 'Bât. C - RDC' },
+  { id: 6, classe: 'Class 1', libelle: 'Class 1 A', surface: '48m²', position: 'Bât. D - RDC' },
 ];
 
 const annees = [

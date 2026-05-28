@@ -8,8 +8,8 @@ const mockTeachers = [
   { nom: 'M. NKOULOU', matiere: 'Mathématiques', heures: 18, classes: 5, tauxSaisie: 100 },
   { nom: 'Mme FOUDA', matiere: 'Français', heures: 20, classes: 5, tauxSaisie: 90 },
   { nom: 'M. BROWN', matiere: 'Anglais', heures: 16, classes: 5, tauxSaisie: 80 },
-  { nom: 'Mme BELLA', matiere: 'SVT', heures: 14, classes: 4, tauxSaisie: 100 },
-  { nom: 'M. ESSOMBA', matiere: 'Physique-Chimie', heures: 12, classes: 3, tauxSaisie: 60 },
+  { nom: 'Mme BELLA', matiere: 'Sciences & Technologie', heures: 14, classes: 12, tauxSaisie: 100 },
+  { nom: 'M. ESSOMBA', matiere: 'Éducation Civique', heures: 12, classes: 12, tauxSaisie: 60 },
 ];
 
 const TeacherOverviewPage: React.FC = () => {

@@ -77,6 +77,8 @@ const linksByAdminType: Record<number, SidebarLink[]> = {
     { to: '/directeur/students', labelKey: 'sidebar.studentOverview', icon: <Users className="w-5 h-5" /> },
     { to: '/directeur/demographics', labelKey: 'sidebar.demographics', icon: <PieChart className="w-5 h-5" /> },
     { to: '/directeur/reports', labelKey: 'sidebar.syntheticReports', icon: <Award className="w-5 h-5" /> },
+    { to: '/directeur/exam-stats/cep', labelKey: 'sidebar.examStatsCEP', icon: <GraduationCap className="w-5 h-5" /> },
+    { to: '/directeur/exam-stats/fslc', labelKey: 'sidebar.examStatsFSLC', icon: <GraduationCap className="w-5 h-5" /> },
   ],
   // Auditeur (5)
   5: [

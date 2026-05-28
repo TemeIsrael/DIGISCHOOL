@@ -26,8 +26,8 @@ const StaffStudentDetailPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100 p-6">
           <h3 className="text-sm font-bold uppercase text-slate-700 mb-4">{t('staff.personalInfo')}</h3>
           <div className="text-sm space-y-2">
-            <p><span className="text-slate-400">{t('staff.studentName')}:</span> <span className="font-bold">DUPONT Jean</span></p>
-            <p><span className="text-slate-400">{t('staff.class')}:</span> <span className="font-bold">6ème A</span></p>
+            <p><span className="text-slate-400">{t('staff.studentName')}:</span> <span className="font-bold">NGUEMA Jean</span></p>
+            <p><span className="text-slate-400">{t('staff.class')}:</span> <span className="font-bold">CM2 A</span></p>
             <p><span className="text-slate-400">{t('staff.parentContact')}:</span> <span className="font-bold">699 000 001</span></p>
           </div>
         </Card>

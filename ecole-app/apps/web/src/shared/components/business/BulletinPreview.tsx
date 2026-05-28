@@ -52,7 +52,7 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
             </h4>
             <p className="text-xs text-slate-400 font-semibold">{classe} {trimestre ? `— ${trimestre}` : ''}</p>
             <p className="text-xs text-slate-500 font-bold">
-              {t('bulletins.average')}: <span className="text-digi-purple">{moyenne.toFixed(2)}/20</span> &bull; {t('bulletins.rank')}:{' '}
+              {t('bulletins.average')}: <span className="text-digi-purple">{moyenne.toFixed(2)}/10</span> &bull; {t('bulletins.rank')}:{' '}
               <span className="text-digi-purple">{rang}{rang === 1 ? 'er' : 'ème'}</span>
               {effectif && <span className="text-slate-400"> / {effectif}</span>}
             </p>
@@ -71,7 +71,7 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
                 <th className="px-4 py-2 text-left">{t('bulletins.subject')}</th>
-                <th className="px-4 py-2 text-center">{t('bulletins.noteOf20')}</th>
+                <th className="px-4 py-2 text-center">{t('bulletins.noteOf10')}</th>
                 <th className="px-4 py-2 text-center">{t('bulletins.coefficient')}</th>
                 <th className="px-4 py-2 text-center">{t('bulletins.weighted')}</th>
               </tr>
@@ -81,7 +81,7 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
                 <tr key={i} className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-2 font-semibold">{m.nom}</td>
                   <td className="px-4 py-2 text-center">
-                    <span className={`font-bold ${m.note >= 14 ? 'text-digi-success' : m.note >= 10 ? 'text-digi-warning' : 'text-digi-danger'}`}>
+                    <span className={`font-bold ${m.note >= 7 ? 'text-digi-success' : m.note >= 5 ? 'text-digi-warning' : 'text-digi-danger'}`}>
                       {m.note}
                     </span>
                   </td>

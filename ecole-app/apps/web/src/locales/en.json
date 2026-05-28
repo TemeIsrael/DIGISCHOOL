@@ -199,6 +199,8 @@
     "studentOverview": "Student Overview",
     "demographics": "Demographics",
     "syntheticReports": "Summary Reports",
+    "examStatsCEP": "CEP Statistics",
+    "examStatsFSLC": "FSLC Statistics",
     "allListings": "All Listings",
     "auditLogs": "Audit Logs",
     "financeStats": "Finance Stats",
@@ -339,6 +341,7 @@
     "bulletinOf": "Report card of",
     "subject": "Subject",
     "noteOf20": "Grade / 20",
+    "noteOf10": "Grade / 10",
     "coefficient": "Coefficient",
     "weighted": "Weighted"
   },
@@ -752,7 +755,20 @@
     "statisticalReport": "Statistical Report",
     "statisticalReportDesc": "Numerical data and trends",
     "staffReport": "Staff Report",
-    "staffReportDesc": "Teacher and staff summary"
+    "staffReportDesc": "Teacher and staff summary",
+    "examStatsCEP": "CEP Statistics",
+    "examStatsCEPDesc": "Certificat d'Études Primaires results — Francophone Section (CM2)",
+    "examStatsFSLC": "FSLC Statistics",
+    "examStatsFSLCDesc": "First School Leaving Certificate results — Anglophone Section (Class 6)",
+    "registered": "Registered",
+    "present": "Present",
+    "passed": "Passed",
+    "examAverage": "Exam average",
+    "historicalResults": "Historical Results",
+    "topStudents": "Top Students",
+    "distinction": "Distinction",
+    "resultsBySubject": "Results by Subject",
+    "year": "Year"
   },
   "auditeur": {
     "allListings": "All Listings",

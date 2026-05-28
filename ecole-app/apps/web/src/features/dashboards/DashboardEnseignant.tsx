@@ -7,9 +7,9 @@ import { ScheduleGrid } from '../../shared/components/business/ScheduleGrid';
 import { BookOpen, Users, ClipboardList, Clock } from 'lucide-react';
 
 const upcomingEvals = [
-  { cours: 'Mathématiques', classe: '6ème A', date: '28/05/2026', type: 'Devoir' },
-  { cours: 'Mathématiques', classe: '5ème B', date: '30/05/2026', type: 'Examen' },
-  { cours: 'Physique', classe: '4ème C', date: '02/06/2026', type: 'Interrogation' },
+  { cours: 'Mathématiques', classe: 'CM2 A', date: '28/05/2026', type: 'Devoir' },
+  { cours: 'Français', classe: 'CE2 A', date: '30/05/2026', type: 'Examen' },
+  { cours: 'Sciences & Technologie', classe: 'CM1 A', date: '02/06/2026', type: 'Interrogation' },
 ];
 
 export const DashboardEnseignant: React.FC = () => {
@@ -40,12 +40,12 @@ export const DashboardEnseignant: React.FC = () => {
             </h3>
             <ScheduleGrid
               entries={[
-                { jour: 'Lundi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: '6ème A' },
-                { jour: 'Lundi', heureDebut: '10:15', heureFin: '12:15', cours: 'Physique', salle: '4ème C' },
-                { jour: 'Mardi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: '5ème B' },
-                { jour: 'Mercredi', heureDebut: '14:00', heureFin: '16:00', cours: 'Physique', salle: '3ème A' },
-                { jour: 'Jeudi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: '6ème A' },
-                { jour: 'Vendredi', heureDebut: '10:15', heureFin: '12:15', cours: 'Mathématiques', salle: '5ème B' },
+                { jour: 'Lundi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: 'CM2 A' },
+                { jour: 'Lundi', heureDebut: '10:15', heureFin: '12:15', cours: 'Français', salle: 'CE2 A' },
+                { jour: 'Mardi', heureDebut: '08:00', heureFin: '10:00', cours: 'Sciences & Technologie', salle: 'CM1 A' },
+                { jour: 'Mercredi', heureDebut: '14:00', heureFin: '16:00', cours: 'Éducation Civique', salle: 'CP A' },
+                { jour: 'Jeudi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: 'CM2 A' },
+                { jour: 'Vendredi', heureDebut: '10:15', heureFin: '12:15', cours: 'Français', salle: 'CE2 A' },
               ]}
             />
           </Card>

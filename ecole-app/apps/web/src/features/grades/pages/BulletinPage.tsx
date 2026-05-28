@@ -8,38 +8,38 @@ import { FileText, Download, Printer } from 'lucide-react';
 
 export const BulletinPage: React.FC = () => {
   const { t } = useTranslation();
-  const [selectedClasse, setSelectedClasse] = React.useState('6ème A');
+  const [selectedClasse, setSelectedClasse] = React.useState('CM2 A');
   const [selectedTrimestre, setSelectedTrimestre] = React.useState('Trimestre 1');
 
   const mockBulletins = [
     {
-      eleve: 'DUPONT Jean',
+      eleve: 'NGUEMA Jean',
       classe: selectedClasse,
       trimestre: selectedTrimestre,
-      moyenne: 15.2,
+      moyenne: 7.8,
       rang: 3,
       effectif: 35,
       matieres: [
-        { nom: 'Mathématiques', note: 17, coefficient: 4 },
-        { nom: 'Français', note: 14, coefficient: 3 },
-        { nom: 'Anglais', note: 16, coefficient: 2 },
-        { nom: 'Physique', note: 13, coefficient: 3 },
-        { nom: 'SVT', note: 15, coefficient: 2 },
+        { nom: 'Mathématiques', note: 8, coefficient: 4 },
+        { nom: 'Français', note: 7, coefficient: 3 },
+        { nom: 'Anglais', note: 9, coefficient: 2 },
+        { nom: 'Sciences & Technologie', note: 7, coefficient: 3 },
+        { nom: 'Éducation Civique', note: 8, coefficient: 2 },
       ],
     },
     {
       eleve: 'MBARGA Paul',
       classe: selectedClasse,
       trimestre: selectedTrimestre,
-      moyenne: 12.6,
+      moyenne: 6.3,
       rang: 12,
       effectif: 35,
       matieres: [
-        { nom: 'Mathématiques', note: 11, coefficient: 4 },
-        { nom: 'Français', note: 14, coefficient: 3 },
-        { nom: 'Anglais', note: 13, coefficient: 2 },
-        { nom: 'Physique', note: 10, coefficient: 3 },
-        { nom: 'SVT', note: 14, coefficient: 2 },
+        { nom: 'Mathématiques', note: 5, coefficient: 4 },
+        { nom: 'Français', note: 7, coefficient: 3 },
+        { nom: 'Anglais', note: 6, coefficient: 2 },
+        { nom: 'Sciences & Technologie', note: 5, coefficient: 3 },
+        { nom: 'Éducation Civique', note: 8, coefficient: 2 },
       ],
     },
   ];
@@ -66,7 +66,7 @@ export const BulletinPage: React.FC = () => {
       {/* Filters */}
       <Card className="shadow-sm border border-slate-100">
         <div className="flex items-center gap-4 flex-wrap">
-          <FilterDropdown label={t('bulletins.class')} value={selectedClasse} options={['6ème A', '5ème B', '4ème C', '3ème A']} onChange={setSelectedClasse} />
+          <FilterDropdown label={t('bulletins.class')} value={selectedClasse} options={['SIL A', 'CP A', 'CE1 A', 'CE2 A', 'CM1 A', 'CM2 A']} onChange={setSelectedClasse} />
           <FilterDropdown label={t('bulletins.trimester')} value={selectedTrimestre} options={['Trimestre 1', 'Trimestre 2', 'Trimestre 3']} onChange={setSelectedTrimestre} />
           <span className="ml-auto text-sm text-slate-500 font-semibold flex items-center gap-2">
             <FileText className="w-4 h-4 text-digi-purple" />

@@ -5,11 +5,12 @@ import { Button } from '../../../shared/components/ui/Button';
 import { Plus } from 'lucide-react';
 
 const mockRooms = [
-  { id: 'S01', libelle: 'Salle 01', surface: 48, position: 'Bâtiment A - RDC', classe: '6ème A' },
-  { id: 'S02', libelle: 'Salle 02', surface: 45, position: 'Bâtiment A - RDC', classe: '6ème B' },
-  { id: 'S03', libelle: 'Salle 03', surface: 50, position: 'Bâtiment A - 1er', classe: '5ème A' },
-  { id: 'LAB1', libelle: 'Labo Sciences', surface: 60, position: 'Bâtiment B - RDC', classe: '-' },
-  { id: 'INF1', libelle: 'Salle Informatique', surface: 55, position: 'Bâtiment B - 1er', classe: '-' },
+  { id: 'P01', libelle: 'Salle 01', surface: 48, position: 'Bâtiment A - RDC', classe: 'SIL A' },
+  { id: 'P02', libelle: 'Salle 02', surface: 45, position: 'Bâtiment A - RDC', classe: 'CP A' },
+  { id: 'P03', libelle: 'Salle 03', surface: 50, position: 'Bâtiment A - 1er', classe: 'CE1 A' },
+  { id: 'A01', libelle: 'Salle 04', surface: 48, position: 'Bâtiment B - RDC', classe: 'Class 1 A' },
+  { id: 'A02', libelle: 'Salle 05', surface: 46, position: 'Bâtiment B - RDC', classe: 'Class 2 A' },
+  { id: 'BIB1', libelle: 'Bibliothèque', surface: 60, position: 'Bâtiment C - RDC', classe: '-' },
 ];
 
 const RoomManagePage: React.FC = () => {

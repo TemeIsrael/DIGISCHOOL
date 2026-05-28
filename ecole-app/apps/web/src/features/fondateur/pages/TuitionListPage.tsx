@@ -6,11 +6,18 @@ import { Button } from '../../../shared/components/ui/Button';
 import { Plus } from 'lucide-react';
 
 const mockTuitions = [
-  { id: 1, classe: '6ème', montant: 150000, inscrits: 35 },
-  { id: 2, classe: '5ème', montant: 155000, inscrits: 30 },
-  { id: 3, classe: '4ème', montant: 160000, inscrits: 28 },
-  { id: 4, classe: '3ème', montant: 165000, inscrits: 25 },
-  { id: 5, classe: 'CM2', montant: 75000, inscrits: 40 },
+  { id: 1, classe: 'SIL', montant: 50000, inscrits: 45, section: 'FR' },
+  { id: 2, classe: 'CP', montant: 55000, inscrits: 42, section: 'FR' },
+  { id: 3, classe: 'CE1', montant: 60000, inscrits: 38, section: 'FR' },
+  { id: 4, classe: 'CE2', montant: 60000, inscrits: 35, section: 'FR' },
+  { id: 5, classe: 'CM1', montant: 65000, inscrits: 32, section: 'FR' },
+  { id: 6, classe: 'CM2', montant: 70000, inscrits: 30, section: 'FR' },
+  { id: 7, classe: 'Class 1', montant: 55000, inscrits: 40, section: 'EN' },
+  { id: 8, classe: 'Class 2', montant: 55000, inscrits: 38, section: 'EN' },
+  { id: 9, classe: 'Class 3', montant: 60000, inscrits: 35, section: 'EN' },
+  { id: 10, classe: 'Class 4', montant: 60000, inscrits: 32, section: 'EN' },
+  { id: 11, classe: 'Class 5', montant: 65000, inscrits: 28, section: 'EN' },
+  { id: 12, classe: 'Class 6', montant: 70000, inscrits: 25, section: 'EN' },
 ];
 
 const TuitionListPage: React.FC = () => {

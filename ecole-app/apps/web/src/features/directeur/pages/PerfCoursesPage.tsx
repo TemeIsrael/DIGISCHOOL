@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 
 const mockData = [
-  { matiere: 'Mathématiques', moyenne: 11.3, enseignant: 'M. NKOULOU', classes: 5 },
-  { matiere: 'Français', moyenne: 12.8, enseignant: 'Mme FOUDA', classes: 5 },
-  { matiere: 'Anglais', moyenne: 13.5, enseignant: 'M. BROWN', classes: 5 },
-  { matiere: 'SVT', moyenne: 14.1, enseignant: 'Mme BELLA', classes: 4 },
-  { matiere: 'Physique-Chimie', moyenne: 10.7, enseignant: 'M. ESSOMBA', classes: 3 },
-  { matiere: 'Histoire-Géo', moyenne: 12.2, enseignant: 'Mme KAMGA', classes: 5 },
+  { matiere: 'Mathématiques', moyenne: 6.8, enseignant: 'M. NKOULOU', classes: 12 },
+  { matiere: 'Français', moyenne: 7.2, enseignant: 'Mme FOUDA', classes: 6 },
+  { matiere: 'Anglais', moyenne: 7.8, enseignant: 'M. BROWN', classes: 12 },
+  { matiere: 'Sciences & Technologie', moyenne: 6.1, enseignant: 'Mme BELLA', classes: 12 },
+  { matiere: 'Éducation Civique', moyenne: 7.5, enseignant: 'M. ESSOMBA', classes: 12 },
+  { matiere: 'Histoire-Géo', moyenne: 6.9, enseignant: 'Mme KAMGA', classes: 12 },
 ];
 
 const PerfCoursesPage: React.FC = () => {
@@ -34,7 +34,7 @@ const PerfCoursesPage: React.FC = () => {
               {mockData.map((c) => (
                 <tr key={c.matiere} className="hover:bg-slate-50">
                   <td className="px-6 py-3 font-bold">{c.matiere}</td>
-                  <td className="px-6 py-3">{c.moyenne}/20</td>
+                  <td className="px-6 py-3">{c.moyenne}/10</td>
                   <td className="px-6 py-3">{c.enseignant}</td>
                   <td className="px-6 py-3">{c.classes}</td>
                 </tr>

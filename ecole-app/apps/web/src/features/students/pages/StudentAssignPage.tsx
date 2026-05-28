@@ -18,8 +18,14 @@ export const StudentAssignPage: React.FC = () => {
           <Select
             label={t('students.classroom')}
             options={[
-              { value: '1', label: '6ème A' },
-              { value: '2', label: '6ème B' }
+              { value: '1', label: 'SIL A' },
+              { value: '2', label: 'CP A' },
+              { value: '3', label: 'CE1 A' },
+              { value: '4', label: 'CE2 A' },
+              { value: '5', label: 'CM1 A' },
+              { value: '6', label: 'CM2 A' },
+              { value: '7', label: 'Class 1 A' },
+              { value: '8', label: 'Class 6 A' },
             ]}
           />
           <div className="flex gap-4 pt-4">

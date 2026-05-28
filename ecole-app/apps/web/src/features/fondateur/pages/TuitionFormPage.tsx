@@ -16,7 +16,8 @@ const TuitionFormPage: React.FC = () => {
       <Card className="shadow-sm border border-slate-100 p-6 space-y-4 max-w-2xl">
         <div><label className="block text-sm font-bold text-slate-700 mb-1">{t('fondateur.classLevel')}</label>
           <select className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm">
-            <option>6ème</option><option>5ème</option><option>4ème</option><option>3ème</option>
+            <optgroup label="Francophone"><option>SIL</option><option>CP</option><option>CE1</option><option>CE2</option><option>CM1</option><option>CM2</option></optgroup>
+            <optgroup label="Anglophone"><option>Class 1</option><option>Class 2</option><option>Class 3</option><option>Class 4</option><option>Class 5</option><option>Class 6</option></optgroup>
           </select>
         </div>
         <div><label className="block text-sm font-bold text-slate-700 mb-1">{t('fondateur.annualTuition')}</label><input type="number" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" placeholder="150000" /></div>

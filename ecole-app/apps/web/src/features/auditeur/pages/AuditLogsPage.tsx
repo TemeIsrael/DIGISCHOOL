@@ -5,9 +5,9 @@ import { Card } from '../../../shared/components/ui/Card';
 const mockLogs = [
   { id: 1, date: '28/05/2026 14:32', user: 'admin_inscr', action: 'CREATE', entity: 'Élève', detail: 'Création élève EL-120' },
   { id: 2, date: '28/05/2026 14:15', user: 'admin_scol', action: 'UPDATE', entity: 'Paiement', detail: 'Modification paiement #P-089' },
-  { id: 3, date: '28/05/2026 13:45', user: 'enseignant02', action: 'CREATE', entity: 'Note', detail: 'Saisie notes 6ème A - Maths' },
+  { id: 3, date: '28/05/2026 13:45', user: 'enseignant02', action: 'CREATE', entity: 'Note', detail: 'Saisie notes CM2 A - Maths' },
   { id: 4, date: '28/05/2026 10:20', user: 'root', action: 'DELETE', entity: 'Utilisateur', detail: 'Suppression compte admin_old' },
-  { id: 5, date: '27/05/2026 16:00', user: 'directeur01', action: 'UPDATE', entity: 'Bulletin', detail: 'Validation bulletins 5ème A' },
+  { id: 5, date: '27/05/2026 16:00', user: 'directeur01', action: 'UPDATE', entity: 'Bulletin', detail: 'Validation bulletins CE2 A' },
 ];
 
 const AuditLogsPage: React.FC = () => {

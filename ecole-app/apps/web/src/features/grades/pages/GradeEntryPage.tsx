@@ -15,20 +15,20 @@ interface GradeEntry {
 }
 
 const mockGrades: GradeEntry[] = [
-  { matricule: 'EL-001', nom: 'DUPONT', prenom: 'Jean', note: 16, noteMax: 20 },
-  { matricule: 'EL-002', nom: 'MBARGA', prenom: 'Paul', note: 12, noteMax: 20 },
-  { matricule: 'EL-003', nom: 'NGONO', prenom: 'Marie', note: 8, noteMax: 20 },
-  { matricule: 'EL-004', nom: 'TAMBA', prenom: 'Isaac', note: 18, noteMax: 20 },
-  { matricule: 'EL-005', nom: 'BELLA', prenom: 'Sarah', note: null, noteMax: 20 },
-  { matricule: 'EL-006', nom: 'FOUDA', prenom: 'Pierre', note: 14, noteMax: 20 },
-  { matricule: 'EL-007', nom: 'EKANGA', prenom: 'Lise', note: 15, noteMax: 20 },
+  { matricule: 'EL-001', nom: 'NGUEMA', prenom: 'Jean', note: 8, noteMax: 10 },
+  { matricule: 'EL-002', nom: 'MBARGA', prenom: 'Paul', note: 6, noteMax: 10 },
+  { matricule: 'EL-003', nom: 'NGONO', prenom: 'Marie', note: 4, noteMax: 10 },
+  { matricule: 'EL-004', nom: 'TAMBA', prenom: 'Isaac', note: 9, noteMax: 10 },
+  { matricule: 'EL-005', nom: 'BELLA', prenom: 'Sarah', note: null, noteMax: 10 },
+  { matricule: 'EL-006', nom: 'FOUDA', prenom: 'Pierre', note: 7, noteMax: 10 },
+  { matricule: 'EL-007', nom: 'EKANGA', prenom: 'Lise', note: 8, noteMax: 10 },
 ];
 
 export const GradeEntryPage: React.FC = () => {
   const { t } = useTranslation();
   const [grades, setGrades] = useState(mockGrades);
   const [selectedCours, setSelectedCours] = useState('Mathématiques');
-  const [selectedClasse, setSelectedClasse] = useState('6ème A');
+  const [selectedClasse, setSelectedClasse] = useState('CM2 A');
   const [selectedSession, setSelectedSession] = useState('Examen T1');
 
   const handleNoteChange = (index: number, value: string) => {
@@ -63,8 +63,8 @@ export const GradeEntryPage: React.FC = () => {
       {/* Filters */}
       <Card className="shadow-sm border border-slate-100">
         <div className="flex items-center gap-4 flex-wrap">
-          <FilterDropdown label={t('grades.course')} value={selectedCours} options={['Mathématiques', 'Français', 'Anglais', 'Sciences', 'Physique']} onChange={setSelectedCours} />
-          <FilterDropdown label={t('grades.class')} value={selectedClasse} options={['6ème A', '5ème B', '4ème C', '3ème A']} onChange={setSelectedClasse} />
+          <FilterDropdown label={t('grades.course')} value={selectedCours} options={['Mathématiques', 'Français', 'Anglais', 'Sciences & Technologie', 'Éducation Civique']} onChange={setSelectedCours} />
+          <FilterDropdown label={t('grades.class')} value={selectedClasse} options={['SIL A', 'CP A', 'CE1 A', 'CE2 A', 'CM1 A', 'CM2 A']} onChange={setSelectedClasse} />
           <FilterDropdown label={t('grades.session')} value={selectedSession} options={['Examen T1', 'Examen T2', 'Examen T3', 'Devoir 1', 'Devoir 2']} onChange={setSelectedSession} />
 
           <div className="ml-auto flex items-center gap-4 text-sm font-semibold">

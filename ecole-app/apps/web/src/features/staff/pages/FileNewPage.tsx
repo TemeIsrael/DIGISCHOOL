@@ -20,7 +20,7 @@ const FileNewPage: React.FC = () => {
           <div><label className="block text-sm font-bold text-slate-700 mb-1">{t('staff.firstName')}</label><input type="text" className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" /></div>
         </div>
         <div><label className="block text-sm font-bold text-slate-700 mb-1">{t('staff.class')}</label>
-          <select className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"><option>6ème A</option><option>6ème B</option><option>5ème A</option></select>
+          <select className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm"><optgroup label="Francophone"><option>SIL A</option><option>CP A</option><option>CE1 A</option><option>CE2 A</option><option>CM1 A</option><option>CM2 A</option></optgroup><optgroup label="Anglophone"><option>Class 1 A</option><option>Class 2 A</option><option>Class 3 A</option><option>Class 4 A</option><option>Class 5 A</option><option>Class 6 A</option></optgroup></select>
         </div>
         <div><label className="block text-sm font-bold text-slate-700 mb-1">{t('staff.uploadDocuments')}</label><input type="file" multiple className="w-full border border-slate-200 rounded-lg px-3 py-2 text-sm" /></div>
         <div className="flex gap-3 pt-4">

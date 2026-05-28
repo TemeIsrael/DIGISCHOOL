@@ -9,10 +9,10 @@ export const DashboardDirecteur: React.FC = () => {
   const { t } = useTranslation();
 
   const rankingData = [
-    { className: '3ème A', average: 14.5, count: 32 },
-    { className: 'Terminale C', average: 13.8, count: 28 },
-    { className: '6ème B', average: 12.9, count: 35 },
-    { className: '4ème A', average: 11.2, count: 30 }
+    { className: 'CM2 A', average: 8.7, count: 28, section: 'FR' },
+    { className: 'Class 6 A', average: 8.2, count: 25, section: 'EN' },
+    { className: 'CE2 A', average: 7.9, count: 32, section: 'FR' },
+    { className: 'Class 4 A', average: 7.5, count: 30, section: 'EN' }
   ];
 
   return (
@@ -25,7 +25,7 @@ export const DashboardDirecteur: React.FC = () => {
 
         {/* 4 KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <KPICard value="12.4/20" label={t('dashboard.generalAverage')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="7.8/10" label={t('dashboard.generalAverage')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
           <KPICard value="82.4%" label={t('dashboard.estimatedSuccessRate')} icon={<Award className="w-5 h-5 text-digi-purple" />} />
           <KPICard value="14" label={t('dashboard.bulletinsToValidate')} icon={<CheckSquare className="w-5 h-5 text-digi-purple" />} />
           <KPICard value="3" label={t('dashboard.disciplineComplaints')} icon={<ShieldAlert className="w-5 h-5 text-digi-purple" />} />
@@ -49,7 +49,7 @@ export const DashboardDirecteur: React.FC = () => {
                   <tr key={idx}>
                     <td className="px-6 py-3 font-bold">{item.className}</td>
                     <td className="px-6 py-3">{item.count} {t('dashboard.students')}</td>
-                    <td className="px-6 py-3 text-digi-purple font-extrabold">{item.average} / 20</td>
+                    <td className="px-6 py-3 text-digi-purple font-extrabold">{item.average} / 10</td>
                     <td className="px-6 py-3">
                       <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">
                         {t('dashboard.rising')}

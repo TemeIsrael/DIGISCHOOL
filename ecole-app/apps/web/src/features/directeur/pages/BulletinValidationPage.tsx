@@ -5,10 +5,10 @@ import { Button } from '../../../shared/components/ui/Button';
 import { CheckCircle } from 'lucide-react';
 
 const mockBulletins = [
-  { classe: '6ème A', total: 35, valides: 30, enAttente: 5 },
-  { classe: '6ème B', total: 32, valides: 32, enAttente: 0 },
-  { classe: '5ème A', total: 30, valides: 15, enAttente: 15 },
-  { classe: '4ème A', total: 28, valides: 0, enAttente: 28 },
+  { classe: 'CM2 A', total: 30, valides: 25, enAttente: 5 },
+  { classe: 'CM1 A', total: 32, valides: 32, enAttente: 0 },
+  { classe: 'CE2 A', total: 35, valides: 18, enAttente: 17 },
+  { classe: 'Class 6 A', total: 25, valides: 0, enAttente: 25 },
 ];
 
 const BulletinValidationPage: React.FC = () => {

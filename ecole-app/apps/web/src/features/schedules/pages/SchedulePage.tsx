@@ -8,17 +8,17 @@ import { ScheduleGrid } from '../../../shared/components/business/ScheduleGrid';
 import { Clock, Download, FilePlus, Calendar } from 'lucide-react';
 
 const mockSchedule = [
-  { jour: 'Lundi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: '6ème A' },
-  { jour: 'Lundi', heureDebut: '10:15', heureFin: '12:15', cours: 'Français', salle: '6ème A' },
-  { jour: 'Lundi', heureDebut: '14:00', heureFin: '16:00', cours: 'Anglais', salle: '5ème B' },
-  { jour: 'Mardi', heureDebut: '08:00', heureFin: '10:00', cours: 'Physique', salle: '4ème C' },
-  { jour: 'Mardi', heureDebut: '10:15', heureFin: '12:15', cours: 'SVT', salle: '3ème A' },
-  { jour: 'Mercredi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: '5ème B' },
-  { jour: 'Mercredi', heureDebut: '10:15', heureFin: '12:15', cours: 'Histoire-Géo', salle: '6ème A' },
-  { jour: 'Jeudi', heureDebut: '08:00', heureFin: '10:00', cours: 'Français', salle: '5ème A' },
-  { jour: 'Jeudi', heureDebut: '14:00', heureFin: '16:00', cours: 'Physique', salle: '4ème C' },
-  { jour: 'Vendredi', heureDebut: '08:00', heureFin: '10:00', cours: 'Anglais', salle: '6ème A' },
-  { jour: 'Vendredi', heureDebut: '10:15', heureFin: '12:15', cours: 'Mathématiques', salle: '3ème A' },
+  { jour: 'Lundi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: 'CM2 A' },
+  { jour: 'Lundi', heureDebut: '10:15', heureFin: '12:15', cours: 'Français', salle: 'CM2 A' },
+  { jour: 'Lundi', heureDebut: '14:00', heureFin: '16:00', cours: 'Anglais', salle: 'CE2 A' },
+  { jour: 'Mardi', heureDebut: '08:00', heureFin: '10:00', cours: 'Sciences & Technologie', salle: 'CM1 A' },
+  { jour: 'Mardi', heureDebut: '10:15', heureFin: '12:15', cours: 'Éducation Civique', salle: 'CP A' },
+  { jour: 'Mercredi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: 'CE1 A' },
+  { jour: 'Mercredi', heureDebut: '10:15', heureFin: '12:15', cours: 'Français', salle: 'SIL A' },
+  { jour: 'Jeudi', heureDebut: '08:00', heureFin: '10:00', cours: 'Anglais', salle: 'CM2 A' },
+  { jour: 'Jeudi', heureDebut: '14:00', heureFin: '16:00', cours: 'Sciences & Technologie', salle: 'CE2 A' },
+  { jour: 'Vendredi', heureDebut: '08:00', heureFin: '10:00', cours: 'Éducation Civique', salle: 'CM1 A' },
+  { jour: 'Vendredi', heureDebut: '10:15', heureFin: '12:15', cours: 'Mathématiques', salle: 'CP A' },
 ];
 
 export const SchedulePage: React.FC = () => {
@@ -61,7 +61,7 @@ export const SchedulePage: React.FC = () => {
           <FilterDropdown
             label={t('schedules.class')}
             value={selectedClasse}
-            options={['Toutes', '6ème A', '5ème A', '5ème B', '4ème C', '3ème A']}
+            options={['Toutes', 'SIL A', 'CP A', 'CE1 A', 'CE2 A', 'CM1 A', 'CM2 A']}
             onChange={setSelectedClasse}
           />
         </div>

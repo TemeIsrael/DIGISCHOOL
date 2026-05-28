@@ -6,10 +6,10 @@ import { Button } from '../../../shared/components/ui/Button';
 import { Plus } from 'lucide-react';
 
 const mockFiles = [
-  { matricule: 'EL-001', nom: 'DUPONT Jean', classe: '6ème A', complet: true, docs: 8 },
-  { matricule: 'EL-012', nom: 'NGONO Marie', classe: '5ème A', complet: false, docs: 5 },
-  { matricule: 'EL-045', nom: 'BELLA Sarah', classe: '6ème A', complet: true, docs: 8 },
-  { matricule: 'EL-089', nom: 'KAMGA Paul', classe: '3ème A', complet: false, docs: 3 },
+  { matricule: 'EL-001', nom: 'NGUEMA Jean', classe: 'CM2 A', complet: true, docs: 8 },
+  { matricule: 'EL-012', nom: 'NGONO Marie', classe: 'CE2 A', complet: false, docs: 5 },
+  { matricule: 'EL-045', nom: 'BELLA Sarah', classe: 'SIL A', complet: true, docs: 8 },
+  { matricule: 'EL-089', nom: 'KAMGA Paul', classe: 'Class 6 A', complet: false, docs: 3 },
 ];
 
 const FileListPage: React.FC = () => {

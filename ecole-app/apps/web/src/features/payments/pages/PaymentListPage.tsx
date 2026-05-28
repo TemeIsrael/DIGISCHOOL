@@ -7,11 +7,11 @@ import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown
 import { CreditCard, Download, Search, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
 
 const mockPayments = [
-  { id: 1, matricule: 'EL-001', eleve: 'DUPONT Jean', classe: '6ème A', montant: 150000, paye: 100000, statut: 'Partiel', date: '15/03/2026' },
-  { id: 2, matricule: 'EL-002', eleve: 'MBARGA Paul', classe: '5ème B', montant: 150000, paye: 150000, statut: 'Complet', date: '10/01/2026' },
-  { id: 3, matricule: 'EL-003', eleve: 'NGONO Marie', classe: '4ème C', montant: 175000, paye: 0, statut: 'Impayé', date: '-' },
-  { id: 4, matricule: 'EL-004', eleve: 'TAMBA Isaac', classe: '3ème A', montant: 200000, paye: 200000, statut: 'Complet', date: '05/02/2026' },
-  { id: 5, matricule: 'EL-005', eleve: 'BELLA Sarah', classe: '6ème A', montant: 150000, paye: 75000, statut: 'Partiel', date: '20/04/2026' },
+  { id: 1, matricule: 'EL-001', eleve: 'NGUEMA Jean', classe: 'CM2 A', montant: 75000, paye: 50000, statut: 'Partiel', date: '15/03/2026' },
+  { id: 2, matricule: 'EL-002', eleve: 'MBARGA Paul', classe: 'CE2 A', montant: 75000, paye: 75000, statut: 'Complet', date: '10/01/2026' },
+  { id: 3, matricule: 'EL-003', eleve: 'NGONO Marie', classe: 'CM1 A', montant: 80000, paye: 0, statut: 'Impayé', date: '-' },
+  { id: 4, matricule: 'EL-004', eleve: 'TAMBA Isaac', classe: 'Class 6 A', montant: 80000, paye: 80000, statut: 'Complet', date: '05/02/2026' },
+  { id: 5, matricule: 'EL-005', eleve: 'BELLA Sarah', classe: 'SIL A', montant: 75000, paye: 37500, statut: 'Partiel', date: '20/04/2026' },
 ];
 
 const statusColors: Record<string, string> = {
