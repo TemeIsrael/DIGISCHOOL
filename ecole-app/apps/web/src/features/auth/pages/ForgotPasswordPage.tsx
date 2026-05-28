@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -10,17 +11,16 @@ import { Button } from '../../../shared/components/ui/Button';
 import { useToast } from '../../../shared/components/ui/Toast';
 import { api } from '../../../shared/lib/api';
 
-// ─── Validation Schema ─────────────────────────────────────────────
 const forgotPasswordSchema = z.object({
-  login: z.string().min(3, 'Le login doit contenir au moins 3 caractères')
+  login: z.string().min(3)
 });
 
 type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 
-// ─── Component ──────────────────────────────────────────────────────
 export const ForgotPasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -38,18 +38,18 @@ export const ForgotPasswordPage: React.FC = () => {
     onSuccess: () => {
       toast({
         type: 'success',
-        title: 'Demande envoyée',
-        description: 'Votre demande de réinitialisation a été transmise à l\'administrateur.'
+        title: t('auth.toastResetSent'),
+        description: t('auth.toastResetSentDesc')
       });
       navigate('/login');
     },
     onError: (error: any) => {
       const msg =
         error.response?.data?.error?.message ||
-        'Une erreur est survenue lors de la demande. Veuillez réessayer.';
+        t('auth.toastResetErrorDesc');
       toast({
         type: 'danger',
-        title: 'Erreur',
+        title: t('auth.toastResetError'),
         description: msg
       });
     }
@@ -64,25 +64,25 @@ export const ForgotPasswordPage: React.FC = () => {
       <div className="w-full max-w-md">
         {/* Brand Title */}
         <div className="text-center mb-8">
-          <h1 className="font-serif text-4xl font-extrabold text-digi-purple tracking-tight">DIGISCHOOL</h1>
-          <p className="text-sm font-semibold text-slate-500 mt-2">Récupération de vos accès</p>
+          <h1 className="font-serif text-4xl font-extrabold text-digi-purple tracking-tight">{t('app.name')}</h1>
+          <p className="text-sm font-semibold text-slate-500 mt-2">{t('auth.forgotPasswordRecovery')}</p>
         </div>
 
         <Card className="shadow-2xl border border-slate-100 overflow-hidden relative">
           <div className="absolute top-0 left-0 w-full h-1.5 bg-digi-purple" />
 
           <h2 className="text-xl font-bold text-slate-800 tracking-tight text-center mb-2">
-            Mot de passe oublié
+            {t('auth.forgotPasswordTitle')}
           </h2>
           <p className="text-xs text-slate-400 text-center mb-6">
-            Entrez votre identifiant pour que votre administrateur réinitialise vos accès.
+            {t('auth.forgotPasswordSubtitle')}
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <Input
-              label="Nom d'utilisateur / Login"
-              placeholder="Saisissez votre nom d'utilisateur"
-              error={errors.login?.message}
+              label={t('auth.usernameLabel')}
+              placeholder={t('auth.usernamePlaceholder')}
+              error={errors.login?.message ? t('auth.validationLoginMin') : undefined}
               {...register('login')}
             />
 
@@ -92,8 +92,8 @@ export const ForgotPasswordPage: React.FC = () => {
               disabled={forgotMutation.isPending}
             >
               {forgotMutation.isPending
-                ? 'Envoi en cours...'
-                : 'Demander la réinitialisation'}
+                ? t('auth.sending')
+                : t('auth.requestReset')}
             </Button>
           </form>
 
@@ -102,7 +102,7 @@ export const ForgotPasswordPage: React.FC = () => {
               onClick={() => navigate('/login')}
               className="text-xs font-semibold text-slate-400 hover:text-digi-purple transition-colors"
             >
-              Retour à la connexion
+              {t('auth.backToLogin')}
             </button>
           </div>
         </Card>

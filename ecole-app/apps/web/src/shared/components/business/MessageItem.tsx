@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Mail, MailOpen } from 'lucide-react';
 
 export interface MessageItemProps {
@@ -17,6 +18,7 @@ export interface MessageItemProps {
 }
 
 export const MessageItem: React.FC<MessageItemProps> = (props) => {
+  const { t } = useTranslation();
   // Support both old and new prop names
   const from = props.from || props.expediteur || '';
   const subject = props.subject || props.objet || '';
@@ -49,7 +51,7 @@ export const MessageItem: React.FC<MessageItemProps> = (props) => {
       </div>
       {!read && (
         <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-digi-purple-bg text-digi-purple flex-shrink-0">
-          Nouveau
+          {t('messages.newBadge')}
         </span>
       )}
     </div>

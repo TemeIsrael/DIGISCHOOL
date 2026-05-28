@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { KPICard } from '../../../shared/components/ui/KPICard';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
@@ -75,24 +76,25 @@ const DonutChart: React.FC<{ segments: { label: string; value: number; color: st
 };
 
 export const StatsPage: React.FC = () => {
+  const { t } = useTranslation();
   const [period, setPeriod] = useState('2025-2026');
 
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Statistiques & Graphiques</h1>
-          <p className="text-sm text-slate-400 font-semibold">Vue d'ensemble chiffrée de l'établissement</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('stats.title')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('stats.subtitle')}</p>
         </div>
-        <FilterDropdown label="Année" value={period} options={['2025-2026', '2024-2025', '2023-2024']} onChange={setPeriod} />
+        <FilterDropdown label={t('stats.year')} value={period} options={['2025-2026', '2024-2025', '2023-2024']} onChange={setPeriod} />
       </div>
 
       {/* Summary KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <KPICard value="450" label="Élèves Inscrits" icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value="24" label="Personnel" icon={<Users className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value="13.6" label="Moyenne Générale" icon={<TrendingUp className="w-5 h-5 text-digi-success" />} />
-        <KPICard value="78%" label="Taux Recouvrement" icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="450" label={t('stats.enrolled')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="24" label={t('stats.staff')} icon={<Users className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="7.2/10" label={t('stats.generalAvg')} icon={<TrendingUp className="w-5 h-5 text-digi-success" />} />
+        <KPICard value="78%" label={t('stats.recoveryRate')} icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -100,17 +102,22 @@ export const StatsPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-digi-purple" />
-            Effectifs par Classe
+            {t('stats.enrollmentByClass')}
           </h3>
           <BarChartSimple
             data={[
-              { label: '6ème', value: 70, color: '#534AB7' },
-              { label: '5ème', value: 65, color: '#7F77DD' },
-              { label: '4ème', value: 58, color: '#AFA9EC' },
-              { label: '3ème', value: 52, color: '#534AB7' },
-              { label: '2nde', value: 80, color: '#7F77DD' },
-              { label: '1ère', value: 68, color: '#AFA9EC' },
-              { label: 'Tle', value: 57, color: '#534AB7' },
+              { label: 'SIL', value: 45, color: '#534AB7' },
+              { label: 'CP', value: 42, color: '#7F77DD' },
+              { label: 'CE1', value: 38, color: '#AFA9EC' },
+              { label: 'CE2', value: 35, color: '#534AB7' },
+              { label: 'CM1', value: 32, color: '#7F77DD' },
+              { label: 'CM2', value: 30, color: '#AFA9EC' },
+              { label: 'Cl.1', value: 40, color: '#10B981' },
+              { label: 'Cl.2', value: 38, color: '#059669' },
+              { label: 'Cl.3', value: 35, color: '#10B981' },
+              { label: 'Cl.4', value: 32, color: '#059669' },
+              { label: 'Cl.5', value: 28, color: '#10B981' },
+              { label: 'Cl.6', value: 25, color: '#059669' },
             ]}
           />
         </Card>
@@ -119,13 +126,13 @@ export const StatsPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
             <PieChart className="w-4 h-4 text-digi-purple" />
-            Répartition par Genre
+            {t('stats.genderDistribution')}
           </h3>
           <div className="flex justify-center">
             <DonutChart
               segments={[
-                { label: 'Garçons', value: 248, color: '#534AB7' },
-                { label: 'Filles', value: 202, color: '#AFA9EC' },
+                { label: t('stats.boys'), value: 248, color: '#534AB7' },
+                { label: t('stats.girls'), value: 202, color: '#AFA9EC' },
               ]}
             />
           </div>
@@ -135,17 +142,17 @@ export const StatsPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-digi-purple" />
-            Moyennes par Matière
+            {t('stats.avgBySubject')}
           </h3>
           <BarChartSimple
-            maxVal={20}
+            maxVal={10}
             data={[
-              { label: 'Maths', value: 13.2, color: '#534AB7' },
-              { label: 'Français', value: 14.1, color: '#10B981' },
-              { label: 'Anglais', value: 15.3, color: '#F59E0B' },
-              { label: 'Physique', value: 11.8, color: '#EF4444' },
-              { label: 'SVT', value: 14.5, color: '#7F77DD' },
-              { label: 'Histoire', value: 13.9, color: '#AFA9EC' },
+              { label: 'Maths', value: 6.8, color: '#534AB7' },
+              { label: 'Français', value: 7.2, color: '#10B981' },
+              { label: 'Anglais', value: 7.8, color: '#F59E0B' },
+              { label: 'Sciences', value: 6.1, color: '#EF4444' },
+              { label: 'Éd. Civique', value: 7.5, color: '#7F77DD' },
+              { label: 'Hist-Géo', value: 6.9, color: '#AFA9EC' },
             ]}
           />
         </Card>
@@ -154,14 +161,14 @@ export const StatsPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-digi-purple" />
-            Statut des Paiements
+            {t('stats.paymentStatus')}
           </h3>
           <div className="flex justify-center">
             <DonutChart
               segments={[
-                { label: 'Complet', value: 285, color: '#10B981' },
-                { label: 'Partiel', value: 105, color: '#F59E0B' },
-                { label: 'Impayé', value: 60, color: '#EF4444' },
+                { label: t('payments.complete'), value: 285, color: '#10B981' },
+                { label: t('payments.partial'), value: 105, color: '#F59E0B' },
+                { label: t('payments.unpaid'), value: 60, color: '#EF4444' },
               ]}
             />
           </div>
@@ -172,28 +179,30 @@ export const StatsPage: React.FC = () => {
       <Card className="shadow-sm border border-slate-100 overflow-hidden">
         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-digi-purple" />
-          Synthèse des Résultats par Classe
+          {t('stats.resultsSummary')}
         </h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-100 text-sm">
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
-                <th className="px-4 py-3 text-left">Classe</th>
-                <th className="px-4 py-3 text-center">Effectif</th>
-                <th className="px-4 py-3 text-center">Moyenne</th>
-                <th className="px-4 py-3 text-center">Réussite</th>
-                <th className="px-4 py-3 text-center">Admis</th>
-                <th className="px-4 py-3 text-center">Refusés</th>
+                <th className="px-4 py-3 text-left">{t('stats.class')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.enrollment')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.average')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.successRate')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.admitted')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.rejected')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
               {[
-                { classe: '6ème A', effectif: 35, moyenne: 14.2, reussite: 88, admis: 31, refuses: 4 },
-                { classe: '6ème B', effectif: 35, moyenne: 13.1, reussite: 80, admis: 28, refuses: 7 },
-                { classe: '5ème A', effectif: 33, moyenne: 12.8, reussite: 76, admis: 25, refuses: 8 },
-                { classe: '5ème B', effectif: 32, moyenne: 13.5, reussite: 81, admis: 26, refuses: 6 },
-                { classe: '4ème C', effectif: 30, moyenne: 11.9, reussite: 70, admis: 21, refuses: 9 },
-                { classe: '3ème A', effectif: 28, moyenne: 13.8, reussite: 82, admis: 23, refuses: 5 },
+                { classe: 'SIL A', effectif: 45, moyenne: 7.5, reussite: 88, admis: 40, refuses: 5 },
+                { classe: 'CP A', effectif: 42, moyenne: 7.1, reussite: 80, admis: 34, refuses: 8 },
+                { classe: 'CE1 A', effectif: 38, moyenne: 6.8, reussite: 76, admis: 29, refuses: 9 },
+                { classe: 'CE2 A', effectif: 35, moyenne: 7.3, reussite: 81, admis: 28, refuses: 7 },
+                { classe: 'CM1 A', effectif: 32, moyenne: 6.5, reussite: 70, admis: 22, refuses: 10 },
+                { classe: 'CM2 A', effectif: 30, moyenne: 7.4, reussite: 82, admis: 25, refuses: 5 },
+                { classe: 'Class 1 A', effectif: 40, moyenne: 7.2, reussite: 85, admis: 34, refuses: 6 },
+                { classe: 'Class 6 A', effectif: 25, moyenne: 7.0, reussite: 78, admis: 20, refuses: 5 },
               ].map((row) => (
                 <tr key={row.classe} className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 font-semibold">{row.classe}</td>

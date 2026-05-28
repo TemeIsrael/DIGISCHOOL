@@ -5,32 +5,91 @@ import { useAuthStore } from '../../../features/auth/store';
 import { Avatar } from '../ui/Avatar';
 import {
   LayoutDashboard, Users, GraduationCap, CreditCard, MessageSquare,
-  ShieldCheck, BookOpen, History, BarChart3, Settings, Clock,
-  ClipboardList, FileText, ChevronLeft, ChevronRight
+  ShieldCheck, BookOpen, History, BarChart3, Clock,
+  ClipboardList, FileText, ChevronLeft, ChevronRight, KeyRound,
+  Building, DoorOpen, Calendar, Layers, FolderOpen, Target,
+  TrendingUp, Landmark, Eye, Award, UserCheck, PieChart,
+  FileDown, List, Download
 } from 'lucide-react';
 
 interface SidebarLink {
   to: string;
   labelKey: string;
   icon: React.ReactNode;
-  adminTypes?: number[]; // restrict to specific admin sub-types
 }
 
-const allLinks: SidebarLink[] = [
-  { to: '/dashboard', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-  { to: '/students', labelKey: 'sidebar.students', icon: <GraduationCap className="w-5 h-5" /> },
-  { to: '/personnel', labelKey: 'sidebar.personnel', icon: <Users className="w-5 h-5" /> },
-  { to: '/academic', labelKey: 'sidebar.academic', icon: <Settings className="w-5 h-5" /> },
-  { to: '/schedules', labelKey: 'sidebar.schedules', icon: <Clock className="w-5 h-5" /> },
-  { to: '/grades', labelKey: 'sidebar.grades', icon: <ClipboardList className="w-5 h-5" /> },
-  { to: '/bulletins', labelKey: 'sidebar.bulletins', icon: <FileText className="w-5 h-5" /> },
-  { to: '/payments', labelKey: 'sidebar.payments', icon: <CreditCard className="w-5 h-5" /> },
-  { to: '/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" /> },
-  { to: '/discipline', labelKey: 'sidebar.discipline', icon: <ShieldCheck className="w-5 h-5" /> },
-  { to: '/library', labelKey: 'sidebar.library', icon: <BookOpen className="w-5 h-5" /> },
-  { to: '/stats', labelKey: 'sidebar.stats', icon: <BarChart3 className="w-5 h-5" /> },
-  { to: '/audit', labelKey: 'sidebar.audit', icon: <History className="w-5 h-5" />, adminTypes: [0, 5] },
-];
+const linksByAdminType: Record<number, SidebarLink[]> = {
+  // Root (0)
+  0: [
+    { to: '/root', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { to: '/root/admins', labelKey: 'sidebar.admins', icon: <ShieldCheck className="w-5 h-5" /> },
+    { to: '/root/personnel', labelKey: 'sidebar.personnel', icon: <Users className="w-5 h-5" /> },
+    { to: '/root/parents', labelKey: 'sidebar.parents', icon: <Users className="w-5 h-5" /> },
+    { to: '/root/credentials', labelKey: 'sidebar.credentials', icon: <KeyRound className="w-5 h-5" /> },
+    { to: '/root/cycles', labelKey: 'sidebar.cycles', icon: <Layers className="w-5 h-5" /> },
+    { to: '/root/classes', labelKey: 'sidebar.classes', icon: <Building className="w-5 h-5" /> },
+    { to: '/root/salles', labelKey: 'sidebar.rooms', icon: <DoorOpen className="w-5 h-5" /> },
+    { to: '/root/years', labelKey: 'sidebar.years', icon: <Calendar className="w-5 h-5" /> },
+    { to: '/root/terms', labelKey: 'sidebar.terms', icon: <Clock className="w-5 h-5" /> },
+    { to: '/root/refs', labelKey: 'sidebar.referentials', icon: <FolderOpen className="w-5 h-5" /> },
+    { to: '/root/audit', labelKey: 'sidebar.audit', icon: <History className="w-5 h-5" /> },
+    { to: '/root/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" /> },
+  ],
+  // Admin Inscriptions / Secrétariat (1)
+  1: [
+    { to: '/administr', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { to: '/administr/students', labelKey: 'sidebar.students', icon: <GraduationCap className="w-5 h-5" /> },
+    { to: '/administr/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" /> },
+  ],
+  // Admin Scolarité (2)
+  2: [
+    { to: '/scolarite', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { to: '/scolarite/payments', labelKey: 'sidebar.payments', icon: <CreditCard className="w-5 h-5" /> },
+    { to: '/scolarite/overdue', labelKey: 'sidebar.overdue', icon: <Target className="w-5 h-5" /> },
+    { to: '/scolarite/reminders', labelKey: 'sidebar.reminders', icon: <MessageSquare className="w-5 h-5" /> },
+    { to: '/scolarite/reports', labelKey: 'sidebar.financialReport', icon: <TrendingUp className="w-5 h-5" /> },
+    { to: '/scolarite/by-mode', labelKey: 'sidebar.byMode', icon: <PieChart className="w-5 h-5" /> },
+    { to: '/scolarite/modes', labelKey: 'sidebar.paymentModes', icon: <CreditCard className="w-5 h-5" /> },
+    { to: '/scolarite/export', labelKey: 'sidebar.accountingExport', icon: <FileDown className="w-5 h-5" /> },
+    { to: '/scolarite/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" /> },
+  ],
+  // Fondateur (3)
+  3: [
+    { to: '/fondateur', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { to: '/fondateur/tuitions', labelKey: 'sidebar.tuitions', icon: <Landmark className="w-5 h-5" /> },
+    { to: '/fondateur/tranches', labelKey: 'sidebar.tranches', icon: <Layers className="w-5 h-5" /> },
+    { to: '/fondateur/modes', labelKey: 'sidebar.paymentModes', icon: <CreditCard className="w-5 h-5" /> },
+    { to: '/fondateur/balance', labelKey: 'sidebar.annualBalance', icon: <TrendingUp className="w-5 h-5" /> },
+    { to: '/fondateur/compare', labelKey: 'sidebar.yearCompare', icon: <BarChart3 className="w-5 h-5" /> },
+    { to: '/fondateur/explore', labelKey: 'sidebar.explorer', icon: <Eye className="w-5 h-5" /> },
+    { to: '/fondateur/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" /> },
+  ],
+  // Directeur (4)
+  4: [
+    { to: '/directeur', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { to: '/directeur/perf/classes', labelKey: 'sidebar.perfClasses', icon: <BarChart3 className="w-5 h-5" /> },
+    { to: '/directeur/perf/courses', labelKey: 'sidebar.perfCourses', icon: <BookOpen className="w-5 h-5" /> },
+    { to: '/directeur/perf/students', labelKey: 'sidebar.perfStudents', icon: <GraduationCap className="w-5 h-5" /> },
+    { to: '/directeur/bulletins', labelKey: 'sidebar.bulletinValidation', icon: <FileText className="w-5 h-5" /> },
+    { to: '/directeur/messages', labelKey: 'sidebar.messageValidation', icon: <MessageSquare className="w-5 h-5" /> },
+    { to: '/directeur/discipline', labelKey: 'sidebar.disciplineApproval', icon: <ShieldCheck className="w-5 h-5" /> },
+    { to: '/directeur/teachers', labelKey: 'sidebar.teacherOverview', icon: <UserCheck className="w-5 h-5" /> },
+    { to: '/directeur/students', labelKey: 'sidebar.studentOverview', icon: <Users className="w-5 h-5" /> },
+    { to: '/directeur/demographics', labelKey: 'sidebar.demographics', icon: <PieChart className="w-5 h-5" /> },
+    { to: '/directeur/reports', labelKey: 'sidebar.syntheticReports', icon: <Award className="w-5 h-5" /> },
+    { to: '/directeur/exam-stats/cep', labelKey: 'sidebar.examStatsCEP', icon: <GraduationCap className="w-5 h-5" /> },
+    { to: '/directeur/exam-stats/fslc', labelKey: 'sidebar.examStatsFSLC', icon: <GraduationCap className="w-5 h-5" /> },
+  ],
+  // Auditeur (5)
+  5: [
+    { to: '/auditeur', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { to: '/auditeur/listings', labelKey: 'sidebar.allListings', icon: <List className="w-5 h-5" /> },
+    { to: '/auditeur/audit-logs', labelKey: 'sidebar.auditLogs', icon: <History className="w-5 h-5" /> },
+    { to: '/auditeur/finance', labelKey: 'sidebar.financeStats', icon: <TrendingUp className="w-5 h-5" /> },
+    { to: '/auditeur/pedagogy', labelKey: 'sidebar.pedagogyStats', icon: <ClipboardList className="w-5 h-5" /> },
+    { to: '/auditeur/exports', labelKey: 'sidebar.exports', icon: <Download className="w-5 h-5" /> },
+  ],
+};
 
 export interface SidebarProps {
   collapsed?: boolean;
@@ -42,11 +101,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false, onToggle })
   const { user } = useAuthStore();
   const location = useLocation();
 
-  // Filter links based on admin sub-type
-  const visibleLinks = allLinks.filter((link) => {
-    if (!link.adminTypes) return true;
-    return link.adminTypes.includes(user?.typeAdmin ?? -1);
-  });
+  const typeAdmin = user?.typeAdmin ?? 1;
+  const visibleLinks = linksByAdminType[typeAdmin] || linksByAdminType[1];
 
   return (
     <aside

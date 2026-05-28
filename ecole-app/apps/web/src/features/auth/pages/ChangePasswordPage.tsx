@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
@@ -10,32 +11,27 @@ import { Button } from '../../../shared/components/ui/Button';
 import { useToast } from '../../../shared/components/ui/Toast';
 import { api } from '../../../shared/lib/api';
 
-// ─── Validation Schema ─────────────────────────────────────────────
 const changePasswordSchema = z
   .object({
-    oldPassword: z
-      .string()
-      .min(6, 'L\'ancien mot de passe doit contenir au moins 6 caractères'),
-    newPassword: z
-      .string()
-      .min(6, 'Le nouveau mot de passe doit contenir au moins 6 caractères'),
+    oldPassword: z.string().min(6),
+    newPassword: z.string().min(6),
     confirmPassword: z.string()
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: 'Les mots de passe ne correspondent pas',
+    message: 'mismatch',
     path: ['confirmPassword']
   })
   .refine((data) => data.oldPassword !== data.newPassword, {
-    message: 'Le nouveau mot de passe doit être différent de l\'ancien',
+    message: 'same',
     path: ['newPassword']
   });
 
 type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 
-// ─── Component ──────────────────────────────────────────────────────
 export const ChangePasswordPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -57,8 +53,8 @@ export const ChangePasswordPage: React.FC = () => {
     onSuccess: () => {
       toast({
         type: 'success',
-        title: 'Mot de passe modifié',
-        description: 'Votre mot de passe a été mis à jour avec succès.'
+        title: t('auth.toastPasswordChanged'),
+        description: t('auth.toastPasswordChangedDesc')
       });
       reset();
       navigate('/dashboard');
@@ -66,10 +62,10 @@ export const ChangePasswordPage: React.FC = () => {
     onError: (error: any) => {
       const msg =
         error.response?.data?.error?.message ||
-        'Échec de la modification. Vérifiez votre ancien mot de passe.';
+        t('auth.toastPasswordErrorDesc');
       toast({
         type: 'danger',
-        title: 'Erreur',
+        title: t('auth.toastPasswordError'),
         description: msg
       });
     }
@@ -82,40 +78,50 @@ export const ChangePasswordPage: React.FC = () => {
     });
   };
 
+  const getErrorMessage = (field: 'oldPassword' | 'newPassword' | 'confirmPassword') => {
+    const err = errors[field];
+    if (!err?.message) return undefined;
+    if (err.message === 'mismatch') return t('auth.validationPasswordsMismatch');
+    if (err.message === 'same') return t('auth.validationPasswordSame');
+    if (field === 'oldPassword') return t('auth.validationOldPasswordMin');
+    if (field === 'newPassword') return t('auth.validationNewPasswordMin');
+    return t('auth.validationPasswordMin');
+  };
+
   return (
     <div className="max-w-md mx-auto mt-8">
       <Card className="shadow-2xl border border-slate-100 overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-1.5 bg-digi-purple" />
 
         <h2 className="text-xl font-bold text-slate-800 tracking-tight mb-2">
-          Modifier le mot de passe
+          {t('auth.changePasswordTitle')}
         </h2>
         <p className="text-xs text-slate-400 mb-6">
-          Pour des raisons de sécurité, choisissez un mot de passe d'au moins 6 caractères.
+          {t('auth.changePasswordSubtitle')}
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <Input
             type="password"
-            label="Ancien mot de passe"
+            label={t('auth.oldPassword')}
             placeholder="••••••••"
-            error={errors.oldPassword?.message}
+            error={getErrorMessage('oldPassword')}
             {...register('oldPassword')}
           />
 
           <Input
             type="password"
-            label="Nouveau mot de passe"
+            label={t('auth.newPassword')}
             placeholder="••••••••"
-            error={errors.newPassword?.message}
+            error={getErrorMessage('newPassword')}
             {...register('newPassword')}
           />
 
           <Input
             type="password"
-            label="Confirmer le nouveau mot de passe"
+            label={t('auth.confirmPassword')}
             placeholder="••••••••"
-            error={errors.confirmPassword?.message}
+            error={getErrorMessage('confirmPassword')}
             {...register('confirmPassword')}
           />
 
@@ -125,8 +131,8 @@ export const ChangePasswordPage: React.FC = () => {
             disabled={changeMutation.isPending}
           >
             {changeMutation.isPending
-              ? 'Enregistrement...'
-              : 'Enregistrer le nouveau mot de passe'}
+              ? t('auth.saving')
+              : t('auth.saveNewPassword')}
           </Button>
         </form>
 
@@ -135,7 +141,7 @@ export const ChangePasswordPage: React.FC = () => {
             onClick={() => navigate(-1)}
             className="text-xs font-semibold text-slate-400 hover:text-digi-purple transition-colors"
           >
-            Annuler et revenir
+            {t('auth.cancelAndReturn')}
           </button>
         </div>
       </Card>

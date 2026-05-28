@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
@@ -6,12 +7,13 @@ import { Button } from '../../../shared/components/ui/Button';
 export const StudentDetailPage: React.FC = () => {
   const { matricule } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-800">Profil Élève &mdash; {matricule}</h1>
-        <Button variant="outline" onClick={() => navigate('/students')}>Retour</Button>
+        <h1 className="text-2xl font-bold text-slate-800">{t('students.profile')} &mdash; {matricule}</h1>
+        <Button variant="outline" onClick={() => navigate('/students')}>{t('students.back')}</Button>
       </div>
 
       <Card className="p-8 space-y-6">
@@ -20,19 +22,19 @@ export const StudentDetailPage: React.FC = () => {
             EL
           </div>
           <div>
-            <h2 className="text-lg font-bold text-slate-800">Élève Exemple</h2>
-            <p className="text-sm text-slate-400 font-semibold">Matricule: {matricule}</p>
+            <h2 className="text-lg font-bold text-slate-800">{t('students.exampleStudent')}</h2>
+            <p className="text-sm text-slate-400 font-semibold">{t('students.matricule')}: {matricule}</p>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-6 text-sm">
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Date de naissance</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('students.birthDate')}</p>
             <p className="font-semibold text-slate-700 mt-1">15/04/2012</p>
           </div>
           <div>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Langue de travail</p>
-            <p className="font-semibold text-slate-700 mt-1">Français</p>
+            <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">{t('students.workingLanguage')}</p>
+            <p className="font-semibold text-slate-700 mt-1">{t('students.french')}</p>
           </div>
         </div>
       </Card>

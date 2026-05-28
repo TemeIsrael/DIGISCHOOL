@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navbar } from './Navbar';
 
 export interface TopnavLayoutProps {
@@ -6,6 +7,8 @@ export interface TopnavLayoutProps {
 }
 
 export const TopnavLayout: React.FC<TopnavLayoutProps> = ({ children }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="min-h-screen bg-digi-bg flex flex-col">
       <Navbar />
@@ -19,7 +22,7 @@ export const TopnavLayout: React.FC<TopnavLayoutProps> = ({ children }) => {
       {/* Footer */}
       <footer className="py-4 px-8 border-t border-slate-100 bg-white/50 shrink-0">
         <p className="text-[10px] text-slate-300 font-semibold text-center">
-          © 2026 DIGISCHOOL — Gestion Scolaire
+          {t('footer.rights')}
         </p>
       </footer>
     </div>

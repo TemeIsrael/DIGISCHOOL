@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
@@ -9,11 +10,11 @@ import { Button } from '../shared/components/ui/Button';
 import { useToast } from '../shared/components/ui/Toast';
 
 const registerSchema = z.object({
-  nomParent: z.string().min(2, 'Le nom du parent doit faire au moins 2 caractères'),
-  nomEnfant: z.string().min(2, 'Le nom de l\'enfant doit faire au moins 2 caractères'),
-  matriculeEnfant: z.string().min(3, 'Le matricule doit contenir au moins 3 caractères'),
-  email: z.string().email('Email invalide'),
-  password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères')
+  nomParent: z.string().min(2),
+  nomEnfant: z.string().min(2),
+  matriculeEnfant: z.string().min(3),
+  email: z.string().email(),
+  password: z.string().min(6)
 });
 
 type RegisterInput = z.infer<typeof registerSchema>;
@@ -21,6 +22,7 @@ type RegisterInput = z.infer<typeof registerSchema>;
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const {
     register,
@@ -31,19 +33,18 @@ export const RegisterPage: React.FC = () => {
   });
 
   const onSubmit = async (_data: RegisterInput) => {
-    // Simulating user creation successfully
     try {
       toast({
         type: 'success',
-        title: 'Inscription réussie',
-        description: 'Votre demande d\'inscription a été envoyée pour vérification.'
+        title: t('auth.toastRegisterSuccess'),
+        description: t('auth.toastRegisterSuccessDesc')
       });
       navigate('/login');
     } catch (e) {
       toast({
         type: 'danger',
-        title: 'Erreur',
-        description: 'Une erreur s\'est produite. Veuillez réessayer.'
+        title: t('auth.toastRegisterError'),
+        description: t('auth.toastRegisterErrorDesc')
       });
     }
   };
@@ -54,10 +55,10 @@ export const RegisterPage: React.FC = () => {
         {/* Brand/Heading */}
         <div className="text-center mb-8">
           <h1 className="font-serif text-4xl font-extrabold text-digi-purple tracking-tight uppercase">
-            Inscription
+            {t('auth.registerTitle')}
           </h1>
           <p className="text-sm font-semibold text-slate-500 mt-2">
-            Rejoignez l'écosystème scolaire moderne DIGISCHOOL 2026
+            {t('auth.registerSubtitle')}
           </p>
         </div>
 
@@ -67,54 +68,54 @@ export const RegisterPage: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Nom du parent"
-                placeholder="Ex. Jean Martin"
-                error={errors.nomParent?.message}
+                label={t('auth.parentName')}
+                placeholder={t('auth.parentNamePlaceholder')}
+                error={errors.nomParent?.message ? t('auth.validationParentNameMin') : undefined}
                 {...register('nomParent')}
               />
               <Input
-                label="Nom de l'enfant"
-                placeholder="Ex. Luc Martin"
-                error={errors.nomEnfant?.message}
+                label={t('auth.childName')}
+                placeholder={t('auth.childNamePlaceholder')}
+                error={errors.nomEnfant?.message ? t('auth.validationChildNameMin') : undefined}
                 {...register('nomEnfant')}
               />
             </div>
 
             <Input
-              label="Matricule de l'enfant"
-              placeholder="Ex. EL2026-991"
-              error={errors.matriculeEnfant?.message}
+              label={t('auth.childMatricule')}
+              placeholder={t('auth.childMatriculePlaceholder')}
+              error={errors.matriculeEnfant?.message ? t('auth.validationMatriculeMin') : undefined}
               {...register('matriculeEnfant')}
             />
 
             <Input
               type="email"
-              label="Adresse e-mail"
-              placeholder="parent@exemple.com"
-              error={errors.email?.message}
+              label={t('auth.email')}
+              placeholder={t('auth.emailPlaceholder')}
+              error={errors.email?.message ? t('auth.validationEmailInvalid') : undefined}
               {...register('email')}
             />
 
             <Input
               type="password"
-              label="Mot de passe"
+              label={t('auth.password')}
               placeholder="••••••••"
-              error={errors.password?.message}
+              error={errors.password?.message ? t('auth.validationPasswordMin') : undefined}
               {...register('password')}
             />
 
             <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
-              {isSubmitting ? 'Inscription...' : 'VALIDER L\'INSCRIPTION'}
+              {isSubmitting ? t('auth.registering') : t('auth.validate')}
             </Button>
           </form>
 
           <div className="mt-6 text-center text-xs text-slate-400 font-semibold">
-            Déjà inscrit ?{' '}
+            {t('auth.alreadyRegistered')}{' '}
             <button
               onClick={() => navigate('/login')}
               className="text-digi-purple hover:underline"
             >
-              Connectez-vous ici
+              {t('auth.loginHere')}
             </button>
           </div>
         </Card>
