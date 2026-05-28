@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { useAuthStore } from '../features/auth/store';
 import { RequireAuth } from '../shared/components/RequireAuth';
 import { RequireRole } from '../shared/components/RequireRole';
+import { RequireAdminType } from '../shared/components/RequireAdminType';
 
 // Layouts
 import { SidebarLayout } from '../shared/components/layout/SidebarLayout';
@@ -40,7 +41,7 @@ const DashboardAuditeur = lazy(() => import('../features/dashboards/DashboardAud
 const DashboardEnseignant = lazy(() => import('../features/dashboards/DashboardEnseignant'));
 const DashboardParent = lazy(() => import('../features/dashboards/DashboardParent'));
 
-// ─── Lazy-loaded Feature Pages ─────────────────────────────────────
+// ─── Existing Feature Pages ─────────────────────────────────────────
 const StudentListPage = lazy(() => import('../features/students/pages/StudentListPage'));
 const StudentNewPage = lazy(() => import('../features/students/pages/StudentNewPage'));
 const StudentDetailPage = lazy(() => import('../features/students/pages/StudentDetailPage'));
@@ -52,14 +53,68 @@ const PaymentListPage = lazy(() => import('../features/payments/pages/PaymentLis
 const GradeEntryPage = lazy(() => import('../features/grades/pages/GradeEntryPage'));
 const BulletinPage = lazy(() => import('../features/grades/pages/BulletinPage'));
 const MessageListPage = lazy(() => import('../features/messages/pages/MessageListPage'));
-const DisciplinePage = lazy(() => import('../features/discipline/pages/DisciplinePage'));
-const AcademicConfigPage = lazy(() => import('../features/academic/pages/AcademicConfigPage'));
-const LibraryManagePage = lazy(() => import('../features/library/pages/LibraryManagePage'));
 const AuditLogPage = lazy(() => import('../features/audit/pages/AuditLogPage'));
-const StatsPage = lazy(() => import('../features/stats/pages/StatsPage'));
 const SchedulePage = lazy(() => import('../features/schedules/pages/SchedulePage'));
 
-// ─── Sidebar Admin Wrapper ──────────────────────────────────────────
+// ─── Root Admin Pages ───────────────────────────────────────────────
+const AdminListPage = lazy(() => import('../features/root/pages/AdminListPage'));
+const AdminFormPage = lazy(() => import('../features/root/pages/AdminFormPage'));
+const ParentListPage = lazy(() => import('../features/root/pages/ParentListPage'));
+const CredentialSendPage = lazy(() => import('../features/root/pages/CredentialSendPage'));
+const CycleManagePage = lazy(() => import('../features/root/pages/CycleManagePage'));
+const ClassManagePage = lazy(() => import('../features/root/pages/ClassManagePage'));
+const RoomManagePage = lazy(() => import('../features/root/pages/RoomManagePage'));
+const YearManagePage = lazy(() => import('../features/root/pages/YearManagePage'));
+const TermManagePage = lazy(() => import('../features/root/pages/TermManagePage'));
+const ReferentialPage = lazy(() => import('../features/root/pages/ReferentialPage'));
+const PersonnelFormPage = lazy(() => import('../features/root/pages/PersonnelFormPage'));
+
+// ─── Scolarité Pages ────────────────────────────────────────────────
+const PaymentNewPage = lazy(() => import('../features/scolarite/pages/PaymentNewPage'));
+const PaymentDetailPage = lazy(() => import('../features/scolarite/pages/PaymentDetailPage'));
+const StudentPaymentPage = lazy(() => import('../features/scolarite/pages/StudentPaymentPage'));
+const OverdueListPage = lazy(() => import('../features/scolarite/pages/OverdueListPage'));
+const ReminderPage = lazy(() => import('../features/scolarite/pages/ReminderPage'));
+const FinancialReportPage = lazy(() => import('../features/scolarite/pages/FinancialReportPage'));
+const PaymentByModePage = lazy(() => import('../features/scolarite/pages/PaymentByModePage'));
+const PaymentModesPage = lazy(() => import('../features/scolarite/pages/PaymentModesPage'));
+const AccountingExportPage = lazy(() => import('../features/scolarite/pages/AccountingExportPage'));
+
+// ─── Fondateur Pages ────────────────────────────────────────────────
+const TuitionListPage = lazy(() => import('../features/fondateur/pages/TuitionListPage'));
+const TuitionFormPage = lazy(() => import('../features/fondateur/pages/TuitionFormPage'));
+const TranchePage = lazy(() => import('../features/fondateur/pages/TranchePage'));
+const FondateurPaymentModesPage = lazy(() => import('../features/fondateur/pages/FondateurPaymentModesPage'));
+const AnnualBalancePage = lazy(() => import('../features/fondateur/pages/AnnualBalancePage'));
+const YearComparePage = lazy(() => import('../features/fondateur/pages/YearComparePage'));
+const ExplorerPage = lazy(() => import('../features/fondateur/pages/ExplorerPage'));
+
+// ─── Directeur Pages ────────────────────────────────────────────────
+const PerfClassesPage = lazy(() => import('../features/directeur/pages/PerfClassesPage'));
+const PerfCoursesPage = lazy(() => import('../features/directeur/pages/PerfCoursesPage'));
+const PerfStudentsPage = lazy(() => import('../features/directeur/pages/PerfStudentsPage'));
+const BulletinValidationPage = lazy(() => import('../features/directeur/pages/BulletinValidationPage'));
+const MessageValidationPage = lazy(() => import('../features/directeur/pages/MessageValidationPage'));
+const DisciplineApprovalPage = lazy(() => import('../features/directeur/pages/DisciplineApprovalPage'));
+const TeacherOverviewPage = lazy(() => import('../features/directeur/pages/TeacherOverviewPage'));
+const StudentOverviewPage = lazy(() => import('../features/directeur/pages/StudentOverviewPage'));
+const DemographicsPage = lazy(() => import('../features/directeur/pages/DemographicsPage'));
+const SyntheticReportsPage = lazy(() => import('../features/directeur/pages/SyntheticReportsPage'));
+
+// ─── Auditeur Pages ─────────────────────────────────────────────────
+const AllListingsPage = lazy(() => import('../features/auditeur/pages/AllListingsPage'));
+const AuditLogsPage = lazy(() => import('../features/auditeur/pages/AuditLogsPage'));
+const FinanceStatsPage = lazy(() => import('../features/auditeur/pages/FinanceStatsPage'));
+const PedagogyStatsPage = lazy(() => import('../features/auditeur/pages/PedagogyStatsPage'));
+const ExportsPage = lazy(() => import('../features/auditeur/pages/ExportsPage'));
+
+// ─── Staff / Administratif Pages ────────────────────────────────────
+const DashboardStaffPage = lazy(() => import('../features/staff/pages/DashboardStaffPage'));
+const FileListPage = lazy(() => import('../features/staff/pages/FileListPage'));
+const FileNewPage = lazy(() => import('../features/staff/pages/FileNewPage'));
+const StaffStudentDetailPage = lazy(() => import('../features/staff/pages/StaffStudentDetailPage'));
+
+// ─── Layout Wrappers ────────────────────────────────────────────────
 const AdminLayoutWrapper: React.FC = () => (
   <SidebarLayout>
     <Suspense fallback={<LoadingFallback />}>
@@ -68,7 +123,6 @@ const AdminLayoutWrapper: React.FC = () => (
   </SidebarLayout>
 );
 
-// ─── Topnav Teacher/Parent Wrapper ─────────────────────────────────
 const TopnavLayoutWrapper: React.FC = () => (
   <TopnavLayout>
     <Suspense fallback={<LoadingFallback />}>
@@ -82,18 +136,17 @@ const DashboardRedirect: React.FC = () => {
   const { user } = useAuthStore();
   const typeAdmin = user?.typeAdmin;
 
-  if (user?.role === 'TEACHER') return <DashboardEnseignant />;
-  if (user?.role === 'PARENT') return <DashboardParent />;
+  if (user?.role === 'TEACHER') return <Navigate to="/teacher/dashboard" replace />;
+  if (user?.role === 'PARENT') return <Navigate to="/parent/dashboard" replace />;
 
-  // Admin sub-types
   switch (typeAdmin) {
-    case 0: return <DashboardRoot />;
-    case 1: return <DashboardAdmin />;
-    case 2: return <DashboardScolarite />;
-    case 3: return <DashboardFondateur />;
-    case 4: return <DashboardDirecteur />;
-    case 5: return <DashboardAuditeur />;
-    default: return <DashboardAdmin />;
+    case 0: return <Navigate to="/root" replace />;
+    case 1: return <Navigate to="/administr" replace />;
+    case 2: return <Navigate to="/scolarite" replace />;
+    case 3: return <Navigate to="/fondateur" replace />;
+    case 4: return <Navigate to="/directeur" replace />;
+    case 5: return <Navigate to="/auditeur" replace />;
+    default: return <Navigate to="/administr" replace />;
   }
 };
 
@@ -111,8 +164,162 @@ export const Router: React.FC = () => {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/a-propos" element={<About />} />
           <Route path="/about" element={<Navigate to="/a-propos" replace />} />
+          <Route path="/dashboard" element={<RequireAuth><DashboardRedirect /></RequireAuth>} />
 
-          {/* ═══ Admin Routes (Sidebar Layout) ═══ */}
+          {/* ═══ Root Admin Routes (typeAdmin=0) ═══ */}
+          <Route
+            element={
+              <RequireAuth>
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <RequireAdminType allowedTypes={[0]}>
+                    <AdminLayoutWrapper />
+                  </RequireAdminType>
+                </RequireRole>
+              </RequireAuth>
+            }
+          >
+            <Route path="/root" element={<DashboardRoot />} />
+            <Route path="/root/admins" element={<AdminListPage />} />
+            <Route path="/root/admins/new" element={<AdminFormPage />} />
+            <Route path="/root/admins/:id" element={<AdminFormPage />} />
+            <Route path="/root/personnel" element={<PersonnelListPage />} />
+            <Route path="/root/personnel/new" element={<PersonnelFormPage />} />
+            <Route path="/root/personnel/:id" element={<PersonnelFormPage />} />
+            <Route path="/root/parents" element={<ParentListPage />} />
+            <Route path="/root/credentials" element={<CredentialSendPage />} />
+            <Route path="/root/cycles" element={<CycleManagePage />} />
+            <Route path="/root/classes" element={<ClassManagePage />} />
+            <Route path="/root/salles" element={<RoomManagePage />} />
+            <Route path="/root/years" element={<YearManagePage />} />
+            <Route path="/root/terms" element={<TermManagePage />} />
+            <Route path="/root/refs" element={<ReferentialPage />} />
+            <Route path="/root/audit" element={<AuditLogPage />} />
+            <Route path="/root/messages" element={<MessageListPage />} />
+            <Route path="/root/change-password" element={<ChangePasswordPage />} />
+          </Route>
+
+          {/* ═══ Secrétariat / Admin Inscriptions Routes (typeAdmin=1) ═══ */}
+          <Route
+            element={
+              <RequireAuth>
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <RequireAdminType allowedTypes={[1]}>
+                    <AdminLayoutWrapper />
+                  </RequireAdminType>
+                </RequireRole>
+              </RequireAuth>
+            }
+          >
+            <Route path="/administr" element={<DashboardAdmin />} />
+            <Route path="/administr/students" element={<StudentListPage />} />
+            <Route path="/administr/students/new" element={<StudentNewPage />} />
+            <Route path="/administr/students/:id" element={<StudentDetailPage />} />
+            <Route path="/administr/students/:id/edit" element={<StudentEditPage />} />
+            <Route path="/administr/students/:id/assign" element={<StudentAssignPage />} />
+            <Route path="/administr/students/:id/parents" element={<StudentParentsPage />} />
+            <Route path="/administr/messages" element={<MessageListPage />} />
+            <Route path="/administr/change-password" element={<ChangePasswordPage />} />
+          </Route>
+
+          {/* ═══ Scolarité Routes (typeAdmin=2) ═══ */}
+          <Route
+            element={
+              <RequireAuth>
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <RequireAdminType allowedTypes={[2]}>
+                    <AdminLayoutWrapper />
+                  </RequireAdminType>
+                </RequireRole>
+              </RequireAuth>
+            }
+          >
+            <Route path="/scolarite" element={<DashboardScolarite />} />
+            <Route path="/scolarite/payments" element={<PaymentListPage />} />
+            <Route path="/scolarite/payments/new" element={<PaymentNewPage />} />
+            <Route path="/scolarite/payments/:id" element={<PaymentDetailPage />} />
+            <Route path="/scolarite/students/:matricule/payments" element={<StudentPaymentPage />} />
+            <Route path="/scolarite/overdue" element={<OverdueListPage />} />
+            <Route path="/scolarite/reminders" element={<ReminderPage />} />
+            <Route path="/scolarite/reports" element={<FinancialReportPage />} />
+            <Route path="/scolarite/by-mode" element={<PaymentByModePage />} />
+            <Route path="/scolarite/modes" element={<PaymentModesPage />} />
+            <Route path="/scolarite/export" element={<AccountingExportPage />} />
+            <Route path="/scolarite/messages" element={<MessageListPage />} />
+            <Route path="/scolarite/change-password" element={<ChangePasswordPage />} />
+          </Route>
+
+          {/* ═══ Fondateur Routes (typeAdmin=3) ═══ */}
+          <Route
+            element={
+              <RequireAuth>
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <RequireAdminType allowedTypes={[3]}>
+                    <AdminLayoutWrapper />
+                  </RequireAdminType>
+                </RequireRole>
+              </RequireAuth>
+            }
+          >
+            <Route path="/fondateur" element={<DashboardFondateur />} />
+            <Route path="/fondateur/tuitions" element={<TuitionListPage />} />
+            <Route path="/fondateur/tuitions/new" element={<TuitionFormPage />} />
+            <Route path="/fondateur/tranches" element={<TranchePage />} />
+            <Route path="/fondateur/modes" element={<FondateurPaymentModesPage />} />
+            <Route path="/fondateur/balance" element={<AnnualBalancePage />} />
+            <Route path="/fondateur/compare" element={<YearComparePage />} />
+            <Route path="/fondateur/explore" element={<ExplorerPage />} />
+            <Route path="/fondateur/messages" element={<MessageListPage />} />
+            <Route path="/fondateur/change-password" element={<ChangePasswordPage />} />
+          </Route>
+
+          {/* ═══ Directeur Routes (typeAdmin=4) ═══ */}
+          <Route
+            element={
+              <RequireAuth>
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <RequireAdminType allowedTypes={[4]}>
+                    <AdminLayoutWrapper />
+                  </RequireAdminType>
+                </RequireRole>
+              </RequireAuth>
+            }
+          >
+            <Route path="/directeur" element={<DashboardDirecteur />} />
+            <Route path="/directeur/perf/classes" element={<PerfClassesPage />} />
+            <Route path="/directeur/perf/courses" element={<PerfCoursesPage />} />
+            <Route path="/directeur/perf/students" element={<PerfStudentsPage />} />
+            <Route path="/directeur/bulletins" element={<BulletinValidationPage />} />
+            <Route path="/directeur/messages" element={<MessageValidationPage />} />
+            <Route path="/directeur/discipline" element={<DisciplineApprovalPage />} />
+            <Route path="/directeur/teachers" element={<TeacherOverviewPage />} />
+            <Route path="/directeur/students" element={<StudentOverviewPage />} />
+            <Route path="/directeur/demographics" element={<DemographicsPage />} />
+            <Route path="/directeur/reports" element={<SyntheticReportsPage />} />
+            <Route path="/directeur/change-password" element={<ChangePasswordPage />} />
+          </Route>
+
+          {/* ═══ Auditeur Routes (typeAdmin=5) ═══ */}
+          <Route
+            element={
+              <RequireAuth>
+                <RequireRole allowedRoles={['ADMIN']}>
+                  <RequireAdminType allowedTypes={[5]}>
+                    <AdminLayoutWrapper />
+                  </RequireAdminType>
+                </RequireRole>
+              </RequireAuth>
+            }
+          >
+            <Route path="/auditeur" element={<DashboardAuditeur />} />
+            <Route path="/auditeur/listings" element={<AllListingsPage />} />
+            <Route path="/auditeur/audit-logs" element={<AuditLogsPage />} />
+            <Route path="/auditeur/finance" element={<FinanceStatsPage />} />
+            <Route path="/auditeur/pedagogy" element={<PedagogyStatsPage />} />
+            <Route path="/auditeur/exports" element={<ExportsPage />} />
+            <Route path="/auditeur/change-password" element={<ChangePasswordPage />} />
+          </Route>
+
+          {/* ═══ Staff / Administratif Routes ═══ */}
           <Route
             element={
               <RequireAuth>
@@ -122,25 +329,11 @@ export const Router: React.FC = () => {
               </RequireAuth>
             }
           >
-            <Route path="/dashboard" element={<DashboardRedirect />} />
-            <Route path="/students" element={<StudentListPage />} />
-            <Route path="/students/new" element={<StudentNewPage />} />
-            <Route path="/students/:id" element={<StudentDetailPage />} />
-            <Route path="/students/:id/edit" element={<StudentEditPage />} />
-            <Route path="/students/:id/assign" element={<StudentAssignPage />} />
-            <Route path="/students/:id/parents" element={<StudentParentsPage />} />
-            <Route path="/personnel" element={<PersonnelListPage />} />
-            <Route path="/payments" element={<PaymentListPage />} />
-            <Route path="/grades" element={<GradeEntryPage />} />
-            <Route path="/bulletins" element={<BulletinPage />} />
-            <Route path="/messages" element={<MessageListPage />} />
-            <Route path="/discipline" element={<DisciplinePage />} />
-            <Route path="/academic" element={<AcademicConfigPage />} />
-            <Route path="/library" element={<LibraryManagePage />} />
-            <Route path="/audit" element={<AuditLogPage />} />
-            <Route path="/stats" element={<StatsPage />} />
-            <Route path="/schedules" element={<SchedulePage />} />
-            <Route path="/change-password" element={<ChangePasswordPage />} />
+            <Route path="/staff" element={<DashboardStaffPage />} />
+            <Route path="/staff/files" element={<FileListPage />} />
+            <Route path="/staff/files/new" element={<FileNewPage />} />
+            <Route path="/staff/students/:matricule" element={<StaffStudentDetailPage />} />
+            <Route path="/staff/change-password" element={<ChangePasswordPage />} />
           </Route>
 
           {/* ═══ Teacher Routes (Topnav Layout) ═══ */}
