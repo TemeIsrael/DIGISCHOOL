@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
@@ -24,6 +25,7 @@ const mockGrades: GradeEntry[] = [
 ];
 
 export const GradeEntryPage: React.FC = () => {
+  const { t } = useTranslation();
   const [grades, setGrades] = useState(mockGrades);
   const [selectedCours, setSelectedCours] = useState('Mathématiques');
   const [selectedClasse, setSelectedClasse] = useState('6ème A');
@@ -43,17 +45,17 @@ export const GradeEntryPage: React.FC = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Saisie des Notes</h1>
-          <p className="text-sm text-slate-400 font-semibold">Entrez les notes des élèves pour chaque épreuve</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('grades.title')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('grades.subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="gap-2">
             <Download className="w-4 h-4" />
-            Exporter
+            {t('grades.export')}
           </Button>
           <Button className="gap-2">
             <Save className="w-4 h-4" />
-            Enregistrer
+            {t('grades.save')}
           </Button>
         </div>
       </div>
@@ -61,16 +63,16 @@ export const GradeEntryPage: React.FC = () => {
       {/* Filters */}
       <Card className="shadow-sm border border-slate-100">
         <div className="flex items-center gap-4 flex-wrap">
-          <FilterDropdown label="Cours" value={selectedCours} options={['Mathématiques', 'Français', 'Anglais', 'Sciences', 'Physique']} onChange={setSelectedCours} />
-          <FilterDropdown label="Classe" value={selectedClasse} options={['6ème A', '5ème B', '4ème C', '3ème A']} onChange={setSelectedClasse} />
-          <FilterDropdown label="Session" value={selectedSession} options={['Examen T1', 'Examen T2', 'Examen T3', 'Devoir 1', 'Devoir 2']} onChange={setSelectedSession} />
+          <FilterDropdown label={t('grades.course')} value={selectedCours} options={['Mathématiques', 'Français', 'Anglais', 'Sciences', 'Physique']} onChange={setSelectedCours} />
+          <FilterDropdown label={t('grades.class')} value={selectedClasse} options={['6ème A', '5ème B', '4ème C', '3ème A']} onChange={setSelectedClasse} />
+          <FilterDropdown label={t('grades.session')} value={selectedSession} options={['Examen T1', 'Examen T2', 'Examen T3', 'Devoir 1', 'Devoir 2']} onChange={setSelectedSession} />
 
           <div className="ml-auto flex items-center gap-4 text-sm font-semibold">
             <span className="text-slate-500">
-              Remplies: <span className="text-digi-purple font-bold">{filledCount}/{grades.length}</span>
+              {t('grades.filled')}: <span className="text-digi-purple font-bold">{filledCount}/{grades.length}</span>
             </span>
             <span className="text-slate-500">
-              Moyenne: <span className="text-digi-purple font-bold">{average.toFixed(1)}</span>
+              {t('grades.average')}: <span className="text-digi-purple font-bold">{average.toFixed(1)}</span>
             </span>
           </div>
         </div>
@@ -87,11 +89,11 @@ export const GradeEntryPage: React.FC = () => {
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
                 <th className="px-4 py-3 text-left w-12">#</th>
-                <th className="px-4 py-3 text-left">Matricule</th>
-                <th className="px-4 py-3 text-left">Nom</th>
-                <th className="px-4 py-3 text-left">Prénom</th>
-                <th className="px-4 py-3 text-center w-32">Note / {grades[0]?.noteMax || 20}</th>
-                <th className="px-4 py-3 text-center w-28">Appréciation</th>
+                <th className="px-4 py-3 text-left">{t('grades.matricule')}</th>
+                <th className="px-4 py-3 text-left">{t('grades.nom')}</th>
+                <th className="px-4 py-3 text-left">{t('grades.prenom')}</th>
+                <th className="px-4 py-3 text-center w-32">{t('grades.note')} / {grades[0]?.noteMax || 20}</th>
+                <th className="px-4 py-3 text-center w-28">{t('grades.appreciation')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">

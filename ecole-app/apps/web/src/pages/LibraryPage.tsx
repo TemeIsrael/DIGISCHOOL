@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { BookOpen, Search, Tags, Layers, BookMarked } from 'lucide-react';
 import { Button } from '../shared/components/ui/Button';
 import { Card } from '../shared/components/ui/Card';
@@ -8,6 +9,7 @@ import { FilterDropdown } from '../shared/components/tables/FilterDropdown';
 
 export const LibraryPage: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState('ALL');
 
@@ -34,13 +36,13 @@ export const LibraryPage: React.FC = () => {
           DIGISCHOOL
         </span>
         <div className="flex items-center gap-8 font-semibold text-sm text-slate-600">
-          <span className="hover:text-digi-purple cursor-pointer transition-colors" onClick={() => navigate('/')}>Accueil</span>
-          <span className="hover:text-digi-purple cursor-pointer transition-colors text-digi-purple font-bold" onClick={() => navigate('/livres')}>Livres</span>
-          <span className="hover:text-digi-purple cursor-pointer transition-colors" onClick={() => navigate('/a-propos')}>À propos</span>
+          <span className="hover:text-digi-purple cursor-pointer transition-colors" onClick={() => navigate('/')}>{t('nav.home')}</span>
+          <span className="hover:text-digi-purple cursor-pointer transition-colors text-digi-purple font-bold" onClick={() => navigate('/livres')}>{t('nav.books')}</span>
+          <span className="hover:text-digi-purple cursor-pointer transition-colors" onClick={() => navigate('/a-propos')}>{t('nav.about')}</span>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm" onClick={() => navigate('/s-inscrire')}>S'inscrire</Button>
-          <Button variant="primary" size="sm" onClick={() => navigate('/login')}>Connexion</Button>
+          <Button variant="outline" size="sm" onClick={() => navigate('/s-inscrire')}>{t('nav.register')}</Button>
+          <Button variant="primary" size="sm" onClick={() => navigate('/login')}>{t('nav.login')}</Button>
         </div>
       </nav>
 
@@ -48,16 +50,16 @@ export const LibraryPage: React.FC = () => {
       <main className="max-w-7xl w-full mx-auto p-8 space-y-8 flex-1">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="font-serif text-3xl font-extrabold text-slate-850 tracking-tight">📖 Bibliothèque Municipale</h1>
-            <p className="text-slate-400 text-sm font-semibold mt-1">Accédez en ligne à vos ressources pédagogiques</p>
+            <h1 className="font-serif text-3xl font-extrabold text-slate-850 tracking-tight">{t('library.publicTitle')}</h1>
+            <p className="text-slate-400 text-sm font-semibold mt-1">{t('library.publicSubtitle')}</p>
           </div>
         </div>
 
         {/* 3 KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <KPICard value={books.length} label="Livres disponibles" icon={<BookOpen className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="3" label="Spécialités" icon={<Tags className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="12" label="Cours associés" icon={<Layers className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value={books.length} label={t('library.booksAvailable')} icon={<BookOpen className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="3" label={t('library.specialties')} icon={<Tags className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="12" label={t('library.associatedCourses')} icon={<Layers className="w-5 h-5 text-digi-purple" />} />
         </div>
 
         {/* Search and Filters Bar */}
@@ -66,7 +68,7 @@ export const LibraryPage: React.FC = () => {
             <Search className="absolute left-3 top-2.5 h-4.5 w-4.5 text-slate-400" />
             <input
               type="text"
-              placeholder="Rechercher par titre, auteur..."
+              placeholder={t('library.searchByTitleAuthor')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-9 pr-4 py-2 w-full rounded-full border border-slate-200 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-digi-purple/50 focus-visible:border-digi-purple"
@@ -74,11 +76,11 @@ export const LibraryPage: React.FC = () => {
           </div>
 
           <FilterDropdown
-            label="Spécialité"
+            label={t('library.specialty')}
             value={selectedSpecialty}
             onChange={setSelectedSpecialty}
             options={[
-              { value: 'ALL', label: 'Toutes les spécialités' },
+              { value: 'ALL', label: t('library.allSpecialties') },
               { value: 'Sciences', label: 'Sciences' },
               { value: 'Lettres', label: 'Lettres' },
               { value: 'Informatique', label: 'Informatique' }
@@ -101,10 +103,10 @@ export const LibraryPage: React.FC = () => {
                     {book.specialty}
                   </span>
                   <h3 className="text-base font-bold text-slate-800 tracking-tight mt-3 truncate">{book.titre}</h3>
-                  <p className="text-xs text-slate-400 font-semibold mt-1">Auteur: {book.auteur}</p>
+                  <p className="text-xs text-slate-400 font-semibold mt-1">{t('library.author')}: {book.auteur}</p>
                 </div>
                 <Button variant="primary" size="sm" className="w-full mt-6">
-                  Ouvrir le livre
+                  {t('library.openBook')}
                 </Button>
               </div>
             </Card>
@@ -114,7 +116,7 @@ export const LibraryPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-100 py-8 px-8 mt-auto text-center text-xs text-slate-400 font-semibold">
-        DIGISCHOOL &bull; Bibliothèque Numérique &bull; 2026
+        DIGISCHOOL &bull; {t('library.digitalLibrary')} &bull; 2026
       </footer>
     </div>
   );

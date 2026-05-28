@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { MessageItem } from '../../../shared/components/business/MessageItem';
@@ -54,6 +55,7 @@ const mockMessages = [
 ];
 
 export const MessageListPage: React.FC = () => {
+  const { t } = useTranslation();
   const [filterCat, setFilterCat] = useState('Tous');
   const [search, setSearch] = useState('');
   const [selectedMsg, setSelectedMsg] = useState<number | null>(null);
@@ -72,15 +74,15 @@ export const MessageListPage: React.FC = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Messagerie Interne</h1>
+          <h1 className="text-2xl font-bold text-slate-800">{t('messages.title')}</h1>
           <p className="text-sm text-slate-400 font-semibold">
             <Inbox className="inline w-4 h-4 mr-1" />
-            {unreadCount} message{unreadCount > 1 ? 's' : ''} non lu{unreadCount > 1 ? 's' : ''}
+            {unreadCount} {t('messages.unread')}
           </p>
         </div>
         <Button className="gap-2">
           <PenSquare className="w-4 h-4" />
-          Nouveau Message
+          {t('messages.new')}
         </Button>
       </div>
 
@@ -93,12 +95,12 @@ export const MessageListPage: React.FC = () => {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher un message..."
+              placeholder={t('messages.search')}
               className="w-full pl-10 pr-4 py-2.5 rounded-full border border-slate-200 text-sm focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all"
             />
           </div>
           <FilterDropdown
-            label="Catégorie"
+            label={t('messages.category')}
             value={filterCat}
             options={['Tous', 'Système', 'Direction', 'Enseignant', 'Parent']}
             onChange={setFilterCat}
@@ -111,7 +113,7 @@ export const MessageListPage: React.FC = () => {
         {filtered.length === 0 ? (
           <div className="text-center py-12 text-slate-400">
             <MessageSquare className="w-12 h-12 mx-auto mb-3 text-slate-200" />
-            <p className="font-semibold">Aucun message trouvé</p>
+            <p className="font-semibold">{t('messages.noMessages')}</p>
           </div>
         ) : (
           filtered.map((m) => (

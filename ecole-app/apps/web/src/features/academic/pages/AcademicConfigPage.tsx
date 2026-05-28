@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { KPICard } from '../../../shared/components/ui/KPICard';
@@ -37,51 +38,52 @@ const annees = [
 type Tab = 'cycles' | 'classes' | 'salles' | 'annees';
 
 export const AcademicConfigPage: React.FC = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>('cycles');
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
-    { key: 'cycles', label: 'Cycles', icon: <Layers className="w-4 h-4" /> },
-    { key: 'classes', label: 'Classes', icon: <GraduationCap className="w-4 h-4" /> },
-    { key: 'salles', label: 'Salles', icon: <Home className="w-4 h-4" /> },
-    { key: 'annees', label: 'Années Académiques', icon: <Calendar className="w-4 h-4" /> },
+    { key: 'cycles', label: t('academic.cycles'), icon: <Layers className="w-4 h-4" /> },
+    { key: 'classes', label: t('academic.classes'), icon: <GraduationCap className="w-4 h-4" /> },
+    { key: 'salles', label: t('academic.rooms'), icon: <Home className="w-4 h-4" /> },
+    { key: 'annees', label: t('academic.years'), icon: <Calendar className="w-4 h-4" /> },
   ];
 
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Configuration Académique</h1>
-          <p className="text-sm text-slate-400 font-semibold">Gestion des cycles, classes, salles et années scolaires</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('academic.title')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('academic.subtitle')}</p>
         </div>
         <Button className="gap-2">
           <FilePlus className="w-4 h-4" />
-          Ajouter
+          {t('academic.add')}
         </Button>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <KPICard value={String(cycles.length)} label="Cycles" icon={<Layers className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value={String(classes.length)} label="Classes" icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value={String(salles.length)} label="Salles" icon={<Home className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value="2025-2026" label="Année Courante" icon={<Calendar className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value={String(cycles.length)} label={t('academic.cycles')} icon={<Layers className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value={String(classes.length)} label={t('academic.classes')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value={String(salles.length)} label={t('academic.rooms')} icon={<Home className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="2025-2026" label={t('academic.currentYear')} icon={<Calendar className="w-5 h-5 text-digi-purple" />} />
       </div>
 
       {/* Tab Navigation */}
       <Card className="shadow-sm border border-slate-100">
         <div className="flex items-center gap-1 border-b border-slate-100 -mx-6 -mt-5 px-6">
-          {tabs.map((t) => (
+          {tabs.map((tab) => (
             <button
-              key={t.key}
-              onClick={() => setActiveTab(t.key)}
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
               className={`flex items-center gap-2 px-4 py-3 text-sm font-semibold border-b-2 transition-all ${
-                activeTab === t.key
+                activeTab === tab.key
                   ? 'border-digi-purple text-digi-purple'
                   : 'border-transparent text-slate-400 hover:text-slate-700'
               }`}
             >
-              {t.icon}
-              {t.label}
+              {tab.icon}
+              {tab.label}
             </button>
           ))}
         </div>
@@ -92,10 +94,10 @@ export const AcademicConfigPage: React.FC = () => {
             <table className="min-w-full divide-y divide-slate-100 text-sm">
               <thead className="bg-slate-50 font-bold text-slate-700">
                 <tr>
-                  <th className="px-4 py-3 text-left">ID</th>
-                  <th className="px-4 py-3 text-left">Libellé</th>
-                  <th className="px-4 py-3 text-center">Nb Classes</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
+                  <th className="px-4 py-3 text-left">{t('academic.id')}</th>
+                  <th className="px-4 py-3 text-left">{t('academic.label')}</th>
+                  <th className="px-4 py-3 text-center">{t('academic.nbClasses')}</th>
+                  <th className="px-4 py-3 text-right">{t('academic.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
@@ -118,11 +120,11 @@ export const AcademicConfigPage: React.FC = () => {
             <table className="min-w-full divide-y divide-slate-100 text-sm">
               <thead className="bg-slate-50 font-bold text-slate-700">
                 <tr>
-                  <th className="px-4 py-3 text-left">ID</th>
-                  <th className="px-4 py-3 text-left">Cycle</th>
-                  <th className="px-4 py-3 text-left">Libellé</th>
-                  <th className="px-4 py-3 text-center">Nb Salles</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
+                  <th className="px-4 py-3 text-left">{t('academic.id')}</th>
+                  <th className="px-4 py-3 text-left">{t('academic.cycle')}</th>
+                  <th className="px-4 py-3 text-left">{t('academic.label')}</th>
+                  <th className="px-4 py-3 text-center">{t('academic.nbRooms')}</th>
+                  <th className="px-4 py-3 text-right">{t('academic.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
@@ -148,12 +150,12 @@ export const AcademicConfigPage: React.FC = () => {
             <table className="min-w-full divide-y divide-slate-100 text-sm">
               <thead className="bg-slate-50 font-bold text-slate-700">
                 <tr>
-                  <th className="px-4 py-3 text-left">ID</th>
-                  <th className="px-4 py-3 text-left">Classe</th>
-                  <th className="px-4 py-3 text-left">Libellé</th>
-                  <th className="px-4 py-3 text-left">Surface</th>
-                  <th className="px-4 py-3 text-left">Position</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
+                  <th className="px-4 py-3 text-left">{t('academic.id')}</th>
+                  <th className="px-4 py-3 text-left">{t('academic.classes')}</th>
+                  <th className="px-4 py-3 text-left">{t('academic.label')}</th>
+                  <th className="px-4 py-3 text-left">{t('academic.surface')}</th>
+                  <th className="px-4 py-3 text-left">{t('academic.position')}</th>
+                  <th className="px-4 py-3 text-right">{t('academic.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
@@ -178,10 +180,10 @@ export const AcademicConfigPage: React.FC = () => {
             <table className="min-w-full divide-y divide-slate-100 text-sm">
               <thead className="bg-slate-50 font-bold text-slate-700">
                 <tr>
-                  <th className="px-4 py-3 text-left">ID</th>
-                  <th className="px-4 py-3 text-left">Libellé</th>
-                  <th className="px-4 py-3 text-center">Statut</th>
-                  <th className="px-4 py-3 text-right">Actions</th>
+                  <th className="px-4 py-3 text-left">{t('academic.id')}</th>
+                  <th className="px-4 py-3 text-left">{t('academic.label')}</th>
+                  <th className="px-4 py-3 text-center">{t('academic.status')}</th>
+                  <th className="px-4 py-3 text-right">{t('academic.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
@@ -191,7 +193,7 @@ export const AcademicConfigPage: React.FC = () => {
                     <td className="px-4 py-3 font-semibold">{a.libelle}</td>
                     <td className="px-4 py-3 text-center">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${a.courante ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
-                        {a.courante ? 'Courante' : 'Archivée'}
+                        {a.courante ? t('academic.current') : t('academic.archived')}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-right flex items-center justify-end gap-2">

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface ScheduleEntry {
   jour: string;
@@ -23,10 +24,12 @@ export interface ScheduleGridProps {
   onItemClick?: (item: ScheduleItem | ScheduleEntry) => void;
 }
 
-const DAYS = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'] as const;
+const DAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
+const DAY_FR = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'] as const;
 
 export const ScheduleGrid: React.FC<ScheduleGridProps> = ({ entries, items, onItemClick: _onItemClick }) => {
-  // Normalize both APIs into a unified shape
+  const { t } = useTranslation();
+
   type NormalizedItem = { day: string; start: string; end: string; title: string; subtitle: string };
 
   const normalized: NormalizedItem[] = [];
@@ -45,18 +48,20 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({ entries, items, onIt
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {DAYS.map((day) => {
-        const dayItems = normalized.filter((item) => item.day === day);
+      {DAY_KEYS.map((dayKey, idx) => {
+        const frDay = DAY_FR[idx];
+        const translatedDay = t(`scheduleDays.${dayKey}`);
+        const dayItems = normalized.filter((item) => item.day === frDay || item.day === dayKey);
         return (
-          <div key={day} className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3 shadow-sm">
+          <div key={dayKey} className="bg-white rounded-2xl border border-[#E5E7EB] p-4 space-y-3 shadow-sm">
             <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest border-b border-slate-50 pb-2">
-              {day}
+              {translatedDay}
             </h4>
             <div className="space-y-2">
               {dayItems.length > 0 ? (
-                dayItems.map((item, idx) => (
+                dayItems.map((item, idx2) => (
                   <div
-                    key={idx}
+                    key={idx2}
                     className="p-3 bg-digi-purple-bg text-digi-purple border border-digi-purple-border/20 rounded-xl cursor-pointer hover:bg-digi-purple-border/20 transition-all select-none"
                   >
                     <p className="text-xs font-bold leading-tight">{item.title}</p>
@@ -67,7 +72,7 @@ export const ScheduleGrid: React.FC<ScheduleGridProps> = ({ entries, items, onIt
                   </div>
                 ))
               ) : (
-                <p className="text-[10px] text-slate-300 italic py-4 text-center">Aucun cours</p>
+                <p className="text-[10px] text-slate-300 italic py-4 text-center">{t('schedules.noCourse')}</p>
               )}
             </div>
           </div>

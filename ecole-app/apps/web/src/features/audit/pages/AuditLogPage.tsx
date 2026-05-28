@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { KPICard } from '../../../shared/components/ui/KPICard';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
@@ -25,6 +26,7 @@ const actionColors: Record<string, string> = {
 };
 
 export const AuditLogPage: React.FC = () => {
+  const { t } = useTranslation();
   const [filterAction, setFilterAction] = useState('Tous');
   const [filterUser, setFilterUser] = useState('Tous');
   const [search, setSearch] = useState('');
@@ -42,21 +44,21 @@ export const AuditLogPage: React.FC = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Journal d'Audit</h1>
-          <p className="text-sm text-slate-400 font-semibold">Traçabilité complète des actions système</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('audit.title')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('audit.subtitle')}</p>
         </div>
         <Button variant="outline" className="gap-2">
           <Download className="w-4 h-4" />
-          Exporter CSV
+          {t('audit.export')}
         </Button>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <KPICard value={String(mockLogs.length)} label="Total Entrées" icon={<History className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value={String(mockLogs.filter(l => l.action === 'LOGIN').length)} label="Connexions" icon={<User className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value={String(mockLogs.filter(l => l.action === 'DELETE').length)} label="Suppressions" icon={<AlertTriangle className="w-5 h-5 text-digi-danger" />} />
-        <KPICard value={String(uniqueUsers.length)} label="Utilisateurs Actifs" icon={<Shield className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value={String(mockLogs.length)} label={t('audit.totalEntries')} icon={<History className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value={String(mockLogs.filter(l => l.action === 'LOGIN').length)} label={t('audit.connections')} icon={<User className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value={String(mockLogs.filter(l => l.action === 'DELETE').length)} label={t('audit.deletions')} icon={<AlertTriangle className="w-5 h-5 text-digi-danger" />} />
+        <KPICard value={String(uniqueUsers.length)} label={t('audit.activeUsers')} icon={<Shield className="w-5 h-5 text-digi-purple" />} />
       </div>
 
       {/* Filters */}
@@ -68,12 +70,12 @@ export const AuditLogPage: React.FC = () => {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher dans les logs..."
+              placeholder={t('audit.searchPlaceholder')}
               className="w-full pl-10 pr-4 py-2.5 rounded-full border border-slate-200 text-sm focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all"
             />
           </div>
-          <FilterDropdown label="Action" value={filterAction} options={['Tous', 'LOGIN', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT']} onChange={setFilterAction} />
-          <FilterDropdown label="Utilisateur" value={filterUser} options={['Tous', ...uniqueUsers]} onChange={setFilterUser} />
+          <FilterDropdown label={t('audit.action')} value={filterAction} options={['Tous', 'LOGIN', 'CREATE', 'UPDATE', 'DELETE', 'EXPORT']} onChange={setFilterAction} />
+          <FilterDropdown label={t('audit.user')} value={filterUser} options={['Tous', ...uniqueUsers]} onChange={setFilterUser} />
         </div>
       </Card>
 
@@ -83,12 +85,12 @@ export const AuditLogPage: React.FC = () => {
           <table className="min-w-full divide-y divide-slate-100 text-sm">
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
-                <th className="px-4 py-3 text-left">Date & Heure</th>
-                <th className="px-4 py-3 text-left">Utilisateur</th>
-                <th className="px-4 py-3 text-center">Action</th>
-                <th className="px-4 py-3 text-left">Ressource</th>
-                <th className="px-4 py-3 text-left">IP</th>
-                <th className="px-4 py-3 text-left">Détails</th>
+                <th className="px-4 py-3 text-left">{t('audit.dateTime')}</th>
+                <th className="px-4 py-3 text-left">{t('audit.user')}</th>
+                <th className="px-4 py-3 text-center">{t('audit.action')}</th>
+                <th className="px-4 py-3 text-left">{t('audit.resource')}</th>
+                <th className="px-4 py-3 text-left">{t('audit.ip')}</th>
+                <th className="px-4 py-3 text-left">{t('audit.details')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { TopnavLayout } from '../../shared/components/layout/TopnavLayout';
 import { KPICard } from '../../shared/components/ui/KPICard';
 import { Card } from '../../shared/components/ui/Card';
@@ -12,20 +13,22 @@ const upcomingEvals = [
 ];
 
 export const DashboardEnseignant: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <TopnavLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Espace Enseignant &mdash; Tableau de bord</h1>
-          <p className="text-sm text-slate-400 font-semibold">Gérez vos cours, notes et emploi du temps</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('dashboard.enseignant')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('dashboard.subtitleEnseignant')}</p>
         </div>
 
         {/* KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <KPICard value="3" label="Cours Assignés" icon={<BookOpen className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="127" label="Élèves Concernés" icon={<Users className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="5" label="Évaluations Planifiées" icon={<ClipboardList className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="18h" label="Volume Hebdo" icon={<Clock className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="3" label={t('dashboard.assignedCourses')} icon={<BookOpen className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="127" label={t('dashboard.concernedStudents')} icon={<Users className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="5" label={t('dashboard.plannedEvaluations')} icon={<ClipboardList className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="18h" label={t('dashboard.weeklyVolume')} icon={<Clock className="w-5 h-5 text-digi-purple" />} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -33,7 +36,7 @@ export const DashboardEnseignant: React.FC = () => {
           <Card className="shadow-sm border border-slate-100">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-digi-purple" />
-              Emploi du Temps &mdash; Semaine
+              {t('dashboard.weekSchedule')}
             </h3>
             <ScheduleGrid
               entries={[
@@ -51,16 +54,16 @@ export const DashboardEnseignant: React.FC = () => {
           <Card className="shadow-sm border border-slate-100">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
               <ClipboardList className="w-4 h-4 text-digi-purple" />
-              Prochaines Évaluations
+              {t('dashboard.upcomingEvaluations')}
             </h3>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-100 text-sm">
                 <thead className="bg-slate-50 font-bold text-slate-700">
                   <tr>
-                    <th className="px-4 py-3 text-left">Cours</th>
-                    <th className="px-4 py-3 text-left">Classe</th>
-                    <th className="px-4 py-3 text-left">Date</th>
-                    <th className="px-4 py-3 text-left">Type</th>
+                    <th className="px-4 py-3 text-left">{t('dashboard.course')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboard.class')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboard.date')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboard.type')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">

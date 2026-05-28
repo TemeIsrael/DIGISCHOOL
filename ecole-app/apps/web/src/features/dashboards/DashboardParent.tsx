@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { TopnavLayout } from '../../shared/components/layout/TopnavLayout';
 import { KPICard } from '../../shared/components/ui/KPICard';
 import { Card } from '../../shared/components/ui/Card';
@@ -19,20 +20,22 @@ const alerts = [
 ];
 
 export const DashboardParent: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <TopnavLayout>
       <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Espace Parent &mdash; Suivi Scolaire</h1>
-          <p className="text-sm text-slate-400 font-semibold">Suivez les résultats et la scolarité de votre enfant</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('dashboard.parent')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('dashboard.subtitleParent')}</p>
         </div>
 
         {/* KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <KPICard value="14.8" label="Moyenne Générale" icon={<TrendingUp className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="6ème A" label="Classe Actuelle" icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="2/3" label="Trimestres Payés" icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="3" label="Notifications" icon={<Bell className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="14.8" label={t('dashboard.generalAverage')} icon={<TrendingUp className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="6ème A" label={t('dashboard.currentClass')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="2/3" label={t('dashboard.trimestersPaid')} icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="3" label={t('dashboard.notifications')} icon={<Bell className="w-5 h-5 text-digi-purple" />} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -40,16 +43,16 @@ export const DashboardParent: React.FC = () => {
           <Card className="shadow-sm border border-slate-100 lg:col-span-2">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-digi-purple" />
-              Dernières Notes
+              {t('dashboard.recentGrades')}
             </h3>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-100 text-sm">
                 <thead className="bg-slate-50 font-bold text-slate-700">
                   <tr>
-                    <th className="px-4 py-3 text-left">Matière</th>
-                    <th className="px-4 py-3 text-left">Note</th>
-                    <th className="px-4 py-3 text-left">Barème</th>
-                    <th className="px-4 py-3 text-left">Date</th>
+                    <th className="px-4 py-3 text-left">{t('dashboard.subject')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboard.grade')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboard.scale')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboard.date')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
@@ -74,7 +77,7 @@ export const DashboardParent: React.FC = () => {
           <Card className="shadow-sm border border-slate-100">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
               <Bell className="w-4 h-4 text-digi-purple" />
-              Alertes
+              {t('dashboard.alerts')}
             </h3>
             <div className="space-y-3">
               {alerts.map((a, i) => (
@@ -98,7 +101,7 @@ export const DashboardParent: React.FC = () => {
         {/* Bulletin Preview */}
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4">
-            Aperçu Bulletin &mdash; Trimestre 2
+            {t('dashboard.bulletinPreviewTitle')}
           </h3>
           <BulletinPreview
             eleve="DUPONT Jean"

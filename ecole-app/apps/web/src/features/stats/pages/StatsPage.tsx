@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { KPICard } from '../../../shared/components/ui/KPICard';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
@@ -75,24 +76,25 @@ const DonutChart: React.FC<{ segments: { label: string; value: number; color: st
 };
 
 export const StatsPage: React.FC = () => {
+  const { t } = useTranslation();
   const [period, setPeriod] = useState('2025-2026');
 
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Statistiques & Graphiques</h1>
-          <p className="text-sm text-slate-400 font-semibold">Vue d'ensemble chiffrée de l'établissement</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('stats.title')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('stats.subtitle')}</p>
         </div>
-        <FilterDropdown label="Année" value={period} options={['2025-2026', '2024-2025', '2023-2024']} onChange={setPeriod} />
+        <FilterDropdown label={t('stats.year')} value={period} options={['2025-2026', '2024-2025', '2023-2024']} onChange={setPeriod} />
       </div>
 
       {/* Summary KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <KPICard value="450" label="Élèves Inscrits" icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value="24" label="Personnel" icon={<Users className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value="13.6" label="Moyenne Générale" icon={<TrendingUp className="w-5 h-5 text-digi-success" />} />
-        <KPICard value="78%" label="Taux Recouvrement" icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="450" label={t('stats.enrolled')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="24" label={t('stats.staff')} icon={<Users className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value="13.6" label={t('stats.generalAvg')} icon={<TrendingUp className="w-5 h-5 text-digi-success" />} />
+        <KPICard value="78%" label={t('stats.recoveryRate')} icon={<CreditCard className="w-5 h-5 text-digi-purple" />} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -100,7 +102,7 @@ export const StatsPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
             <BarChart3 className="w-4 h-4 text-digi-purple" />
-            Effectifs par Classe
+            {t('stats.enrollmentByClass')}
           </h3>
           <BarChartSimple
             data={[
@@ -119,13 +121,13 @@ export const StatsPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
             <PieChart className="w-4 h-4 text-digi-purple" />
-            Répartition par Genre
+            {t('stats.genderDistribution')}
           </h3>
           <div className="flex justify-center">
             <DonutChart
               segments={[
-                { label: 'Garçons', value: 248, color: '#534AB7' },
-                { label: 'Filles', value: 202, color: '#AFA9EC' },
+                { label: t('stats.boys'), value: 248, color: '#534AB7' },
+                { label: t('stats.girls'), value: 202, color: '#AFA9EC' },
               ]}
             />
           </div>
@@ -135,7 +137,7 @@ export const StatsPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-digi-purple" />
-            Moyennes par Matière
+            {t('stats.avgBySubject')}
           </h3>
           <BarChartSimple
             maxVal={20}
@@ -154,14 +156,14 @@ export const StatsPage: React.FC = () => {
         <Card className="shadow-sm border border-slate-100">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-6 flex items-center gap-2">
             <CreditCard className="w-4 h-4 text-digi-purple" />
-            Statut des Paiements
+            {t('stats.paymentStatus')}
           </h3>
           <div className="flex justify-center">
             <DonutChart
               segments={[
-                { label: 'Complet', value: 285, color: '#10B981' },
-                { label: 'Partiel', value: 105, color: '#F59E0B' },
-                { label: 'Impayé', value: 60, color: '#EF4444' },
+                { label: t('payments.complete'), value: 285, color: '#10B981' },
+                { label: t('payments.partial'), value: 105, color: '#F59E0B' },
+                { label: t('payments.unpaid'), value: 60, color: '#EF4444' },
               ]}
             />
           </div>
@@ -172,18 +174,18 @@ export const StatsPage: React.FC = () => {
       <Card className="shadow-sm border border-slate-100 overflow-hidden">
         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-digi-purple" />
-          Synthèse des Résultats par Classe
+          {t('stats.resultsSummary')}
         </h3>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-100 text-sm">
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
-                <th className="px-4 py-3 text-left">Classe</th>
-                <th className="px-4 py-3 text-center">Effectif</th>
-                <th className="px-4 py-3 text-center">Moyenne</th>
-                <th className="px-4 py-3 text-center">Réussite</th>
-                <th className="px-4 py-3 text-center">Admis</th>
-                <th className="px-4 py-3 text-center">Refusés</th>
+                <th className="px-4 py-3 text-left">{t('stats.class')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.enrollment')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.average')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.successRate')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.admitted')}</th>
+                <th className="px-4 py-3 text-center">{t('stats.rejected')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">

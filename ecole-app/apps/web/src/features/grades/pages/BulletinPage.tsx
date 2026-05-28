@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { BulletinPreview } from '../../../shared/components/business/BulletinPreview';
@@ -6,6 +7,7 @@ import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown
 import { FileText, Download, Printer } from 'lucide-react';
 
 export const BulletinPage: React.FC = () => {
+  const { t } = useTranslation();
   const [selectedClasse, setSelectedClasse] = React.useState('6ème A');
   const [selectedTrimestre, setSelectedTrimestre] = React.useState('Trimestre 1');
 
@@ -46,17 +48,17 @@ export const BulletinPage: React.FC = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Bulletins Scolaires</h1>
-          <p className="text-sm text-slate-400 font-semibold">Génération et consultation des bulletins trimestriels</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('bulletins.title')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('bulletins.subtitle')}</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="gap-2">
             <Printer className="w-4 h-4" />
-            Imprimer Tout
+            {t('bulletins.print')}
           </Button>
           <Button className="gap-2">
             <Download className="w-4 h-4" />
-            Exporter PDF
+            {t('bulletins.export')}
           </Button>
         </div>
       </div>
@@ -64,11 +66,11 @@ export const BulletinPage: React.FC = () => {
       {/* Filters */}
       <Card className="shadow-sm border border-slate-100">
         <div className="flex items-center gap-4 flex-wrap">
-          <FilterDropdown label="Classe" value={selectedClasse} options={['6ème A', '5ème B', '4ème C', '3ème A']} onChange={setSelectedClasse} />
-          <FilterDropdown label="Trimestre" value={selectedTrimestre} options={['Trimestre 1', 'Trimestre 2', 'Trimestre 3']} onChange={setSelectedTrimestre} />
+          <FilterDropdown label={t('bulletins.class')} value={selectedClasse} options={['6ème A', '5ème B', '4ème C', '3ème A']} onChange={setSelectedClasse} />
+          <FilterDropdown label={t('bulletins.trimester')} value={selectedTrimestre} options={['Trimestre 1', 'Trimestre 2', 'Trimestre 3']} onChange={setSelectedTrimestre} />
           <span className="ml-auto text-sm text-slate-500 font-semibold flex items-center gap-2">
             <FileText className="w-4 h-4 text-digi-purple" />
-            {mockBulletins.length} bulletins trouvés
+            {mockBulletins.length} {t('bulletins.found')}
           </span>
         </div>
       </Card>

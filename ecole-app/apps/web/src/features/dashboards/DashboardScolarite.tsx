@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { SidebarLayout } from '../../shared/components/layout/SidebarLayout';
 import { KPIFinance } from '../../shared/components/business/KPIFinance';
 import { Card } from '../../shared/components/ui/Card';
@@ -9,6 +10,7 @@ import { CreditCard, Users } from 'lucide-react';
 
 export const DashboardScolarite: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const chartData = [
     { name: 'Janv', montant: 1200000 },
@@ -23,17 +25,17 @@ export const DashboardScolarite: React.FC = () => {
       <div className="space-y-8">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Comptabilité &mdash; Espace Scolarité</h1>
-            <p className="text-sm text-slate-400 font-semibold">Suivi financier et encaissements des pensions</p>
+            <h1 className="text-2xl font-bold text-slate-800">{t('dashboard.scolariteTitle')}</h1>
+            <p className="text-sm text-slate-400 font-semibold">{t('dashboard.subtitleScolarite')}</p>
           </div>
           <div className="flex gap-3">
             <Button variant="outline" onClick={() => navigate('/payments/overdue')} className="gap-2">
               <Users className="w-4 h-4" />
-              <span>Retards</span>
+              <span>{t('dashboard.latePayments')}</span>
             </Button>
             <Button onClick={() => navigate('/payments/new')} className="gap-2">
               <CreditCard className="w-4 h-4" />
-              <span>Enregistrer Paiement</span>
+              <span>{t('dashboard.registerPayment')}</span>
             </Button>
           </div>
         </div>
@@ -43,7 +45,7 @@ export const DashboardScolarite: React.FC = () => {
 
         {/* Monthly Chart */}
         <Card className="shadow-sm border border-slate-100 p-6 space-y-4">
-          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">Versements Mensuels (XAF)</h3>
+          <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">{t('dashboard.monthlyPayments')}</h3>
           <div className="h-64 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData}>

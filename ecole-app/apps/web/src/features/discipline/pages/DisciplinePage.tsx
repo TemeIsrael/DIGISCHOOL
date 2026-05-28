@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { KPICard } from '../../../shared/components/ui/KPICard';
@@ -20,6 +21,7 @@ const graviteColors: Record<string, string> = {
 };
 
 export const DisciplinePage: React.FC = () => {
+  const { t } = useTranslation();
   const [filterGravite, setFilterGravite] = useState('Tous');
   const [filterType, setFilterType] = useState('Tous');
   const [search, setSearch] = useState('');
@@ -35,21 +37,21 @@ export const DisciplinePage: React.FC = () => {
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Gestion Disciplinaire</h1>
-          <p className="text-sm text-slate-400 font-semibold">Suivi des incidents et sanctions</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('discipline.title')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('discipline.subtitle')}</p>
         </div>
         <Button className="gap-2">
           <FilePlus className="w-4 h-4" />
-          Nouvel Incident
+          {t('discipline.newIncident')}
         </Button>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <KPICard value={String(mockIncidents.length)} label="Total Incidents" icon={<AlertTriangle className="w-5 h-5 text-digi-warning" />} />
-        <KPICard value={String(mockIncidents.filter(i => i.gravite === 'Majeur').length)} label="Incidents Majeurs" icon={<ShieldCheck className="w-5 h-5 text-digi-danger" />} />
-        <KPICard value={String(mockIncidents.filter(i => i.gravite === 'Mineur').length)} label="Incidents Mineurs" icon={<Eye className="w-5 h-5 text-digi-success" />} />
-        <KPICard value="2" label="Exclusions en Cours" icon={<UserX className="w-5 h-5 text-digi-danger" />} />
+        <KPICard value={String(mockIncidents.length)} label={t('discipline.totalIncidents')} icon={<AlertTriangle className="w-5 h-5 text-digi-warning" />} />
+        <KPICard value={String(mockIncidents.filter(i => i.gravite === 'Majeur').length)} label={t('discipline.major')} icon={<ShieldCheck className="w-5 h-5 text-digi-danger" />} />
+        <KPICard value={String(mockIncidents.filter(i => i.gravite === 'Mineur').length)} label={t('discipline.minor')} icon={<Eye className="w-5 h-5 text-digi-success" />} />
+        <KPICard value="2" label={t('discipline.exclusions')} icon={<UserX className="w-5 h-5 text-digi-danger" />} />
       </div>
 
       {/* Filters */}
@@ -61,12 +63,12 @@ export const DisciplinePage: React.FC = () => {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Rechercher un élève..."
+              placeholder={t('discipline.searchPlaceholder')}
               className="w-full pl-10 pr-4 py-2.5 rounded-full border border-slate-200 text-sm focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all"
             />
           </div>
-          <FilterDropdown label="Gravité" value={filterGravite} options={['Tous', 'Mineur', 'Moyen', 'Majeur']} onChange={setFilterGravite} />
-          <FilterDropdown label="Type" value={filterType} options={['Tous', 'Retard', 'Absence', 'Bagarre', 'Tricherie', 'Insolence']} onChange={setFilterType} />
+          <FilterDropdown label={t('discipline.severity')} value={filterGravite} options={['Tous', 'Mineur', 'Moyen', 'Majeur']} onChange={setFilterGravite} />
+          <FilterDropdown label={t('discipline.type')} value={filterType} options={['Tous', 'Retard', 'Absence', 'Bagarre', 'Tricherie', 'Insolence']} onChange={setFilterType} />
         </div>
       </Card>
 
@@ -76,13 +78,13 @@ export const DisciplinePage: React.FC = () => {
           <table className="min-w-full divide-y divide-slate-100 text-sm">
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
-                <th className="px-4 py-3 text-left">Date</th>
-                <th className="px-4 py-3 text-left">Élève</th>
-                <th className="px-4 py-3 text-left">Classe</th>
-                <th className="px-4 py-3 text-left">Type</th>
-                <th className="px-4 py-3 text-center">Gravité</th>
-                <th className="px-4 py-3 text-left">Description</th>
-                <th className="px-4 py-3 text-left">Sanction</th>
+                <th className="px-4 py-3 text-left">{t('discipline.date')}</th>
+                <th className="px-4 py-3 text-left">{t('discipline.student')}</th>
+                <th className="px-4 py-3 text-left">{t('discipline.class')}</th>
+                <th className="px-4 py-3 text-left">{t('discipline.type')}</th>
+                <th className="px-4 py-3 text-center">{t('discipline.severity')}</th>
+                <th className="px-4 py-3 text-left">{t('discipline.description')}</th>
+                <th className="px-4 py-3 text-left">{t('discipline.sanction')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
