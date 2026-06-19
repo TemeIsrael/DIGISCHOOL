@@ -2,11 +2,13 @@ services:
   - type: web
     name: ecole-api
     env: node
-    buildCommand: npm install -g pnpm && pnpm install && pnpm build
+    buildCommand: pnpm install && pnpm build
     startCommand: cd apps/api && pnpm start
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PNPM_VERSION
+        value: "9.1.0"
       - key: PORT
         value: 4000
       - key: DB_HOST
