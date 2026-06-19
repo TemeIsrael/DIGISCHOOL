@@ -17,8 +17,8 @@ async function setup() {
     console.log('✅ Base de données connectée');
 
     // Synchroniser la table Admin en forçant la recréation (pour effacer les anciennes données corrompues)
-    await Admin.sync({ force: true });
-    console.log('✅ Table Admin recréée et synchronisée');
+    await Admin.sync();
+    console.log('✅ Table Admin synchronisée');
 
     // Créer ou mettre à jour chaque administrateur
     for (const adminData of admins) {

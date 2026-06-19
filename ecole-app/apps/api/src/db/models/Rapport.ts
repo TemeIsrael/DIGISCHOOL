@@ -3,7 +3,7 @@ import { sequelize } from '../index';
 
 export class Rapport extends Model {
   public idRap!: number;
-  public matricule!: string;
+  public matricule!: number;
   public idAca!: number;
   public idPers!: number;
   public idDiscipline!: number;
@@ -20,7 +20,7 @@ Rapport.init(
       primaryKey: true,
     },
     matricule: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Eleve',

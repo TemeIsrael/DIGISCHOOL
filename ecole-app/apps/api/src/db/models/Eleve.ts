@@ -50,7 +50,7 @@ Eleve.init(
       defaultValue: 'NON DEFINI',
     },
     photoURL: {
-      type: DataTypes.TEXT('long'),
+      type: DataTypes.STRING(255),
       allowNull: true,
       defaultValue: '/uploads/anonym.png',
     },

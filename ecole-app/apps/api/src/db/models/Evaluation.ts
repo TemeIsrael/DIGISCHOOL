@@ -3,7 +3,7 @@ import { sequelize } from '../index';
 
 export class Evaluation extends Model {
   public idEval!: number;
-  public matricule!: string;
+  public matricule!: number;
   public idEpreuve!: number;
   public idCours!: number;
   public idSession!: number;
@@ -19,7 +19,7 @@ Evaluation.init(
       primaryKey: true,
     },
     matricule: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.INTEGER.UNSIGNED,
       allowNull: false,
       references: {
         model: 'Eleve',

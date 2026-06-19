@@ -30,8 +30,8 @@ async function fixAndSeed() {
         const [rows] = await sequelize.query(`SELECT idPers FROM Personne WHERE login = '${login}'`);
         if ((rows as any[]).length === 0) {
             await sequelize.query(`
-                INSERT INTO Personne (login, password, typePersonne, actif, isDelete)
-                VALUES ('${login}', '${passwordHashed}', ${type}, 1, 0)
+                INSERT INTO Personne (login, password, typePersonne, actif, isDelete, createdAt, updatedAt)
+                VALUES ('${login}', '${passwordHashed}', ${type}, 1, 0, NOW(), NOW())
             `);
             console.log(`✅ Created ${login}`);
         } else {
