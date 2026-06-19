@@ -1,25 +1,29 @@
 services:
   - type: web
-    name: ecole-api
-    env: node
+    name: digischool-api
+    runtime: node
+    repo: https://github.com/TemeIsrael/DIGISCHOOL
+    plan: free
+    region: oregon
     buildCommand: pnpm install && pnpm build
     startCommand: cd apps/api && pnpm start
+    rootDir: .
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: PNPM_VERSION
-        value: "9.1.0"
-      - key: PORT
-        value: 4000
+        value: 9.1.0
       - key: DB_HOST
-        sync: false
+        value: mysql-digischool-temeisrael65-91e3.b.aivencloud.com
       - key: DB_PORT
-        sync: false
+        value: 24262
       - key: DB_USER
-        sync: false
+        value: avnadmin
       - key: DB_PASSWORD
-        sync: false
+        value: israel235
       - key: DB_NAME
-        sync: false
+        value: defaultdb
+      - key: DB_SSL
+        value: true
       - key: JWT_SECRET
         generateValue: true
+      - key: NODE_ENV
+        value: production
