@@ -24,11 +24,13 @@ import refsRouter from './modules/refs';
 
 const app = express();
 
-// Apply Security and Global Middlewares
-app.use(helmet());
+// Apply Security and Global Middlewar
 app.use(
   cors({
-    origin: env.FRONT_URL,
+    origin: [
+      'http://localhost:5173',
+      'https://digischool-iota.vercel.app'
+    ],
     credentials: true
   })
 );

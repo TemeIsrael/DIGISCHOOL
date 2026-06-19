@@ -197,7 +197,7 @@ router.get('/:id/receipt', requireRole(['ADMIN', 'PARENT']), async (req, res, ne
 
     const receiptData = {
       idPaie: payment.idPaie,
-      matricule: payment.matricule,
+      matricule: String(payment.matricule),
       nom: enrollment?.eleve?.nom || 'Inconnu',
       prenom: enrollment?.eleve?.prenom || '',
       classe: enrollment?.salle?.libelle || 'Classe',

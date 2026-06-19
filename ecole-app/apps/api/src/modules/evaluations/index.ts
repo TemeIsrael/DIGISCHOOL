@@ -187,7 +187,7 @@ router.get('/bulletins/:matricule/download', async (req, res, next) => {
           sumCoeffs += coeff;
         });
         averages.push({
-          matricule: classmate.matricule,
+          matricule: String(classmate.matricule),
           average: sumCoeffs > 0 ? sumPoints / sumCoeffs : 0
         });
       }
@@ -215,6 +215,7 @@ router.get('/bulletins/:matricule/download', async (req, res, next) => {
     const moyenne = studentCoeff > 0 ? studentSum / studentCoeff : 0;
 
     const salle = await Salle.findByPk(Number(idSalle));
+
 
     const bulletinData = {
       matricule,
