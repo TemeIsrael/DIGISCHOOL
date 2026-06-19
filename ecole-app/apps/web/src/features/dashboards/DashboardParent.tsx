@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
 import { useTranslation } from 'react-i18next';
 import { KPICard } from '../../shared/components/ui/KPICard';
 import { Card } from '../../shared/components/ui/Card';
 import { BulletinPreview } from '../../shared/components/business/BulletinPreview';
-import { Button } from '../../shared/components/ui/Button';
 import { GraduationCap, CreditCard, Bell, TrendingUp } from 'lucide-react';
 import { exportPDF } from '../../shared/utils/export';
 
@@ -53,7 +52,7 @@ const childrenData = [
 ];
 
 export const DashboardParent: React.FC = () => {
-  const navigate = useNavigate();
+
   const { t, i18n } = useTranslation();
   const [selectedChildId, setSelectedChildId] = useState(childrenData[0].id);
 

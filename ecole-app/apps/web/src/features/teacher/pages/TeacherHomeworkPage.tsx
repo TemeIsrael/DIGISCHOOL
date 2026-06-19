@@ -15,7 +15,7 @@ interface Homework {
 }
 
 export const TeacherHomeworkPage: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const isEn = i18n.language === 'en';
 
   const [homeworks, setHomeworks] = useState<Homework[]>([

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, Globe, Calendar, Bell, Menu, X, User, Settings } from 'lucide-react';
+import { LogOut, Globe, Calendar, Bell, Menu, X, User } from 'lucide-react';
 import { useAuthStore } from '../../../features/auth/store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';

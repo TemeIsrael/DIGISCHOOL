@@ -20,6 +20,7 @@ type BookItem = {
   available: number;
   rating: number;
   salles: string[];
+  fileUrl?: string;
 };
 
 export const LibraryManagePage: React.FC = () => {
@@ -92,7 +93,7 @@ export const LibraryManagePage: React.FC = () => {
 
   const handleOpenManage = (book: BookItem) => {
     setSelectedBook(book);
-    setEditForm({ title: book.title, author: book.author, isbn: book.isbn, category: book.category, copies: book.copies, available: book.available, salles: [...book.salles] });
+    setEditForm({ title: book.title, author: book.author, isbn: book.isbn, category: book.category, copies: book.copies, available: book.available, salles: [...book.salles], fileUrl: book.fileUrl || '' });
     setManageModalOpen(true);
   };
 

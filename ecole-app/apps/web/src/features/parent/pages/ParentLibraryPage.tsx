@@ -7,7 +7,7 @@ import { Modal } from '../../../shared/components/ui/Modal';
 import { Button } from '../../../shared/components/ui/Button';
 
 export const ParentLibraryPage: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const [search, setSearch] = useState('');
   const [selectedBook, setSelectedBook] = useState<any | null>(null);
 

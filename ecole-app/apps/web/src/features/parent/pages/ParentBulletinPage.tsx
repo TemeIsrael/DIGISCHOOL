@@ -48,7 +48,7 @@ export const ParentBulletinPage: React.FC = () => {
     { value: 'Trimestre 3', label: isEn ? 'Trimester 3' : 'Trimestre 3' },
   ];
 
-  const currentBulletin = bulletinsData[selectedTrimester];
+  const currentBulletin = bulletinsData[selectedTrimester as keyof typeof bulletinsData];
   const overallAvg = Object.values(bulletinsData).reduce((s, b) => s + b.moyenne, 0) / Object.values(bulletinsData).length;
   const bestTrimester = Object.entries(bulletinsData).sort((a, b) => b[1].moyenne - a[1].moyenne)[0][0];
 

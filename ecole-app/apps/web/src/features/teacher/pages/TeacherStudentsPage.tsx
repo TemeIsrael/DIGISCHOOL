@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
-import { Button } from '../../../shared/components/ui/Button';
+
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
-import { GraduationCap, Search, Eye, Users } from 'lucide-react';
+import { Search, Users } from 'lucide-react';
 
 type Student = {
   matricule: string;

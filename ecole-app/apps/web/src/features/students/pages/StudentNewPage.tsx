@@ -21,7 +21,7 @@ export const StudentNewPage: React.FC = () => {
   const [photoUrl, setPhotoUrl] = useState('');
   
   // We keep all data in a single form
-  const { register, handleSubmit, trigger, getValues } = useForm();
+  const { register, handleSubmit, trigger } = useForm();
 
   const handleNextStep = async () => {
     // Validate Step 1 fields before proceeding

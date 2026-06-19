@@ -14,7 +14,7 @@ interface Homework {
 }
 
 export const ParentHomeworkPage: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const isEn = i18n.language === 'en';
 
   // Mock data - in a real app this would come from an API based on the selected child
@@ -43,7 +43,7 @@ export const ParentHomeworkPage: React.FC = () => {
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
             {isEn ? 'Upcoming Assignments' : 'Devoirs à venir'}
           </h2>
-          <Button variant="secondary" className="gap-2">
+          <Button variant="outline" className="gap-2">
             <Filter className="w-4 h-4" />
             {isEn ? 'Filter' : 'Filtrer'}
           </Button>

@@ -73,9 +73,9 @@ function exportToCSV(data: typeof mockScheduleFrancophone, filename: string) {
 
 /* ─── Component ─────────────────────────────────────────────────── */
 export const SchedulePage: React.FC = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { canAddPersonnelOrStudentsOrSchedules } = usePermissions();
-  const appIsEn = i18n.language === 'en';
+
 
   const [selectedSection, setSelectedSection] = useState('Francophone');
   const [selectedClasse,  setSelectedClasse]  = useState('');

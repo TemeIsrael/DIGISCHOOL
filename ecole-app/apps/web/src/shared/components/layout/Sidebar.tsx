@@ -5,7 +5,7 @@ import { useAuthStore } from '../../../features/auth/store';
 import { Avatar } from '../ui/Avatar';
 import {
   LayoutDashboard, Users, GraduationCap, CreditCard, MessageSquare,
-  ShieldCheck, BookOpen, History, BarChart3, Settings, Clock,
+  ShieldCheck, BookOpen, BarChart3, Settings, Clock,
   ClipboardList, FileText, ChevronLeft, ChevronRight
 } from 'lucide-react';
 
