@@ -1,5 +1,6 @@
 {
-  "buildCommand": "pnpm build",
+  "installCommand": "cd ../.. && pnpm install",
+  "buildCommand": "cd ../.. && pnpm --filter @ecole-app/shared build && cd apps/web && pnpm build",
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
