@@ -15,7 +15,7 @@ const startServer = async () => {
       logger.info('Database models sync skipped.');
     }
 
-    app.listen(env.PORT, () => {
+    app.listen(env.PORT, '0.0.0.0', () => {
       logger.info(`🚀 [Server]: EcoleApp 2026 API listening on port ${env.PORT}`);
     });
   } catch (error) {
