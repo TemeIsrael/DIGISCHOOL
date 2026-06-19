@@ -11,6 +11,18 @@ export const getRoleDashboardPath = (role: string | null, _typeAdmin?: number, t
       return '/parent/dashboard';
     case 'ADMIN':
       return '/dashboard';
+    case 'ROOT':
+      return '/dashboardRoot';
+    case 'ADMIN_ROOT':
+      return '/dashboardAdmin';
+    case 'ADMIN_INSCRIPTIONS':
+      return '/dashboardAdmin';
+    case 'ADMIN_SCOLARITE':
+      return '/dashboardScolarite';
+    case 'FONDATEUR':
+      return '/dashboardFondateur';
+    case 'DIRECTEUR':
+      return '/dashboardDirecteur';
     default:
       if (typePersonne === 1) return '/teacher/dashboard';
       if (typePersonne === 2) return '/parent/dashboard';
