@@ -2,12 +2,11 @@ services:
   - type: web
     name: digischool-api
     runtime: node
-    repo: https://github.com/TemeIsrael/DIGISCHOOL
     plan: free
     region: oregon
-    buildCommand: pnpm install && pnpm build
+    rootDir: ecole-app
+    buildCommand: pnpm install && pnpm build --filter @ecole-app/shared && pnpm build --filter @ecole-app/api
     startCommand: cd apps/api && pnpm start
-    rootDir: .
     envVars:
       - key: PNPM_VERSION
         value: 9.1.0
@@ -23,7 +22,3 @@ services:
         value: defaultdb
       - key: DB_SSL
         value: true
-      - key: JWT_SECRET
-        generateValue: true
-      - key: NODE_ENV
-        value: production
