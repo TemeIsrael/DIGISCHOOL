@@ -14,23 +14,44 @@ interface SidebarLink {
   labelKey: string;
   icon: React.ReactNode;
   adminTypes?: number[]; // restrict to specific admin sub-types
+  roles?: string[]; // restrict to specific roles (e.g. 'ADMIN', 'TEACHER', 'PARENT')
 }
 
 const allLinks: SidebarLink[] = [
-  { to: '/dashboard', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
-  { to: '/students', labelKey: 'sidebar.students', icon: <GraduationCap className="w-5 h-5" /> },
-  { to: '/personnel', labelKey: 'sidebar.personnel', icon: <Users className="w-5 h-5" /> },
-  { to: '/academic', labelKey: 'sidebar.academic', icon: <Settings className="w-5 h-5" /> },
-  { to: '/schedules', labelKey: 'sidebar.schedules', icon: <Clock className="w-5 h-5" /> },
-  { to: '/grades', labelKey: 'sidebar.grades', icon: <ClipboardList className="w-5 h-5" /> },
-  { to: '/bulletins', labelKey: 'sidebar.bulletins', icon: <FileText className="w-5 h-5" /> },
-  { to: '/payments', labelKey: 'sidebar.payments', icon: <CreditCard className="w-5 h-5" /> },
-  { to: '/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" /> },
-  { to: '/discipline', labelKey: 'sidebar.discipline', icon: <ShieldCheck className="w-5 h-5" /> },
-  { to: '/library', labelKey: 'sidebar.library', icon: <BookOpen className="w-5 h-5" /> },
-  { to: '/stats', labelKey: 'sidebar.stats', icon: <BarChart3 className="w-5 h-5" /> },
-  { to: '/audit', labelKey: 'sidebar.audit', icon: <History className="w-5 h-5" />, adminTypes: [0, 5] },
+  // Admin links
+  { to: '/dashboard', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" />, roles: ['ADMIN'] },
+  { to: '/students',  labelKey: 'sidebar.students',  icon: <GraduationCap className="w-5 h-5" />, adminTypes: [1, 4], roles: ['ADMIN'] },
+  { to: '/personnel', labelKey: 'sidebar.personnel', icon: <Users className="w-5 h-5" />,         adminTypes: [1, 4], roles: ['ADMIN'] },
+  { to: '/academic',  labelKey: 'sidebar.academic',  icon: <Settings className="w-5 h-5" />,      adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/schedules', labelKey: 'sidebar.schedules', icon: <Clock className="w-5 h-5" />,         adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/grades',    labelKey: 'sidebar.grades',    icon: <ClipboardList className="w-5 h-5" />, adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/bulletins', labelKey: 'sidebar.bulletins', icon: <FileText className="w-5 h-5" />,      adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/payments',  labelKey: 'sidebar.payments',  icon: <CreditCard className="w-5 h-5" />,    adminTypes: [1, 3, 4], roles: ['ADMIN'] },
+  { to: '/messages',  labelKey: 'sidebar.messages',  icon: <MessageSquare className="w-5 h-5" />, adminTypes: [1, 4], roles: ['ADMIN'] },
+  { to: '/discipline',labelKey: 'sidebar.discipline',icon: <ShieldCheck className="w-5 h-5" />,   adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/library',   labelKey: 'sidebar.library',   icon: <BookOpen className="w-5 h-5" />,      adminTypes: [1, 2, 3, 4], roles: ['ADMIN'] },
+  { to: '/stats',     labelKey: 'sidebar.stats',     icon: <BarChart3 className="w-5 h-5" />,     adminTypes: [3, 4], roles: ['ADMIN'] },
+
+  // Teacher links
+  { to: '/teacher/dashboard', labelKey: 'navbar.teacher_space', icon: <LayoutDashboard className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/students', labelKey: 'sidebar.students', icon: <GraduationCap className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/grades', labelKey: 'sidebar.grades', icon: <ClipboardList className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/bulletins', labelKey: 'sidebar.bulletins', icon: <FileText className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/schedules', labelKey: 'sidebar.schedules', icon: <Clock className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/discipline', labelKey: 'sidebar.discipline', icon: <ShieldCheck className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/homeworks', labelKey: 'navbar.homeworks', icon: <BookOpen className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" />, roles: ['TEACHER'] },
+
+  // Parent links
+  { to: '/parent/dashboard', labelKey: 'navbar.parent_space', icon: <LayoutDashboard className="w-5 h-5" />, roles: ['PARENT'] },
+  { to: '/parent/schedule', labelKey: 'sidebar.schedules', icon: <Clock className="w-5 h-5" />, roles: ['PARENT'] },
+  { to: '/parent/bulletins', labelKey: 'sidebar.bulletins', icon: <FileText className="w-5 h-5" />, roles: ['PARENT'] },
+  { to: '/parent/payments', labelKey: 'sidebar.payments', icon: <CreditCard className="w-5 h-5" />, roles: ['PARENT'] },
+  { to: '/parent/homeworks', labelKey: 'navbar.homeworks', icon: <BookOpen className="w-5 h-5" />, roles: ['PARENT'] },
+  { to: '/parent/library', labelKey: 'sidebar.library', icon: <BookOpen className="w-5 h-5" />, roles: ['PARENT'] },
+  { to: '/parent/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" />, roles: ['PARENT'] },
 ];
+
 
 export interface SidebarProps {
   collapsed?: boolean;
@@ -42,15 +63,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false, onToggle })
   const { user } = useAuthStore();
   const location = useLocation();
 
-  // Filter links based on admin sub-type
+  // Filter links based on role and admin sub-type
   const visibleLinks = allLinks.filter((link) => {
-    if (!link.adminTypes) return true;
-    return link.adminTypes.includes(user?.typeAdmin ?? -1);
+    if (link.roles && !link.roles.includes(user?.role || '')) return false;
+    if (user?.role === 'ADMIN' && link.adminTypes) {
+      return link.adminTypes.includes(user?.typeAdmin ?? -1);
+    }
+    return true;
   });
 
   return (
     <aside
-      className={`fixed top-0 left-0 h-screen bg-white border-r border-[#E5E7EB] flex flex-col z-30 transition-all duration-300 ${
+      className={`h-full bg-white border-r border-[#E5E7EB] flex flex-col z-30 transition-all duration-300 ${
         collapsed ? 'w-[72px]' : 'w-[250px]'
       }`}
     >

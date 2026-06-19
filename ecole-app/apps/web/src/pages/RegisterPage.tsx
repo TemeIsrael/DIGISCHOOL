@@ -1,124 +1,169 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card } from '../shared/components/ui/Card';
-import { Input } from '../shared/components/ui/Input';
+import { useTranslation } from 'react-i18next';
+import { GraduationCap, User, Mail, Hash, ArrowRight, ArrowLeft } from 'lucide-react';
 import { Button } from '../shared/components/ui/Button';
-import { useToast } from '../shared/components/ui/Toast';
-
-const registerSchema = z.object({
-  nomParent: z.string().min(2, 'Le nom du parent doit faire au moins 2 caractères'),
-  nomEnfant: z.string().min(2, 'Le nom de l\'enfant doit faire au moins 2 caractères'),
-  matriculeEnfant: z.string().min(3, 'Le matricule doit contenir au moins 3 caractères'),
-  email: z.string().email('Email invalide'),
-  password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères')
-});
-
-type RegisterInput = z.infer<typeof registerSchema>;
+import { PublicNavbar } from '../shared/components/layout/PublicNavbar';
+import { PublicFooter } from '../shared/components/layout/PublicFooter';
 
 export const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting }
-  } = useForm<RegisterInput>({
-    resolver: zodResolver(registerSchema)
+  const { t } = useTranslation();
+  const [formData, setFormData] = useState({
+    parentName: '',
+    childName: '',
+    childMatricule: '',
+    email: '',
   });
 
-  const onSubmit = async (_data: RegisterInput) => {
-    // Simulating user creation successfully
-    try {
-      toast({
-        type: 'success',
-        title: 'Inscription réussie',
-        description: 'Votre demande d\'inscription a été envoyée pour vérification.'
-      });
-      navigate('/login');
-    } catch (e) {
-      toast({
-        type: 'danger',
-        title: 'Erreur',
-        description: 'Une erreur s\'est produite. Veuillez réessayer.'
-      });
-    }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: API call to register
+    navigate('/login');
   };
 
   return (
-    <div className="min-h-screen bg-digi-bg flex flex-col items-center justify-center p-6 text-slate-800">
-      <div className="w-full max-w-lg">
-        {/* Brand/Heading */}
-        <div className="text-center mb-8">
-          <h1 className="font-serif text-4xl font-extrabold text-digi-purple tracking-tight uppercase">
-            Inscription
-          </h1>
-          <p className="text-sm font-semibold text-slate-500 mt-2">
-            Rejoignez l'écosystème scolaire moderne DIGISCHOOL 2026
-          </p>
-        </div>
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col">
+      <PublicNavbar />
 
-        <Card className="shadow-2xl border border-slate-100 overflow-hidden relative">
-          <div className="absolute top-0 left-0 w-full h-1.5 bg-digi-purple" />
+      <section className="flex-1 flex items-center justify-center py-16 px-6">
+        <div className="w-full max-w-md space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-3">
+            <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-digi-purple to-digi-purple-dark flex items-center justify-center shadow-lg shadow-digi-purple/30">
+              <GraduationCap className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">
+              {t('auth.registerTitle')}
+            </h1>
+            <p className="text-sm text-slate-500 font-medium max-w-sm mx-auto">
+              {t('auth.registerSubtitle')}
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label="Nom du parent"
-                placeholder="Ex. Jean Martin"
-                error={errors.nomParent?.message}
-                {...register('nomParent')}
-              />
-              <Input
-                label="Nom de l'enfant"
-                placeholder="Ex. Luc Martin"
-                error={errors.nomEnfant?.message}
-                {...register('nomEnfant')}
-              />
+          {/* Form Card */}
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 space-y-5"
+          >
+            {/* Parent Name */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                {t('auth.parentName')}
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  name="parentName"
+                  type="text"
+                  required
+                  value={formData.parentName}
+                  onChange={handleChange}
+                  placeholder="Ex: NKOA Jean-Pierre"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all"
+                />
+              </div>
             </div>
 
-            <Input
-              label="Matricule de l'enfant"
-              placeholder="Ex. EL2026-991"
-              error={errors.matriculeEnfant?.message}
-              {...register('matriculeEnfant')}
-            />
+            {/* Child Name */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                {t('auth.childName')}
+              </label>
+              <div className="relative">
+                <GraduationCap className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  name="childName"
+                  type="text"
+                  required
+                  value={formData.childName}
+                  onChange={handleChange}
+                  placeholder="Ex: NKOA Marie-Claire"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all"
+                />
+              </div>
+            </div>
 
-            <Input
-              type="email"
-              label="Adresse e-mail"
-              placeholder="parent@exemple.com"
-              error={errors.email?.message}
-              {...register('email')}
-            />
+            {/* Child Matricule */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                {t('auth.childMatricule')}
+              </label>
+              <div className="relative">
+                <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  name="childMatricule"
+                  type="text"
+                  required
+                  value={formData.childMatricule}
+                  onChange={handleChange}
+                  placeholder="Ex: EL-001"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all"
+                />
+              </div>
+            </div>
 
-            <Input
-              type="password"
-              label="Mot de passe"
-              placeholder="••••••••"
-              error={errors.password?.message}
-              {...register('password')}
-            />
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                {t('auth.email')}
+              </label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  name="email"
+                  type="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="parent@email.com"
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all"
+                />
+              </div>
+            </div>
 
-            <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
-              {isSubmitting ? 'Inscription...' : 'VALIDER L\'INSCRIPTION'}
+            {/* Submit */}
+            <Button
+              type="submit"
+              variant="primary"
+              size="lg"
+              className="w-full shadow-lg shadow-digi-purple/20"
+              rightIcon={<ArrowRight className="w-5 h-5" />}
+            >
+              {t('auth.validate')}
             </Button>
+
+            {/* Back to Login */}
+            <p className="text-center text-sm text-slate-500 font-medium pt-2">
+              {t('auth.alreadyRegistered')}{' '}
+              <button
+                type="button"
+                onClick={() => navigate('/login')}
+                className="text-digi-purple font-bold hover:underline"
+              >
+                {t('auth.loginHere')}
+              </button>
+            </p>
           </form>
 
-          <div className="mt-6 text-center text-xs text-slate-400 font-semibold">
-            Déjà inscrit ?{' '}
+          {/* Back Link */}
+          <div className="text-center">
             <button
-              onClick={() => navigate('/login')}
-              className="text-digi-purple hover:underline"
+              onClick={() => navigate('/')}
+              className="inline-flex items-center gap-2 text-sm font-semibold text-slate-400 hover:text-slate-600 transition-colors"
             >
-              Connectez-vous ici
+              <ArrowLeft className="w-4 h-4" />
+              Retour à l'accueil
             </button>
           </div>
-        </Card>
-      </div>
+        </div>
+      </section>
+
+      <PublicFooter />
     </div>
   );
 };

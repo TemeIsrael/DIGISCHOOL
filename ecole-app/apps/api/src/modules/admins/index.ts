@@ -2,20 +2,24 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { Admin } from '../../db/models';
 import { authenticate } from '../../middlewares/auth';
-import { requireRole } from '../../middlewares/rbac';
+import { requireRole, requireAdminType } from '../../middlewares/rbac';
 import { hashPassword } from '../../lib/bcrypt';
 import { validateBody } from '../../middlewares/validate';
+import { sendInternalMail } from '../../lib/mailer';
+import { ADMIN_TYPES } from '../../config/constants';
 
 const router = Router();
 
 const createAdminSchema = z.object({
   login: z.string().min(3),
   password: z.string().min(6),
-  typeAdmin: z.number().min(0).max(5)
+  typeAdmin: z.number().min(1).max(5) // Root (0) can only be created via seed
 });
 
+// All admin management is restricted to the Root/Super Admin (typeAdmin = 0)
 router.use(authenticate);
 router.use(requireRole(['ADMIN']));
+router.use(requireAdminType([ADMIN_TYPES.SUPER])); // Only typeAdmin === 0
 
 // CREATE
 router.post('/', validateBody(createAdminSchema), async (req, res, next) => {
@@ -61,6 +65,36 @@ router.get('/', async (req, res, next) => {
   }
 });
 
+// SEND CREDENTIALS — Simulate sending login credentials by email
+router.post('/:id/send-credentials', async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const admin = await Admin.findOne({ where: { ID: id, isDelete: false } });
+    if (!admin) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Administrateur introuvable' } });
+      return;
+    }
+
+    const typeLabels: Record<number, string> = {
+      1: 'Secrétaire (Inscriptions)',
+      2: 'Scolarité (Registrar)',
+      3: 'Fondateur',
+      4: 'Directeur',
+      5: 'Auditeur'
+    };
+
+    await sendInternalMail(
+      admin.login,
+      'Vos identifiants de connexion EcoleApp 2026',
+      `Bonjour,\n\nVotre compte administrateur a été créé avec les accès suivants :\n\nLogin : ${admin.login}\nType  : ${typeLabels[admin.typeAdmin] ?? 'Administrateur'}\n\nVeuillez vous connecter à la plateforme et changer votre mot de passe dès la première connexion.\n\nCordialement,\nLe Super Administrateur DIGISCHOOL`
+    );
+
+    res.json({ success: true, message: `Identifiants envoyés par mail à : ${admin.login}` });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // UPDATE
 router.put('/:id', async (req, res, next) => {
   const { id } = req.params;
@@ -82,7 +116,7 @@ router.put('/:id', async (req, res, next) => {
   }
 });
 
-// DELETE
+// DELETE (soft)
 router.delete('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {

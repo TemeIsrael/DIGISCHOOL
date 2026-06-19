@@ -47,14 +47,14 @@ export interface CourseAverage {
 
 export interface SessionInfo {
   idSession: number;
-  libelle: string; // "1er Trimestre", "2ème Trimestre", etc.
+  libelle: string; // "Séquence 1", "Séquence 2", ... "Séquence 6"
   idAca: number;
   actif: boolean;
 }
 
 export interface EpreuveInfo {
   idEpreuve: number;
-  libelle: string; // "Devoir 1", "Composition", etc.
+  libelle: string; // "Évaluation Séquence 1", "Évaluation Séquence 2", etc.
   coefficient: number;
   noteMax: number;
   idSession: number;

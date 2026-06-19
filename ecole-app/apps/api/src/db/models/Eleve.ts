@@ -2,61 +2,83 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Eleve extends Model {
-  public matricule!: string;
+  public matricule!: number;
   public nom!: string;
   public prenom!: string;
   public dateNaissance!: Date;
+  public lieuNaissance!: string;
+  public sexe!: number;
   public idVilleNaissance!: number;
   public langue!: string;
-  public photo!: string | null;
+  public photoURL!: string | null;
   public actif!: boolean;
   public isDelete!: boolean;
+  public idAdmin!: number;
 }
 
 Eleve.init(
   {
     matricule: {
-      type: DataTypes.STRING(50),
+      type: DataTypes.INTEGER.UNSIGNED,
+      autoIncrement: true,
       primaryKey: true,
     },
     nom: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(60),
       allowNull: false,
     },
     prenom: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(60),
       allowNull: false,
     },
     dateNaissance: {
       type: DataTypes.DATEONLY,
       allowNull: false,
     },
-    idVilleNaissance: {
-      type: DataTypes.INTEGER,
+    lieuNaissance: {
+      type: DataTypes.STRING(30),
       allowNull: false,
+    },
+    sexe: {
+      type: DataTypes.SMALLINT.UNSIGNED,
+      allowNull: false,
+      defaultValue: 0,
     },
     langue: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(30),
       allowNull: false,
-      defaultValue: 'fr',
+      defaultValue: 'NON DEFINI',
     },
-    photo: {
-      type: DataTypes.STRING(255),
+    photoURL: {
+      type: DataTypes.TEXT('long'),
       allowNull: true,
+      defaultValue: '/uploads/anonym.png',
     },
     actif: {
-      type: DataTypes.BOOLEAN,
+      type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
-      defaultValue: true,
+      defaultValue: 0,
+    },
+    idVilleNaissance: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
+    },
+    idAdmin: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: false,
     },
     isDelete: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
+      allowNull: true,
       defaultValue: false,
     },
   },
   {
     sequelize,
     tableName: 'Eleve',
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: false,
   }
 );
+

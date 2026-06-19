@@ -5,6 +5,7 @@ export class Classe extends Model {
   public idClasse!: number;
   public idCycle!: number;
   public libelle!: string;
+  public section!: 'FRANCOPHONE' | 'ANGLOPHONE';
 }
 
 Classe.init(
@@ -25,6 +26,11 @@ Classe.init(
     libelle: {
       type: DataTypes.STRING(100),
       allowNull: false,
+    },
+    section: {
+      type: DataTypes.ENUM('FRANCOPHONE', 'ANGLOPHONE'),
+      allowNull: false,
+      defaultValue: 'FRANCOPHONE',
     },
   },
   {

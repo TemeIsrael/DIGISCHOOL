@@ -7,7 +7,7 @@ export interface GradeCellProps {
 }
 
 export const GradeCell: React.FC<GradeCellProps> = ({ note, max, maxNote }) => {
-  const maximum = max || maxNote || 20;
+  const maximum = max || maxNote || 10;
 
   if (note === null || note === undefined) {
     return (

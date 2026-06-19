@@ -10,10 +10,9 @@ const startServer = async () => {
     logger.info('Database connection established successfully.');
 
     if (env.NODE_ENV === 'development') {
-      logger.info('Syncing database schema...');
-      // Sync models without losing data by default, or alter: true for dev
-      await sequelize.sync({ alter: true });
-      logger.info('Database models synced successfully.');
+      logger.info('Skipping database schema sync to preserve remote data...');
+      // await sequelize.sync({ alter: true });
+      logger.info('Database models sync skipped.');
     }
 
     app.listen(env.PORT, () => {

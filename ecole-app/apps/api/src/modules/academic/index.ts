@@ -29,7 +29,9 @@ router.post('/cycles', requireRole(['ADMIN']), async (req, res, next) => {
 // --- Classes ---
 router.get('/classes', async (req, res, next) => {
   try {
-    const list = await Classe.findAll({ include: [{ model: Cycle, as: 'cycle' }] });
+    const where: any = {};
+    if (req.query.section) where.section = req.query.section;
+    const list = await Classe.findAll({ where, include: [{ model: Cycle, as: 'cycle' }] });
     res.json({ success: true, data: list });
   } catch (err) {
     next(err);

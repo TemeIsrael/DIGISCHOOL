@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, Globe, Calendar, Menu, X, Bell } from 'lucide-react';
+import { LogOut, Globe, Calendar, Menu, X, Bell, User, Settings } from 'lucide-react';
 import { useAuthStore } from '../../../features/auth/store';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from '../ui/Avatar';
@@ -10,6 +10,23 @@ export const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setShowProfile(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -23,16 +40,22 @@ export const Navbar: React.FC = () => {
   // Nav links based on role
   const links = user?.role === 'TEACHER'
     ? [
-        { to: '/dashboard', labelKey: 'navbar.teacher_space' },
-        { to: '/grades', labelKey: 'sidebar.grades' },
-        { to: '/schedules', labelKey: 'sidebar.schedules' },
-        { to: '/messages', labelKey: 'sidebar.messages' },
+        { to: '/teacher/dashboard', labelKey: 'navbar.teacher_space' },
+        { to: '/teacher/students', labelKey: 'sidebar.students' },
+        { to: '/teacher/grades', labelKey: 'sidebar.grades' },
+        { to: '/teacher/bulletins', labelKey: 'sidebar.bulletins' },
+        { to: '/teacher/schedules', labelKey: 'sidebar.schedules' },
+        { to: '/teacher/discipline', labelKey: 'sidebar.discipline' },
+        { to: '/teacher/homeworks', labelKey: 'navbar.homeworks' },
+        { to: '/teacher/messages', labelKey: 'sidebar.messages' },
       ]
     : [
-        { to: '/dashboard', labelKey: 'navbar.parent_space' },
-        { to: '/bulletins', labelKey: 'sidebar.bulletins' },
-        { to: '/payments', labelKey: 'sidebar.payments' },
-        { to: '/messages', labelKey: 'sidebar.messages' },
+        { to: '/parent/dashboard', labelKey: 'navbar.parent_space' },
+        { to: '/parent/schedule', labelKey: 'sidebar.schedules' },
+        { to: '/parent/bulletins', labelKey: 'sidebar.bulletins' },
+        { to: '/parent/payments', labelKey: 'sidebar.payments' },
+        { to: '/parent/homeworks', labelKey: 'navbar.homeworks' },
+        { to: '/parent/messages', labelKey: 'sidebar.messages' },
       ];
 
   return (
@@ -42,7 +65,7 @@ export const Navbar: React.FC = () => {
         <span className="text-xl font-black text-digi-purple tracking-tight shrink-0">DIGISCHOOL</span>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-1 pl-6 border-l border-slate-100 ml-2">
           {links.map((link) => (
             <NavLink
               key={link.to}
@@ -72,7 +95,7 @@ export const Navbar: React.FC = () => {
 
       <div className="flex items-center gap-3 md:gap-5">
         {/* Academic Year */}
-        <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1 text-xs font-semibold text-slate-600">
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1 text-xs font-semibold text-slate-600">
           <Calendar className="w-3.5 h-3.5 text-digi-purple" />
           <select className="bg-transparent border-0 focus:ring-0 p-0 text-xs font-bold cursor-pointer">
             <option value="2025-2026">2025-2026</option>
@@ -80,7 +103,7 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Language */}
-        <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1 text-xs font-semibold text-slate-600">
+        <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1 text-xs font-semibold text-slate-600">
           <Globe className="w-3.5 h-3.5 text-digi-purple" />
           <select
             onChange={changeLanguage}
@@ -93,24 +116,67 @@ export const Navbar: React.FC = () => {
         </div>
 
         {/* Notifications */}
-        <button className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
-        </button>
-
-        {/* Avatar + Logout */}
-        <div className="flex items-center gap-3 pl-3 border-l border-slate-100">
-          <Avatar
-            name={user?.nom ? `${user.nom} ${user.prenom || ''}` : user?.login}
-            size="sm"
-          />
-          <button
-            onClick={handleLogout}
-            className="p-2 rounded-lg text-slate-400 hover:text-digi-danger hover:bg-rose-50 transition-colors"
-            title={t('auth.logout')}
+        <div className="relative" ref={notifRef}>
+          <button 
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
           >
-            <LogOut className="w-4 h-4" />
+            <Bell className="w-5 h-5" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
           </button>
+
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-100 rounded-xl shadow-lg z-50">
+              <div className="p-3 border-b border-slate-100 flex justify-between items-center">
+                <span className="font-bold text-slate-800">{t('dashboards.notifications', 'Notifications')}</span>
+                <span className="text-xs text-digi-purple cursor-pointer hover:underline">{t('common.markAllRead', 'Tout marquer comme lu')}</span>
+              </div>
+              <div className="max-h-64 overflow-y-auto">
+                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
+                  <p className="text-sm text-slate-700">Nouveau document disponible: <strong>Emploi du temps</strong></p>
+                  <p className="text-xs text-slate-400 mt-1">Il y a 2 heures</p>
+                </div>
+                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
+                  <p className="text-sm text-slate-700">Rappel: Réunion parents-professeurs demain à 16h.</p>
+                  <p className="text-xs text-slate-400 mt-1">Hier</p>
+                </div>
+              </div>
+              <div className="p-2 text-center border-t border-slate-100">
+                <button className="text-sm font-semibold text-digi-purple hover:underline">{t('common.viewAll', 'Voir tout')}</button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* User Avatar + Profile Menu */}
+        <div className="relative flex items-center gap-3 pl-3 border-l border-slate-100" ref={profileRef}>
+          <button 
+            onClick={() => setShowProfile(!showProfile)}
+            className="flex items-center gap-2 focus:outline-none hover:bg-slate-50 p-1 rounded-lg transition-colors"
+          >
+            <Avatar
+              name={user?.nom ? `${user.nom} ${user.prenom || ''}` : user?.login}
+              size="sm"
+            />
+          </button>
+
+          {showProfile && (
+            <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg z-50 py-1">
+              <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-digi-purple flex items-center gap-2">
+                <User className="w-4 h-4" />
+                {t('common.profile', 'Mon Profil')}
+              </button>
+              <div className="h-px bg-slate-100 my-1"></div>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-sm text-digi-danger hover:bg-rose-50 flex items-center gap-2"
+                title={t('auth.logout')}
+              >
+                <LogOut className="w-4 h-4" />
+                {t('auth.logout', 'Déconnexion')}
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

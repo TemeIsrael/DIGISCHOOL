@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Globe } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { useTranslation } from 'react-i18next';
 
@@ -13,7 +13,7 @@ const navLinks = [
 export const PublicNavbar: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -64,11 +64,21 @@ export const PublicNavbar: React.FC = () => {
         ))}
       </div>
 
-      {/* Desktop CTA */}
+      {/* Desktop Actions */}
       <div className="hidden md:flex items-center gap-3">
-        <Button variant="outline" size="sm" onClick={() => navigate('/s-inscrire')}>
-          {t('nav.register')}
-        </Button>
+        {/* Language */}
+        <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-full px-2.5 py-1 text-xs font-semibold text-slate-600">
+          <Globe className="w-3.5 h-3.5 text-digi-purple" />
+          <select
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            value={i18n.language}
+            className="bg-transparent border-0 focus:ring-0 p-0 text-xs font-bold cursor-pointer outline-none"
+          >
+            <option value="fr">FR</option>
+            <option value="en">EN</option>
+          </select>
+        </div>
+
         <Button variant="primary" size="sm" onClick={() => navigate('/login')}>
           {t('nav.login')}
         </Button>
@@ -103,10 +113,21 @@ export const PublicNavbar: React.FC = () => {
                 {t(link.labelKey)}
               </NavLink>
             ))}
-            <div className="flex flex-col gap-2 pt-3 border-t border-slate-100 mt-2">
-              <Button variant="outline" size="sm" onClick={() => navigate('/s-inscrire')} className="w-full">
-                {t('nav.register')}
-              </Button>
+            <div className="flex items-center justify-between px-4 py-2 mt-2 border-t border-slate-100">
+              <div className="flex items-center gap-2 text-sm font-semibold text-slate-600">
+                <Globe className="w-4 h-4 text-digi-purple" />
+                <span>{t('common.language', 'Langue')}</span>
+              </div>
+              <select
+                onChange={(e) => i18n.changeLanguage(e.target.value)}
+                value={i18n.language}
+                className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold outline-none"
+              >
+                <option value="fr">FR</option>
+                <option value="en">EN</option>
+              </select>
+            </div>
+            <div className="flex flex-col gap-2 pt-3 mt-2">
               <Button variant="primary" size="sm" onClick={() => navigate('/login')} className="w-full">
                 {t('nav.login')}
               </Button>

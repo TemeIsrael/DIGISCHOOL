@@ -2,12 +2,13 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Admin extends Model {
-  public ID!: number;
-  public login!: string;
-  public password!: string;
-  public typeAdmin!: number; // [0-5]
-  public actif!: boolean;
-  public isDelete!: boolean;
+  declare ID: number;
+  declare login: string;
+  declare password: string;
+  declare typeAdmin: number;
+  declare actif: boolean;
+  declare isDelete: boolean;
+  declare langue: string;
 }
 
 Admin.init(
@@ -29,10 +30,7 @@ Admin.init(
     typeAdmin: {
       type: DataTypes.TINYINT,
       allowNull: false,
-      validate: {
-        min: 0,
-        max: 5,
-      },
+      validate: { min: 0, max: 4 },
     },
     actif: {
       type: DataTypes.BOOLEAN,
@@ -43,6 +41,11 @@ Admin.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+    langue: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      defaultValue: 'fr',
     },
   },
   {

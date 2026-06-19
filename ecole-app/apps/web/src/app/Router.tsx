@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom
 import { useAuthStore } from '../features/auth/store';
 import { RequireAuth } from '../shared/components/RequireAuth';
 import { RequireRole } from '../shared/components/RequireRole';
+import { RequireAdminType } from '../shared/components/RequireAdminType';
 
 // Layouts
 import { SidebarLayout } from '../shared/components/layout/SidebarLayout';
@@ -19,45 +20,55 @@ const LoadingFallback = () => (
 );
 
 // ─── Lazy-loaded Public Pages ───────────────────────────────────────
-const LandingPage = lazy(() => import('../pages/LandingPage'));
-const LibraryPage = lazy(() => import('../pages/LibraryPage'));
-const RegisterPage = lazy(() => import('../pages/RegisterPage'));
-const LoginPage = lazy(() => import('../features/auth/pages/LoginPage'));
+const LandingPage        = lazy(() => import('../pages/LandingPage'));
+const LibraryPage        = lazy(() => import('../pages/LibraryPage'));
+const HelpPage           = lazy(() => import('../pages/HelpPage'));
+const ContactPage        = lazy(() => import('../pages/ContactPage'));
+const LoginPage          = lazy(() => import('../features/auth/pages/LoginPage'));
 const ForgotPasswordPage = lazy(() => import('../features/auth/pages/ForgotPasswordPage'));
 const ChangePasswordPage = lazy(() => import('../features/auth/pages/ChangePasswordPage'));
-const About = lazy(() => import('../pages/About'));
-const NotFound = lazy(() => import('../pages/NotFound'));
-const Forbidden = lazy(() => import('../pages/Forbidden'));
-const Maintenance = lazy(() => import('../pages/Maintenance'));
+const About              = lazy(() => import('../pages/About'));
+const NotFound           = lazy(() => import('../pages/NotFound'));
+const Forbidden          = lazy(() => import('../pages/Forbidden'));
+const Maintenance        = lazy(() => import('../pages/Maintenance'));
 
 // ─── Lazy-loaded Dashboards ────────────────────────────────────────
-const DashboardRoot = lazy(() => import('../features/dashboards/DashboardRoot'));
-const DashboardAdmin = lazy(() => import('../features/dashboards/DashboardAdmin'));
-const DashboardScolarite = lazy(() => import('../features/dashboards/DashboardScolarite'));
-const DashboardFondateur = lazy(() => import('../features/dashboards/DashboardFondateur'));
-const DashboardDirecteur = lazy(() => import('../features/dashboards/DashboardDirecteur'));
-const DashboardAuditeur = lazy(() => import('../features/dashboards/DashboardAuditeur'));
+const DashboardRoot       = lazy(() => import('../features/dashboards/DashboardRoot'));
+const DashboardAdmin      = lazy(() => import('../features/dashboards/DashboardAdmin'));
+const DashboardScolarite  = lazy(() => import('../features/dashboards/DashboardScolarite'));
+const DashboardFondateur  = lazy(() => import('../features/dashboards/DashboardFondateur'));
+const DashboardDirecteur  = lazy(() => import('../features/dashboards/DashboardDirecteur'));
 const DashboardEnseignant = lazy(() => import('../features/dashboards/DashboardEnseignant'));
-const DashboardParent = lazy(() => import('../features/dashboards/DashboardParent'));
+const DashboardParent     = lazy(() => import('../features/dashboards/DashboardParent'));
 
 // ─── Lazy-loaded Feature Pages ─────────────────────────────────────
-const StudentListPage = lazy(() => import('../features/students/pages/StudentListPage'));
-const StudentNewPage = lazy(() => import('../features/students/pages/StudentNewPage'));
-const StudentDetailPage = lazy(() => import('../features/students/pages/StudentDetailPage'));
-const StudentEditPage = lazy(() => import('../features/students/pages/StudentEditPage'));
-const StudentAssignPage = lazy(() => import('../features/students/pages/StudentAssignPage'));
-const StudentParentsPage = lazy(() => import('../features/students/pages/StudentParentsPage'));
-const PersonnelListPage = lazy(() => import('../features/personnel/pages/PersonnelListPage'));
-const PaymentListPage = lazy(() => import('../features/payments/pages/PaymentListPage'));
-const GradeEntryPage = lazy(() => import('../features/grades/pages/GradeEntryPage'));
-const BulletinPage = lazy(() => import('../features/grades/pages/BulletinPage'));
-const MessageListPage = lazy(() => import('../features/messages/pages/MessageListPage'));
-const DisciplinePage = lazy(() => import('../features/discipline/pages/DisciplinePage'));
-const AcademicConfigPage = lazy(() => import('../features/academic/pages/AcademicConfigPage'));
-const LibraryManagePage = lazy(() => import('../features/library/pages/LibraryManagePage'));
-const AuditLogPage = lazy(() => import('../features/audit/pages/AuditLogPage'));
-const StatsPage = lazy(() => import('../features/stats/pages/StatsPage'));
-const SchedulePage = lazy(() => import('../features/schedules/pages/SchedulePage'));
+const StudentListPage         = lazy(() => import('../features/students/pages/StudentListPage'));
+const StudentNewPage          = lazy(() => import('../features/students/pages/StudentNewPage'));
+const StudentDetailPage       = lazy(() => import('../features/students/pages/StudentDetailPage'));
+const StudentEditPage         = lazy(() => import('../features/students/pages/StudentEditPage'));
+const StudentAssignPage       = lazy(() => import('../features/students/pages/StudentAssignPage'));
+const StudentParentsPage      = lazy(() => import('../features/students/pages/StudentParentsPage'));
+// const PreRegistrationPage     = lazy(() => import('../features/students/pages/PreRegistrationPage'));
+const PreRegistrationListPage = lazy(() => import('../features/students/pages/PreRegistrationListPage'));
+const PersonnelListPage       = lazy(() => import('../features/personnel/pages/PersonnelListPage'));
+const PaymentListPage         = lazy(() => import('../features/payments/pages/PaymentListPage'));
+const GradeEntryPage          = lazy(() => import('../features/grades/pages/GradeEntryPage'));
+const BulletinPage            = lazy(() => import('../features/grades/pages/BulletinPage'));
+const MessageListPage         = lazy(() => import('../features/messages/pages/MessageListPage'));
+const DisciplinePage          = lazy(() => import('../features/discipline/pages/DisciplinePage'));
+const AcademicConfigPage      = lazy(() => import('../features/academic/pages/AcademicConfigPage'));
+const LibraryManagePage       = lazy(() => import('../features/library/pages/LibraryManagePage'));
+const StatsPage               = lazy(() => import('../features/stats/pages/StatsPage'));
+const SchedulePage            = lazy(() => import('../features/schedules/pages/SchedulePage'));
+const TeacherStudentsPage     = lazy(() => import('../features/teacher/pages/TeacherStudentsPage'));
+const TeacherBulletinPage     = lazy(() => import('../features/teacher/pages/TeacherBulletinPage'));
+const TeacherDisciplinePage   = lazy(() => import('../features/teacher/pages/TeacherDisciplinePage'));
+const TeacherHomeworkPage     = lazy(() => import('../features/teacher/pages/TeacherHomeworkPage'));
+const ParentBulletinPage      = lazy(() => import('../features/parent/pages/ParentBulletinPage'));
+const ParentPaymentsPage      = lazy(() => import('../features/parent/pages/ParentPaymentsPage'));
+const ParentSchedulePage      = lazy(() => import('../features/parent/pages/ParentSchedulePage'));
+const ParentHomeworkPage      = lazy(() => import('../features/parent/pages/ParentHomeworkPage'));
+const ParentLibraryPage       = lazy(() => import('../features/parent/pages/ParentLibraryPage'));
 
 // ─── Sidebar Admin Wrapper ──────────────────────────────────────────
 const AdminLayoutWrapper: React.FC = () => (
@@ -68,14 +79,14 @@ const AdminLayoutWrapper: React.FC = () => (
   </SidebarLayout>
 );
 
-// ─── Topnav Teacher/Parent Wrapper ─────────────────────────────────
-const TopnavLayoutWrapper: React.FC = () => (
-  <TopnavLayout>
-    <Suspense fallback={<LoadingFallback />}>
-      <Outlet />
-    </Suspense>
-  </TopnavLayout>
-);
+// ─── Topnav Teacher/Parent Wrapper ─────────────────────────────────// Topnav layout for public routes
+// const TopnavLayoutWrapper: React.FC = () => (
+//   <TopnavLayout>
+//     <Suspense fallback={<PageLoader />}>
+//       <Outlet />
+//     </Suspense>
+//   </TopnavLayout>
+// );
 
 // ─── Role-based Dashboard Redirect ─────────────────────────────────
 const DashboardRedirect: React.FC = () => {
@@ -83,16 +94,14 @@ const DashboardRedirect: React.FC = () => {
   const typeAdmin = user?.typeAdmin;
 
   if (user?.role === 'TEACHER') return <DashboardEnseignant />;
-  if (user?.role === 'PARENT') return <DashboardParent />;
+  if (user?.role === 'PARENT')  return <DashboardParent />;
 
-  // Admin sub-types
   switch (typeAdmin) {
-    case 0: return <DashboardRoot />;
-    case 1: return <DashboardAdmin />;
-    case 2: return <DashboardScolarite />;
-    case 3: return <DashboardFondateur />;
-    case 4: return <DashboardDirecteur />;
-    case 5: return <DashboardAuditeur />;
+    case 0:  return <DashboardRoot />;
+    case 1:  return <DashboardAdmin />;
+    case 2:  return <DashboardScolarite />;
+    case 3:  return <DashboardFondateur />;
+    case 4:  return <DashboardDirecteur />;
     default: return <DashboardAdmin />;
   }
 };
@@ -104,13 +113,16 @@ export const Router: React.FC = () => {
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           {/* ═══ Public Routes ═══ */}
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/livres" element={<LibraryPage />} />
-          <Route path="/s-inscrire" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/"               element={<LandingPage />} />
+          <Route path="/livres"         element={<LibraryPage />} />
+          <Route path="/aide"           element={<HelpPage />} />
+          <Route path="/contact"        element={<ContactPage />} />
+          <Route path="/login"          element={<LoginPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/a-propos" element={<About />} />
-          <Route path="/about" element={<Navigate to="/a-propos" replace />} />
+          <Route path="/a-propos"       element={<About />} />
+          <Route path="/about"          element={<Navigate to="/a-propos" replace />} />
+          {/* Registration disabled — redirect to login */}
+          <Route path="/s-inscrire"     element={<Navigate to="/login" replace />} />
 
           {/* ═══ Admin Routes (Sidebar Layout) ═══ */}
           <Route
@@ -122,66 +134,90 @@ export const Router: React.FC = () => {
               </RequireAuth>
             }
           >
+            {/* Dashboard — accessible to all admin types */}
             <Route path="/dashboard" element={<DashboardRedirect />} />
-            <Route path="/students" element={<StudentListPage />} />
-            <Route path="/students/new" element={<StudentNewPage />} />
-            <Route path="/students/:id" element={<StudentDetailPage />} />
-            <Route path="/students/:id/edit" element={<StudentEditPage />} />
-            <Route path="/students/:id/assign" element={<StudentAssignPage />} />
-            <Route path="/students/:id/parents" element={<StudentParentsPage />} />
-            <Route path="/personnel" element={<PersonnelListPage />} />
-            <Route path="/payments" element={<PaymentListPage />} />
-            <Route path="/grades" element={<GradeEntryPage />} />
-            <Route path="/bulletins" element={<BulletinPage />} />
-            <Route path="/messages" element={<MessageListPage />} />
-            <Route path="/discipline" element={<DisciplinePage />} />
-            <Route path="/academic" element={<AcademicConfigPage />} />
-            <Route path="/library" element={<LibraryManagePage />} />
-            <Route path="/audit" element={<AuditLogPage />} />
-            <Route path="/stats" element={<StatsPage />} />
-            <Route path="/schedules" element={<SchedulePage />} />
+
+            {/* ── Students — Secretary(1), Director(4) ── */}
+            <Route path="/students"                  element={<RequireAdminType allowedTypes={[1,4]}><StudentListPage /></RequireAdminType>} />
+            <Route path="/students/new"              element={<RequireAdminType allowedTypes={[1,4]}><StudentNewPage /></RequireAdminType>} />
+            <Route path="/students/pre-registrations" element={<RequireAdminType allowedTypes={[1,4]}><PreRegistrationListPage /></RequireAdminType>} />
+            <Route path="/students/:id"              element={<RequireAdminType allowedTypes={[1,4]}><StudentDetailPage /></RequireAdminType>} />
+            <Route path="/students/:id/edit"         element={<RequireAdminType allowedTypes={[1,4]}><StudentEditPage /></RequireAdminType>} />
+            <Route path="/students/:id/assign"       element={<RequireAdminType allowedTypes={[1,4]}><StudentAssignPage /></RequireAdminType>} />
+            <Route path="/students/:id/parents"      element={<RequireAdminType allowedTypes={[1,4]}><StudentParentsPage /></RequireAdminType>} />
+
+            {/* ── Personnel — Secretary(1), Director(4) ── */}
+            <Route path="/personnel" element={<RequireAdminType allowedTypes={[1,4]}><PersonnelListPage /></RequireAdminType>} />
+
+            {/* ── Payments — Secretary(1), Founder(3), Director(4) ── */}
+            <Route path="/payments" element={<RequireAdminType allowedTypes={[1,3,4]}><PaymentListPage /></RequireAdminType>} />
+
+            {/* ── Messages — Secretary(1), Director(4) ── */}
+            <Route path="/messages" element={<RequireAdminType allowedTypes={[1,4]}><MessageListPage /></RequireAdminType>} />
+
+            {/* ── Academic — Registrar(2), Director(4) ── */}
+            <Route path="/academic"   element={<RequireAdminType allowedTypes={[2,4]}><AcademicConfigPage /></RequireAdminType>} />
+            <Route path="/schedules"  element={<RequireAdminType allowedTypes={[2,4]}><SchedulePage /></RequireAdminType>} />
+            <Route path="/grades"     element={<RequireAdminType allowedTypes={[2,4]}><GradeEntryPage /></RequireAdminType>} />
+            <Route path="/bulletins"  element={<RequireAdminType allowedTypes={[2,4]}><BulletinPage /></RequireAdminType>} />
+            <Route path="/discipline" element={<RequireAdminType allowedTypes={[2,4]}><DisciplinePage /></RequireAdminType>} />
+
+            {/* ── Library — all except Root(0) ── */}
+            <Route path="/library" element={<RequireAdminType allowedTypes={[1,2,3,4]}><LibraryManagePage /></RequireAdminType>} />
+
+            {/* ── Stats — Founder(3), Director(4) ── */}
+            <Route path="/stats" element={<RequireAdminType allowedTypes={[3,4]}><StatsPage /></RequireAdminType>} />
+
+            {/* Password change — all admins */}
             <Route path="/change-password" element={<ChangePasswordPage />} />
           </Route>
 
-          {/* ═══ Teacher Routes (Topnav Layout) ═══ */}
+          {/* ═══ Teacher Routes (Sidebar Layout) ═══ */}
           <Route
             element={
               <RequireAuth>
                 <RequireRole allowedRoles={['TEACHER']}>
-                  <TopnavLayoutWrapper />
+                  <AdminLayoutWrapper />
                 </RequireRole>
               </RequireAuth>
             }
           >
-            <Route path="/teacher/dashboard" element={<DashboardEnseignant />} />
-            <Route path="/teacher/grades" element={<GradeEntryPage />} />
-            <Route path="/teacher/schedules" element={<SchedulePage />} />
-            <Route path="/teacher/messages" element={<MessageListPage />} />
+            <Route path="/teacher/dashboard"       element={<DashboardEnseignant />} />
+            <Route path="/teacher/students"        element={<TeacherStudentsPage />} />
+            <Route path="/teacher/grades"          element={<GradeEntryPage />} />
+            <Route path="/teacher/bulletins"       element={<TeacherBulletinPage />} />
+            <Route path="/teacher/schedules"       element={<SchedulePage />} />
+            <Route path="/teacher/discipline"      element={<TeacherDisciplinePage />} />
+            <Route path="/teacher/messages"        element={<MessageListPage />} />
+            <Route path="/teacher/homeworks"       element={<TeacherHomeworkPage />} />
             <Route path="/teacher/change-password" element={<ChangePasswordPage />} />
           </Route>
 
-          {/* ═══ Parent Routes (Topnav Layout) ═══ */}
+          {/* ═══ Parent Routes (Sidebar Layout) ═══ */}
           <Route
             element={
               <RequireAuth>
                 <RequireRole allowedRoles={['PARENT']}>
-                  <TopnavLayoutWrapper />
+                  <AdminLayoutWrapper />
                 </RequireRole>
               </RequireAuth>
             }
           >
-            <Route path="/parent/dashboard" element={<DashboardParent />} />
-            <Route path="/parent/bulletins" element={<BulletinPage />} />
-            <Route path="/parent/payments" element={<PaymentListPage />} />
-            <Route path="/parent/messages" element={<MessageListPage />} />
-            <Route path="/parent/change-password" element={<ChangePasswordPage />} />
+            <Route path="/parent/dashboard"        element={<DashboardParent />} />
+            <Route path="/parent/schedule"         element={<ParentSchedulePage />} />
+            <Route path="/parent/bulletins"        element={<ParentBulletinPage />} />
+            <Route path="/parent/payments"         element={<ParentPaymentsPage />} />
+            <Route path="/parent/messages"         element={<MessageListPage />} />
+            <Route path="/parent/homeworks"        element={<ParentHomeworkPage />} />
+            <Route path="/parent/library"          element={<ParentLibraryPage />} />
+            <Route path="/parent/change-password"  element={<ChangePasswordPage />} />
           </Route>
 
           {/* ═══ Global Error Boundaries ═══ */}
-          <Route path="/forbidden" element={<Forbidden />} />
+          <Route path="/forbidden"   element={<Forbidden />} />
           <Route path="/maintenance" element={<Maintenance />} />
-          <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<Navigate to="/404" replace />} />
+          <Route path="/404"         element={<NotFound />} />
+          <Route path="*"            element={<Navigate to="/404" replace />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

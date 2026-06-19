@@ -14,37 +14,235 @@ const registerStudentSchema = z.object({
   nom: z.string().min(2),
   prenom: z.string().min(2),
   dateNaissance: z.string(),
-  idVilleNaissance: z.number(),
+  idVilleNaissance: z.string(),
   langue: z.string().default('fr'),
   photo: z.string().optional(),
   // For Frequente
-  idSalle: z.number(),
-  idAcademi: z.number(),
+  idSalle: z.string(),
+  idAcademi: z.string(),
   // For Parents (optional or required)
   idPersParent: z.number().optional(), // Personne ID of parent
   // For Residents
+  idQuartier: z.string(),
+  // New Parent Info
+  parentInfo: z.object({
+    nom: z.string(),
+    prenom: z.string().optional(),
+    email: z.string().email(),
+    telephone: z.string(),
+  }).optional()
+});
+
+// Schema for parent pre-registration (lighter requirements)
+const preRegisterStudentSchema = z.object({
+  nom: z.string().min(2),
+  prenom: z.string().min(2),
+  dateNaissance: z.string(),
+  idVilleNaissance: z.number(),
+  langue: z.string().default('fr'),
+  photo: z.string().optional(),
   idQuartier: z.number()
 });
 
 router.use(authenticate);
 
-// CREATE (atomic registration in a single transaction)
+// ═══ PRE-REGISTRATION (PARENT) ═══
+// Parent submits a pre-registration → student created with statut='PRE_INSCRIT', no class/room yet
+router.post('/pre-register', requireRole(['PARENT']), validateBody(preRegisterStudentSchema), async (req, res, next) => {
+  const data = req.body;
+  const ip = req.ip || 'unknown';
+  const t = await sequelize.transaction();
+
+  try {
+    // Generate a temporary matricule for pre-registration
+    const tempMatricule = `PRE-${Date.now()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+    // 1. Create Eleve with PRE_INSCRIT status
+    const eleve = await Eleve.create(
+      {
+        matricule: tempMatricule,
+        nom: data.nom,
+        prenom: data.prenom,
+        dateNaissance: data.dateNaissance,
+        idVilleNaissance: data.idVilleNaissance,
+        langue: data.langue,
+        photo: data.photo || null,
+        statut: 'PRE_INSCRIT'
+      },
+      { transaction: t }
+    );
+
+    // 2. Link parent to student
+    const parentPersonne = await Personne.findOne({
+      where: { idPers: req.user!.id, typePersonne: 2, isDelete: false }
+    });
+
+    if (parentPersonne) {
+      await Parents.create(
+        { idPers: parentPersonne.idPers, matricule: tempMatricule },
+        { transaction: t }
+      );
+
+      // 3. Map parent residence
+      if (data.idQuartier) {
+        const existingResident = await Residents.findOne({
+          where: { idPers: parentPersonne.idPers, idQuartier: data.idQuartier }
+        });
+        if (!existingResident) {
+          await Residents.create(
+            { idPers: parentPersonne.idPers, idQuartier: data.idQuartier },
+            { transaction: t }
+          );
+        }
+      }
+    }
+
+    await t.commit();
+    logAction(req.user!.id, 'PRE_REGISTER_STUDENT', `eleve:${tempMatricule}`, ip);
+
+    res.status(201).json({
+      success: true,
+      message: 'Préinscription soumise avec succès. En attente de validation par l\'administration.',
+      data: eleve
+    });
+  } catch (err) {
+    await t.rollback();
+    next(err);
+  }
+});
+
+// ═══ VALIDATE PRE-REGISTRATION (ADMIN only) ═══
+// Admin reviews and confirms a pre-registration → assigns matricule, class, room
+const validatePreRegSchema = z.object({
+  matricule: z.string().min(3), // The real matricule to assign
+  idSalle: z.number(),
+  idAcademi: z.number()
+});
+
+router.put('/validate/:tempMatricule', requireRole(['ADMIN']), validateBody(validatePreRegSchema), async (req, res, next) => {
+  const { tempMatricule } = req.params;
+  const data = req.body;
+  const ip = req.ip || 'unknown';
+  const t = await sequelize.transaction();
+
+  try {
+    const eleve = await Eleve.findOne({
+      where: { matricule: tempMatricule, statut: 'PRE_INSCRIT', isDelete: false }
+    });
+
+    if (!eleve) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Préinscription introuvable' } });
+      return;
+    }
+
+    // Update student: assign real matricule and mark as INSCRIT
+    await eleve.update(
+      { matricule: data.matricule, statut: 'INSCRIT' },
+      { transaction: t }
+    );
+
+    // Update parent link with new matricule
+    await Parents.update(
+      { matricule: data.matricule },
+      { where: { matricule: tempMatricule }, transaction: t }
+    );
+
+    // Create Frequente (class assignment)
+    await Frequente.create(
+      { idSalle: data.idSalle, idAcademi: data.idAcademi, matricule: data.matricule },
+      { transaction: t }
+    );
+
+    await t.commit();
+    logAction(req.user!.id, 'VALIDATE_PRE_REGISTRATION', `eleve:${data.matricule}`, ip);
+
+    res.json({
+      success: true,
+      message: 'Élève inscrit avec succès (préinscription validée)',
+      data: eleve
+    });
+  } catch (err) {
+    await t.rollback();
+    next(err);
+  }
+});
+
+// ═══ REJECT PRE-REGISTRATION (ADMIN only) ═══
+router.delete('/pre-register/:tempMatricule', requireRole(['ADMIN']), async (req, res, next) => {
+  const { tempMatricule } = req.params;
+  const ip = req.ip || 'unknown';
+  try {
+    const eleve = await Eleve.findOne({
+      where: { matricule: tempMatricule, statut: 'PRE_INSCRIT', isDelete: false }
+    });
+    if (!eleve) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Préinscription introuvable' } });
+      return;
+    }
+    await eleve.update({ isDelete: true });
+    logAction(req.user!.id, 'REJECT_PRE_REGISTRATION', `eleve:${tempMatricule}`, ip);
+    res.json({ success: true, message: 'Préinscription rejetée' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ═══ LIST PRE-REGISTRATIONS (ADMIN only) ═══
+router.get('/pre-registrations', requireRole(['ADMIN']), async (req, res, next) => {
+  try {
+    const list = await Eleve.findAll({
+      where: { statut: 'PRE_INSCRIT', isDelete: false },
+      include: [{ model: Parents, as: 'parents', include: [{ model: Personne, as: 'personne' }] }],
+      order: [['createdAt', 'DESC']]
+    });
+    res.json({ success: true, data: list });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ═══ FULL REGISTRATION (ADMIN only — direct inscription) ═══
 router.post('/register', requireRole(['ADMIN']), validateBody(registerStudentSchema), async (req, res, next) => {
   const data = req.body;
   const ip = req.ip || 'unknown';
   const t = await sequelize.transaction();
 
   try {
-    // 1. Create Eleve
+    // 0. Resolve string names to IDs
+    const [ville] = await sequelize.models.VilleNaissance.findOrCreate({ where: { libelle: data.idVilleNaissance }, transaction: t });
+    
+    // For Salle, we need a Classe. If Classe 1 doesn't exist, we fallback.
+    let defaultClasse = await sequelize.models.Classe.findOne({ transaction: t });
+    if (!defaultClasse) {
+      const [cycle] = await sequelize.models.Cycle.findOrCreate({ where: { libelle: 'Primaire' }, transaction: t });
+      defaultClasse = await sequelize.models.Classe.create({ libelle: 'Classe par défaut', idCycle: (cycle as any).idCycle, section: 'FRANCOPHONE' }, { transaction: t });
+    }
+    const [salle] = await sequelize.models.Salle.findOrCreate({ 
+      where: { libelle: data.idSalle }, 
+      defaults: { idClasse: (defaultClasse as any).idClasse, surface: 0, position: 'N/A' },
+      transaction: t 
+    });
+
+    const [annee] = await sequelize.models.AnneeAcademique.findOrCreate({ 
+      where: { libelle: data.idAcademi }, 
+      defaults: { courante: true },
+      transaction: t 
+    });
+
+    const [quartier] = await sequelize.models.Quartier.findOrCreate({ where: { libelle: data.idQuartier }, transaction: t });
+
+    // 1. Create Eleve (statut = INSCRIT by default)
     const eleve = await Eleve.create(
       {
         matricule: data.matricule,
         nom: data.nom,
         prenom: data.prenom,
         dateNaissance: data.dateNaissance,
-        idVilleNaissance: data.idVilleNaissance,
+        idVilleNaissance: (ville as any).idVille,
+        lieuNaissance: data.idVilleNaissance,
         langue: data.langue,
-        photo: data.photo || null
+        photo: data.photo || null,
+        statut: 'INSCRIT'
       },
       { transaction: t }
     );
@@ -52,33 +250,58 @@ router.post('/register', requireRole(['ADMIN']), validateBody(registerStudentSch
     // 2. Create Frequente
     await Frequente.create(
       {
-        idSalle: data.idSalle,
-        idAcademi: data.idAcademi,
+        idSalle: (salle as any).idSalle,
+        idAcademi: (annee as any).idAnnee,
         matricule: data.matricule
       },
       { transaction: t }
     );
 
-    // 3. Link Parent (if provided)
-    if (data.idPersParent) {
+    // 3. Handle Parent Creation or Link
+    let parentId = data.idPersParent;
+    if (!parentId && data.parentInfo) {
+      // Create new parent Personne
+      const genPassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = await require('../../lib/bcrypt').hashPassword(genPassword);
+      // login: prenom.nom or email prefix
+      const genLogin = data.parentInfo.email.split('@')[0] + Math.floor(Math.random() * 1000);
+      
+      const newParent = await Personne.create({
+        nom: data.parentInfo.nom,
+        prenom: data.parentInfo.prenom || '',
+        sexe: 'M', // default or extract
+        dateNaissance: new Date().toISOString().split('T')[0],
+        idVilleNaissance: (ville as any).idVille,
+        telephone1: data.parentInfo.telephone,
+        email: data.parentInfo.email,
+        typePersonne: 2, // PARENT
+        login: genLogin,
+        password: hashedPassword,
+        actif: true
+      }, { transaction: t });
+      
+      parentId = newParent.idPers;
+      
+      // Simulate sending email
+      console.log(`\n=== EMAIL SIMULATION ===\nTo: ${data.parentInfo.email}\nSubject: Vos identifiants DIGISCHOOL\nBonjour ${data.parentInfo.nom},\nVoici vos accès Parent:\nLogin: ${genLogin}\nMot de passe: ${genPassword}\n========================\n`);
+    }
+
+    if (parentId) {
       await Parents.create(
         {
-          idPers: data.idPersParent,
+          idPers: parentId,
           matricule: data.matricule
         },
         { transaction: t }
       );
     }
 
-    // 4. Create Residents (neighborhood mapping for the student / parent perspective)
-    // Wait, the residents table maps idPers to idQuartier.
-    // If a parent is linked, map the parent's residence to idQuartier, or we can save mapping for student.
-    // Since the resident maps idPers, we'll map the parent (idPersParent) to the quartier.
-    if (data.idPersParent) {
+    // 4. Create Residents
+    if (parentId) {
       await Residents.create(
         {
-          idPers: data.idPersParent,
-          idQuartier: data.idQuartier
+          idPers: parentId,
+          idQuartier: (quartier as any).idQuartier
         },
         { transaction: t }
       );
@@ -101,7 +324,7 @@ router.post('/register', requireRole(['ADMIN']), validateBody(registerStudentSch
 // CRUD - GET ALL
 router.get('/', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
   try {
-    const list = await Eleve.findAll({ where: { isDelete: false } });
+    const list = await Eleve.findAll({ where: { isDelete: false, statut: 'INSCRIT' } });
     res.json({ success: true, data: list });
   } catch (err) {
     next(err);

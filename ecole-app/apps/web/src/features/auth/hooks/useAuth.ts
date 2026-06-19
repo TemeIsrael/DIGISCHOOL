@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { api } from '../../../shared/lib/api';
-import { useAuthStore } from '../store';
+import { useAuthStore, getRoleDashboardPath } from '../store';
 import { useToast } from '../../../shared/components/ui/Toast';
 
 export const useAuth = () => {
@@ -47,9 +47,63 @@ export const useAuth = () => {
     }
   });
 
+  const changePasswordMutation = useMutation({
+    mutationFn: async (data: { oldPassword: string; newPassword: string }) => {
+      const response = await api.post('/auth/change-password', data);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast({
+        type: 'success',
+        title: 'Mot de passe modifié',
+        description: 'Votre mot de passe a été mis à jour avec succès.'
+      });
+    },
+    onError: (error: any) => {
+      const msg =
+        error.response?.data?.error?.message ||
+        'Échec de la modification. Vérifiez votre ancien mot de passe.';
+      toast({
+        type: 'danger',
+        title: 'Erreur',
+        description: msg
+      });
+    }
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: async (data: { login: string }) => {
+      const response = await api.post('/auth/forgot-password', data);
+      return response.data;
+    },
+    onSuccess: () => {
+      toast({
+        type: 'success',
+        title: 'Demande envoyée',
+        description: 'Votre demande de réinitialisation a été transmise à l\'administrateur.'
+      });
+    },
+    onError: (error: any) => {
+      const msg =
+        error.response?.data?.error?.message ||
+        'Une erreur est survenue lors de la demande. Veuillez réessayer.';
+      toast({
+        type: 'danger',
+        title: 'Erreur',
+        description: msg
+      });
+    }
+  });
+
   return {
     login: loginMutation.mutateAsync,
     isLoggingIn: loginMutation.isPending,
-    logout: logoutMutation.mutateAsync
+    logout: logoutMutation.mutateAsync,
+    isLoggingOut: logoutMutation.isPending,
+    changePassword: changePasswordMutation.mutateAsync,
+    isChangingPassword: changePasswordMutation.isPending,
+    forgotPassword: forgotPasswordMutation.mutateAsync,
+    isSendingReset: forgotPasswordMutation.isPending,
+    getRoleDashboardPath,
   };
 };

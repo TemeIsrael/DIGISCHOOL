@@ -1,9 +1,10 @@
-import React from 'react';
-import { LogOut, Globe, Calendar, Bell, Menu, X } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import { LogOut, Globe, Calendar, Bell, Menu, X, User, Settings } from 'lucide-react';
 import { useAuthStore } from '../../../features/auth/store';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from '../ui/Avatar';
+import { api } from '../../lib/api';
 
 export interface TopbarProps {
   onMenuToggle?: () => void;
@@ -16,13 +17,41 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
   const location = useLocation();
   const { t, i18n } = useTranslation();
 
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setShowNotifications(false);
+      }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setShowProfile(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleLogout = () => {
     logout();
     navigate('/');
   };
 
   const changeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    i18n.changeLanguage(e.target.value);
+    const newLang = e.target.value;
+    i18n.changeLanguage(newLang);
+    // Save language preference to the database for cross-device sync
+    api.put('/auth/language', { langue: newLang }).catch(() => {});
+  };
+
+  // Role-based path helpers
+  const getChangePasswordPath = () => {
+    if (user?.role === 'TEACHER') return '/teacher/change-password';
+    if (user?.role === 'PARENT') return '/parent/change-password';
+    return '/change-password';
   };
 
   // Generate breadcrumb from path
@@ -90,8 +119,8 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
         </div>
 
         {/* Language */}
-        <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1 text-xs font-semibold text-slate-600">
-          <Globe className="w-3.5 h-3.5 text-digi-purple" />
+        <div className="flex items-center gap-1 sm:gap-2 bg-slate-50 border border-slate-200 rounded-full px-2 sm:px-3 py-1 text-xs font-semibold text-slate-600">
+          <Globe className="w-3.5 h-3.5 text-digi-purple hidden sm:block" />
           <select
             onChange={changeLanguage}
             value={i18n.language}
@@ -103,29 +132,75 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
         </div>
 
         {/* Notifications */}
-        <button className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors">
-          <Bell className="w-5 h-5" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
-        </button>
-
-        {/* User Avatar + Logout */}
-        <div className="flex items-center gap-3 pl-3 border-l border-slate-100">
-          <Avatar
-            name={user?.nom ? `${user.nom} ${user.prenom || ''}` : user?.login}
-            size="sm"
-          />
-          <div className="hidden md:block min-w-0">
-            <p className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
-              {user?.nom ? `${user.prenom || ''} ${user.nom}` : user?.login}
-            </p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="p-2 rounded-lg text-slate-400 hover:text-digi-danger hover:bg-rose-50 transition-colors"
-            title={t('auth.logout')}
+        <div className="relative" ref={notifRef}>
+          <button 
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
           >
-            <LogOut className="w-4 h-4" />
+            <Bell className="w-5 h-5" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
           </button>
+          
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-100 rounded-xl shadow-lg z-50">
+              <div className="p-3 border-b border-slate-100 flex justify-between items-center">
+                <span className="font-bold text-slate-800">{t('dashboards.notifications', 'Notifications')}</span>
+                <span className="text-xs text-digi-purple cursor-pointer hover:underline">{t('common.markAllRead', 'Tout marquer comme lu')}</span>
+              </div>
+              <div className="max-h-64 overflow-y-auto">
+                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
+                  <p className="text-sm text-slate-700">Nouveau document disponible: <strong>Emploi du temps</strong></p>
+                  <p className="text-xs text-slate-400 mt-1">Il y a 2 heures</p>
+                </div>
+                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
+                  <p className="text-sm text-slate-700">Rappel: Réunion parents-professeurs demain à 16h.</p>
+                  <p className="text-xs text-slate-400 mt-1">Hier</p>
+                </div>
+              </div>
+              <div className="p-2 text-center border-t border-slate-100">
+                <button className="text-sm font-semibold text-digi-purple hover:underline">{t('common.viewAll', 'Voir tout')}</button>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* User Avatar + Profile Menu */}
+        <div className="relative flex items-center gap-3 pl-3 border-l border-slate-100" ref={profileRef}>
+          <button 
+            onClick={() => setShowProfile(!showProfile)}
+            className="flex items-center gap-2 focus:outline-none hover:bg-slate-50 p-1 rounded-lg transition-colors"
+          >
+            <Avatar
+              name={user?.nom ? `${user.nom} ${user.prenom || ''}` : user?.login}
+              size="sm"
+            />
+            <div className="hidden md:block min-w-0 text-left">
+              <p className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
+                {user?.nom ? `${user.prenom || ''} ${user.nom}` : user?.login}
+              </p>
+            </div>
+          </button>
+
+          {showProfile && (
+            <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg z-50 py-1">
+              <button 
+                onClick={() => { setShowProfile(false); navigate(getChangePasswordPath()); }}
+                className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-digi-purple flex items-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                {t('common.profile', 'Mon Profil')}
+              </button>
+              <div className="h-px bg-slate-100 my-1"></div>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-sm text-digi-danger hover:bg-rose-50 flex items-center gap-2"
+                title={t('auth.logout')}
+              >
+                <LogOut className="w-4 h-4" />
+                {t('auth.logout', 'Déconnexion')}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

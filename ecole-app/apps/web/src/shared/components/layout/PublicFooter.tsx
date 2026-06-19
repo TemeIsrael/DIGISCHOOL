@@ -21,10 +21,16 @@ export const PublicFooter: React.FC = () => {
           >
             {t('footer.about')}
           </span>
-          <span className="hover:text-digi-purple cursor-pointer transition-colors">
+          <span
+            className="hover:text-digi-purple cursor-pointer transition-colors"
+            onClick={() => navigate('/aide')}
+          >
             {t('footer.help')}
           </span>
-          <span className="hover:text-digi-purple cursor-pointer transition-colors">
+          <span
+            className="hover:text-digi-purple cursor-pointer transition-colors"
+            onClick={() => navigate('/contact')}
+          >
             {t('footer.contact')}
           </span>
         </div>

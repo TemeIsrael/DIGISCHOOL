@@ -13,7 +13,7 @@ export interface AcademicYear {
 
 export interface Cycle {
   idCycle: number;
-  libelle: string; // "Maternelle", "Primaire", "Secondaire"
+  libelle: string; // "Maternel", "Primaire"
   actif: boolean;
 }
 
@@ -21,7 +21,7 @@ export interface Cycle {
 
 export interface Classe {
   idClasse: number;
-  libelle: string; // "6ème", "5ème", etc.
+  libelle: string; // "SIL", "CP", "CE1", "CE2", "CM1", "CM2"
   idCycle: number;
   nomCycle?: string;
   actif: boolean;
@@ -31,7 +31,7 @@ export interface Classe {
 
 export interface Salle {
   idSalle: number;
-  libelle: string; // "6ème A", "5ème B"
+  libelle: string; // "SIL A", "CP A", "CE1 A"
   idClasse: number;
   nomClasse?: string;
   capacite: number;
@@ -53,17 +53,17 @@ export interface CourseInfo {
 
 // ─── Schedule ───────────────────────────────────────────────────────
 
-export type JourSemaine = 'LUNDI' | 'MARDI' | 'MERCREDI' | 'JEUDI' | 'VENDREDI' | 'SAMEDI';
+export type JourSemaine = 'LUNDI' | 'MARDI' | 'MERCREDI' | 'JEUDI' | 'VENDREDI';
 
 export const JOURS_SEMAINE: JourSemaine[] = [
-  'LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI', 'SAMEDI',
+  'LUNDI', 'MARDI', 'MERCREDI', 'JEUDI', 'VENDREDI',
 ];
 
 export interface ScheduleSlot {
   idCreneau: number;
   jour: JourSemaine;
-  heureDebut: string; // "08:00"
-  heureFin: string;   // "09:00"
+  heureDebut: string; // "07:30"
+  heureFin: string;   // "08:15"
   idCours: number;
   nomCours?: string;
   idSalle: number;
@@ -83,3 +83,43 @@ export interface ScheduleSlotCreateInput {
   idEnseignant?: number;
   idAca: number;
 }
+
+// ─── Primary School Constants ───────────────────────────────────────
+
+/** Cycles d'une école primaire camerounaise (MINEDUB) */
+export const CYCLES_PRIMAIRE = ['Maternel', 'Primaire'] as const;
+
+/** Classes du cycle maternel */
+export const CLASSES_MATERNEL = ['Petite Section', 'Moyenne Section', 'Grande Section'] as const;
+
+/** Classes du cycle primaire */
+export const CLASSES_PRIMAIRE = ['SIL', 'CP', 'CE1', 'CE2', 'CM1', 'CM2'] as const;
+
+/** Matières de base enseignées au primaire */
+export const MATIERES_PRIMAIRE = [
+  'Français',
+  'Mathématiques',
+  'Sciences & Technologie',
+  'Éducation Civique & Morale',
+  'Histoire',
+  'Géographie',
+  'Anglais',
+  'Éducation Physique',
+  'Travail Manuel',
+  'Dessin',
+  'Chant & Musique',
+  'Informatique',
+] as const;
+
+/** Séquences d'évaluation (6 par an, 2 par trimestre) */
+export const SEQUENCES = [
+  'Séquence 1',
+  'Séquence 2',
+  'Séquence 3',
+  'Séquence 4',
+  'Séquence 5',
+  'Séquence 6',
+] as const;
+
+/** Barème de notation au primaire camerounais */
+export const NOTE_MAX_PRIMAIRE = 10;

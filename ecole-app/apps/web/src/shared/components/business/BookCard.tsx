@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { BookOpen } from 'lucide-react';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
@@ -27,6 +28,8 @@ export const BookCard: React.FC<BookCardProps> = ({
   specialty,
   onOpen
 }) => {
+  const { t } = useTranslation();
+  
   const displayTitle = title || titre || '';
   const displayAuthor = author || auteur || '';
   const displayTag = specialty || isbn || '';
@@ -52,7 +55,7 @@ export const BookCard: React.FC<BookCardProps> = ({
         {hasStock && (
           <div className="mt-3 space-y-1">
             <div className="flex justify-between text-xs">
-              <span className="text-slate-500 font-semibold">Disponibles</span>
+              <span className="text-slate-500 font-semibold">{t('library.available', 'Disponibles')}</span>
               <span className="font-bold text-digi-purple">{available} / {total}</span>
             </div>
             <div className="w-full bg-slate-100 rounded-full h-1.5">
@@ -67,7 +70,7 @@ export const BookCard: React.FC<BookCardProps> = ({
         )}
 
         <Button variant="primary" size="sm" className="w-full mt-4" onClick={onOpen}>
-          {hasStock ? 'Gérer' : 'Ouvrir'}
+          {hasStock ? t('library.manage', 'Gérer') : t('library.open', 'Ouvrir')}
         </Button>
       </div>
     </Card>

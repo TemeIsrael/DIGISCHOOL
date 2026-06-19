@@ -39,7 +39,9 @@ const changePasswordSchema = z.object({
 router.post('/login', loginLimiter, validateBody(loginSchema), async (req, res, next) => {
   const { login, password, role } = req.body;
   const ip = req.ip || 'unknown';
-
+  console.log("LOGIN:", login);
+console.log("PASSWORD:", password);
+console.log("ROLE:", role);
   try {
     let user: any = null;
     let userId = 0;
@@ -47,26 +49,47 @@ router.post('/login', loginLimiter, validateBody(loginSchema), async (req, res, 
     let typePersonne: number | undefined;
 
     if (role === 'ADMIN') {
-      user = await Admin.findOne({ where: { login, actif: true, isDelete: false } });
-      if (user) {
-        userId = user.ID;
-        typeAdmin = user.typeAdmin;
+      user = await Admin.findOne({
+        where: { login, actif: true, isDelete: false },
+        attributes: ['ID', 'login', 'password', 'typeAdmin', 'actif', 'isDelete', 'langue']
+      });
+
+      if (!user || !user.password) {
+        return res.status(401).json({ error: { code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' } });
       }
+
+      const data = user.dataValues;
+      userId = data.ID;
+      typeAdmin = data.typeAdmin;
+
+      const isValid = await comparePassword(password, data.password);
+      if (!isValid) {
+        return res.status(401).json({ error: { code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' } });
+      }
+
+    } else if (role === 'PARENT' || role === 'TEACHER') {
+      // PARENT = typePersonne 2, TEACHER = typePersonne 1
+      const expectedType = role === 'PARENT' ? 2 : 1;
+      user = await Personne.findOne({
+        where: { login, typePersonne: expectedType, actif: true, isDelete: false },
+        attributes: ['idPers', 'login', 'password', 'typePersonne', 'actif', 'isDelete', 'langue']
+      });
+
+      if (!user || !user.password) {
+        return res.status(401).json({ error: { code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' } });
+      }
+
+      const data = user.dataValues;
+      userId = data.idPers;
+      typePersonne = data.typePersonne;
+
+      const isValid = await comparePassword(password, data.password);
+      if (!isValid) {
+        return res.status(401).json({ error: { code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' } });
+      }
+
     } else {
-      let typeReq = 4;
-      if (role === 'TEACHER') typeReq = 1;
-      if (role === 'PARENT') typeReq = 2;
-
-      user = await Personne.findOne({ where: { login, typePersonne: typeReq, actif: true, isDelete: false } });
-      if (user) {
-        userId = user.idPers;
-        typePersonne = user.typePersonne;
-      }
-    }
-
-    if (!user || !(await comparePassword(password, user.password))) {
-      res.status(401).json({ error: { code: 'INVALID_CREDENTIALS', message: 'Identifiants invalides' } });
-      return;
+      return res.status(400).json({ error: { code: 'INVALID_ROLE', message: 'Role not supported' } });
     }
 
     const payload = { id: userId, login, role, typeAdmin, typePersonne };
@@ -96,7 +119,8 @@ router.post('/login', loginLimiter, validateBody(loginSchema), async (req, res, 
           login,
           role,
           typeAdmin,
-          typePersonne
+          typePersonne,
+          langue: user.dataValues.langue || 'fr'
         }
       }
     });
@@ -188,6 +212,27 @@ router.post('/change-password', authenticate, validateBody(changePasswordSchema)
 
     logAction(userContext.id, 'CHANGE_PASSWORD', 'auth', ip);
     res.json({ success: true, message: 'Mot de passe modifié avec succès' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// UPDATE LANGUAGE
+router.put('/language', authenticate, async (req, res, next) => {
+  const { langue } = req.body;
+  const userContext = req.user!;
+
+  if (!langue || !['fr', 'en'].includes(langue)) {
+    return res.status(400).json({ error: { code: 'INVALID_LANGUAGE', message: 'Langue invalide. Valeurs acceptées: fr, en' } });
+  }
+
+  try {
+    if (userContext.role === 'ADMIN') {
+      await Admin.update({ langue }, { where: { ID: userContext.id } });
+    } else {
+      await Personne.update({ langue }, { where: { idPers: userContext.id } });
+    }
+    res.json({ success: true, message: 'Langue mise à jour avec succès' });
   } catch (err) {
     next(err);
   }

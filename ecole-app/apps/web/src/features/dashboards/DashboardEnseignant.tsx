@@ -1,31 +1,48 @@
 import React from 'react';
-import { TopnavLayout } from '../../shared/components/layout/TopnavLayout';
+import { useTranslation } from 'react-i18next';
 import { KPICard } from '../../shared/components/ui/KPICard';
 import { Card } from '../../shared/components/ui/Card';
 import { ScheduleGrid } from '../../shared/components/business/ScheduleGrid';
 import { BookOpen, Users, ClipboardList, Clock } from 'lucide-react';
 
 const upcomingEvals = [
-  { cours: 'Mathématiques', classe: '6ème A', date: '28/05/2026', type: 'Devoir' },
-  { cours: 'Mathématiques', classe: '5ème B', date: '30/05/2026', type: 'Examen' },
-  { cours: 'Physique', classe: '4ème C', date: '02/06/2026', type: 'Interrogation' },
+  { cours: 'Français', classe: 'CM1 A', date: '28/05/2026', type: 'Séquence 4' },
+  { cours: 'Mathématiques', classe: 'CE2 A', date: '30/05/2026', type: 'Séquence 4' },
+  { cours: 'Sciences & Technologie', classe: 'CM2 A', date: '02/06/2026', type: 'Séquence 4' },
 ];
 
 export const DashboardEnseignant: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === 'en';
+
+  const getTranslatedCourse = (cours: string) => {
+    switch(cours) {
+      case 'Français':
+        return t('stats.labels.fr', 'Français');
+      case 'Mathématiques':
+        return t('stats.labels.math', 'Maths');
+      case 'Sciences & Technologie':
+        return t('stats.labels.sc', 'Sciences');
+      case 'Anglais':
+        return t('stats.labels.en', 'Anglais');
+      default:
+        return cours;
+    }
+  };
+
   return (
-    <TopnavLayout>
-      <div className="space-y-8">
+    <div className="space-y-8">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">Espace Enseignant &mdash; Tableau de bord</h1>
-          <p className="text-sm text-slate-400 font-semibold">Gérez vos cours, notes et emploi du temps</p>
+          <h1 className="text-2xl font-bold text-slate-800">{t('dashboards.enseignantTitle')}</h1>
+          <p className="text-sm text-slate-400 font-semibold">{t('dashboards.enseignantSubtitle')}</p>
         </div>
 
         {/* KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <KPICard value="3" label="Cours Assignés" icon={<BookOpen className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="127" label="Élèves Concernés" icon={<Users className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="5" label="Évaluations Planifiées" icon={<ClipboardList className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="18h" label="Volume Hebdo" icon={<Clock className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="4" label={t('dashboards.assignedClasses')} icon={<BookOpen className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="127" label={t('dashboards.studentsConcerned')} icon={<Users className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="3" label={t('dashboards.plannedEvals')} icon={<ClipboardList className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value="24h" label={t('dashboards.weeklyVolume')} icon={<Clock className="w-5 h-5 text-digi-purple" />} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -33,16 +50,18 @@ export const DashboardEnseignant: React.FC = () => {
           <Card className="shadow-sm border border-slate-100">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
               <Clock className="w-4 h-4 text-digi-purple" />
-              Emploi du Temps &mdash; Semaine
+              {t('dashboards.weeklySchedule')}
             </h3>
             <ScheduleGrid
+              isEn={isEn}
               entries={[
-                { jour: 'Lundi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: '6ème A' },
-                { jour: 'Lundi', heureDebut: '10:15', heureFin: '12:15', cours: 'Physique', salle: '4ème C' },
-                { jour: 'Mardi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: '5ème B' },
-                { jour: 'Mercredi', heureDebut: '14:00', heureFin: '16:00', cours: 'Physique', salle: '3ème A' },
-                { jour: 'Jeudi', heureDebut: '08:00', heureFin: '10:00', cours: 'Mathématiques', salle: '6ème A' },
-                { jour: 'Vendredi', heureDebut: '10:15', heureFin: '12:15', cours: 'Mathématiques', salle: '5ème B' },
+                { jour: 'Lundi', heureDebut: '07:30', heureFin: '08:15', cours: isEn ? 'French' : 'Français', salle: 'CM1 A' },
+                { jour: 'Lundi', heureDebut: '08:15', heureFin: '09:00', cours: isEn ? 'Mathematics' : 'Mathématiques', salle: 'CM1 A' },
+                { jour: 'Mardi', heureDebut: '07:30', heureFin: '08:15', cours: isEn ? 'French' : 'Français', salle: 'CE2 A' },
+                { jour: 'Mardi', heureDebut: '08:15', heureFin: '09:00', cours: isEn ? 'Science & Technology' : 'Sciences & Technologie', salle: 'CE2 A' },
+                { jour: 'Mercredi', heureDebut: '07:30', heureFin: '08:15', cours: isEn ? 'Mathematics' : 'Mathématiques', salle: 'CM2 A' },
+                { jour: 'Jeudi', heureDebut: '07:30', heureFin: '08:15', cours: isEn ? 'French' : 'Français', salle: 'CM1 A' },
+                { jour: 'Vendredi', heureDebut: '07:30', heureFin: '08:15', cours: isEn ? 'Mathematics' : 'Mathématiques', salle: 'CE2 A' },
               ]}
             />
           </Card>
@@ -51,27 +70,27 @@ export const DashboardEnseignant: React.FC = () => {
           <Card className="shadow-sm border border-slate-100">
             <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-4 flex items-center gap-2">
               <ClipboardList className="w-4 h-4 text-digi-purple" />
-              Prochaines Évaluations
+              {t('dashboards.upcomingEvals')}
             </h3>
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-slate-100 text-sm">
                 <thead className="bg-slate-50 font-bold text-slate-700">
                   <tr>
-                    <th className="px-4 py-3 text-left">Cours</th>
-                    <th className="px-4 py-3 text-left">Classe</th>
-                    <th className="px-4 py-3 text-left">Date</th>
-                    <th className="px-4 py-3 text-left">Type</th>
+                    <th className="px-4 py-3 text-left">{t('dashboards.course')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboards.class')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboards.date')}</th>
+                    <th className="px-4 py-3 text-left">{t('dashboards.type')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
                   {upcomingEvals.map((e, i) => (
                     <tr key={i} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3 font-semibold">{e.cours}</td>
+                      <td className="px-4 py-3 font-semibold">{getTranslatedCourse(e.cours)}</td>
                       <td className="px-4 py-3">{e.classe}</td>
                       <td className="px-4 py-3">{e.date}</td>
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-digi-purple-bg text-digi-purple">
-                          {e.type}
+                          {e.type.replace('Séquence', isEn ? 'Sequence' : 'Séquence')}
                         </span>
                       </td>
                     </tr>
@@ -82,7 +101,6 @@ export const DashboardEnseignant: React.FC = () => {
           </Card>
         </div>
       </div>
-    </TopnavLayout>
   );
 };
 export default DashboardEnseignant;

@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "DIGISCHOOL",
-    "slogan": "Votre écosystème scolaire connecté"
+    "slogan": "Votre école primaire connectée"
   },
   "nav": {
     "home": "Accueil",
@@ -9,6 +9,11 @@
     "about": "À propos",
     "register": "S'inscrire",
     "login": "Connexion"
+  },
+  "navbar": {
+    "parent_space": "Espace Parent",
+    "teacher_space": "Espace Enseignant",
+    "homeworks": "Devoirs"
   },
   "auth": {
     "login": "Se connecter",
@@ -19,9 +24,59 @@
     "forgotPassword": "Mot de passe oublié ?",
     "changePassword": "Changer le mot de passe",
     "loggingIn": "Connexion en cours...",
+    "loginTitle": "Connexion",
+    "usernamePlaceholder": "Saisissez votre nom d'utilisateur",
+    "passwordPlaceholder": "••••••••",
+    "loginMinLength": "Le login doit contenir au moins 3 caractères",
+    "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+    "roles": {
+      "ROOT": "Super Admin / Root",
+      "ADMIN_INSCRIPTIONS": "Admin Inscriptions",
+      "ADMIN_SCOLARITE": "Admin Scolarité",
+      "FONDATEUR": "Fondateur",
+      "DIRECTEUR": "Directeur",
+      "ADMIN_AUDITEUR": "Admin Auditeur",
+      "STAFF": "Administratif",
+      "TEACHER": "Espace Enseignant",
+      "PARENT": "Espace Parent"
+    },
     "registerTitle": "INSCRIPTION",
     "registerSubtitle": "Rejoignez l'écosystème scolaire moderne DIGISCHOOL 2026",
     "parentName": "Nom du parent",
+    "dashboard": {
+      "root": {
+        "title": "Super Admin — Dashboard Root",
+        "subtitle": "Vue d'ensemble et logs d'audit système"
+      },
+      "admin": {
+        "title": "Secrétariat — Tableau de bord Administrateur",
+        "subtitle": "Suivi des inscriptions et vie scolaire au quotidien"
+      },
+      "scolarite": {
+        "title": "Comptabilité — Espace Scolarité",
+        "subtitle": "Suivi financier et encaissements des pensions"
+      },
+      "fondateur": {
+        "title": "Fondation — Espace Promoteur",
+        "subtitle": "Indicateurs financiers exécutifs et statistiques de recouvrement"
+      },
+      "directeur": {
+        "title": "Direction — Espace Directeur",
+        "subtitle": "Suivi de la performance pédagogique et validation des bulletins"
+      },
+      "auditeur": {
+        "title": "Audit — Espace Commission Contrôle",
+        "subtitle": "Lecture seule: Intégrité des données financières et pédagogiques"
+      },
+      "enseignant": {
+        "title": "Espace Enseignant — Tableau de bord",
+        "subtitle": "Gérez vos cours, notes et emploi du temps"
+      },
+      "parent": {
+        "title": "Espace Parent — Suivi Scolaire",
+        "subtitle": "Suivez les résultats et la scolarité de votre enfant"
+      }
+    },
     "childName": "Nom de l'enfant",
     "childMatricule": "Matricule de l'enfant",
     "email": "Adresse e-mail",
@@ -42,11 +97,11 @@
     "parent": "Espace Parent — Suivi Scolaire"
   },
   "sidebar": {
-    "dashboard": "Dashboard",
+    "dashboard": "Tableau de Bord",
     "students": "Élèves",
     "personnel": "Personnel",
-    "academic": "Académie",
-    "schedules": "Emploi du Temps",
+    "academic": "Académique",
+    "schedules": "Emplois du Temps",
     "grades": "Notes",
     "bulletins": "Bulletins",
     "payments": "Paiements",
@@ -58,7 +113,7 @@
   },
   "students": {
     "title": "Gestion des Élèves",
-    "subtitle": "Inscriptions, fiches et suivi scolaire",
+    "subtitle": "Inscriptions, fiches et suivi des élèves du primaire",
     "newStudent": "Nouvelle Inscription",
     "editStudent": "Modifier un Élève",
     "detail": "Fiche de l'Élève",
@@ -76,12 +131,12 @@
   },
   "personnel": {
     "title": "Gestion du Personnel",
-    "subtitle": "Enseignants, titulaires et administratifs",
+    "subtitle": "Maîtres de classe, spécialistes et administratifs",
     "new": "Nouveau Personnel",
     "type": "Type",
-    "cours": "Cours / Salle",
-    "enseignant": "Enseignant",
-    "titulaire": "Titulaire"
+    "cours": "Classe / Matière",
+    "enseignant": "Maître",
+    "titulaire": "Maître de Classe"
   },
   "payments": {
     "title": "Gestion des Paiements",
@@ -96,20 +151,26 @@
     "partial": "Partiel",
     "unpaid": "Impayé",
     "lastPayment": "Dernier Paiement",
-    "amount": "Montant"
+    "amount": "Montant",
+    "searchPlaceholder": "Rechercher par nom ou matricule..."
   },
   "grades": {
     "title": "Saisie des Notes",
-    "subtitle": "Entrez les notes des élèves pour chaque épreuve",
+    "subtitle": "Entrez les notes des élèves pour chaque séquence",
     "save": "Enregistrer",
     "export": "Exporter",
     "course": "Cours",
     "class": "Classe",
-    "session": "Session",
+    "session": "Séquence",
     "filled": "Remplies",
     "average": "Moyenne",
     "note": "Note",
-    "appreciation": "Appréciation"
+    "appreciation": "Appréciation",
+    "section": "Section",
+    "saveSuccess": "Enregistrement réussi",
+    "savedDesc": "Notes sauvegardées",
+    "exportSuccess": "Export réussi",
+    "exportDesc": "Le fichier CSV des notes a été téléchargé."
   },
   "bulletins": {
     "title": "Bulletins Scolaires",
@@ -139,18 +200,51 @@
     "exclusions": "Exclusions en Cours",
     "severity": "Gravité",
     "type": "Type",
-    "sanction": "Sanction"
+    "sanction": "Sanction",
+    "student": "Élève",
+    "class": "Classe",
+    "description": "Description",
+    "search": "Rechercher un élève...",
+    "studentName": "Nom de l'élève",
+    "sanctionPlaceholder": "Ex: Avertissement",
+    "descriptionPlaceholder": "Détails de l'incident..."
   },
   "academic": {
     "title": "Configuration Académique",
-    "subtitle": "Gestion des cycles, classes, salles et années scolaires",
+    "subtitle": "Gestion des cycles, classes, salles et années scolaires (Maternel & Primaire)",
     "add": "Ajouter",
     "cycles": "Cycles",
     "classes": "Classes",
     "rooms": "Salles",
-    "years": "Années Académiques",
+    "years": "Années Scolaires",
     "current": "Courante",
-    "archived": "Archivée"
+    "archived": "Archivée",
+    "cycle": "Cycle",
+    "section": "Section",
+    "label": "Libellé",
+    "classCount": "Nb Classes",
+    "roomCount": "Nb Salles",
+    "surface": "Surface",
+    "position": "Position",
+    "class": "Classe",
+    "currentYear": "Année Courante",
+    "cycleName": "Nom du Cycle",
+    "className": "Libellé de la Classe",
+    "roomLabel": "Libellé de la Salle",
+    "yearLabel": "Libellé de l'Année",
+    "linkedClass": "Classe de Rattachement",
+    "setAsCurrent": "Définir comme année courante",
+    "addCycle": "Ajouter un Cycle",
+    "addClass": "Ajouter une Classe",
+    "addRoom": "Ajouter une Salle",
+    "addYear": "Ajouter une Année Scolaire",
+    "cycleAdded": "Le cycle a été ajouté.",
+    "classAdded": "La classe a été ajoutée.",
+    "roomAdded": "La salle a été ajoutée.",
+    "yearAdded": "L'année scolaire a été ajoutée.",
+    "cycleRemoved": "Le cycle a été retiré.",
+    "classRemoved": "La classe a été retirée.",
+    "roomRemoved": "La salle a été retirée."
   },
   "schedules": {
     "title": "Emploi du Temps",
@@ -158,21 +252,58 @@
     "addSlot": "Ajouter Créneau",
     "slots": "Créneaux Planifiés",
     "days": "Jours de Cours",
-    "weeklyVolume": "Volume Hebdomadaire"
+    "weeklyVolume": "Volume Hebdomadaire",
+    "day": "Jour",
+    "startTime": "Heure Début",
+    "endTime": "Heure Fin",
+    "subject": "Cours / Matière",
+    "room": "Classe / Salle",
+    "selectDay": "-- Choisir le Jour --",
+    "selectRoom": "-- Choisir la Classe --"
   },
   "library": {
     "title": "Bibliothèque",
     "titleManage": "Gestion de la Bibliothèque",
+    "titlePublic": "Bibliothèque Scolaire",
     "subtitle": "Catalogue, prêts et inventaire",
+    "subtitlePublic": "Accédez en ligne aux manuels et ressources du primaire",
     "addBook": "Ajouter un Livre",
-    "catalog": "Titres au Catalogue",
+    "catalog": "Livres disponibles",
     "totalCopies": "Exemplaires Total",
     "available": "Disponibles",
     "borrowed": "Empruntés",
+    "subjects": "Matières",
+    "roomsCovered": "Salles couvertes",
     "search": "Rechercher un titre ou un auteur...",
+    "searchPublic": "Rechercher par titre, auteur ou salle…",
     "category": "Catégorie",
+    "allCategories": "Toutes les catégories",
+    "allSubjects": "Toutes les matières",
+    "allRooms": "Toutes les salles",
+    "subject": "Matière",
+    "room": "Salle",
     "open": "Ouvrir",
-    "manage": "Gérer"
+    "manage": "Gérer",
+    "openBook": "Ouvrir le livre",
+    "author": "Auteur",
+    "page": "Page",
+    "prev": "Précédent",
+    "next": "Suivant",
+    "noBooks": "Aucun livre trouvé pour ces critères.",
+    "noBooksSub": "Essayez un autre terme de recherche ou filtre.",
+    "downloadNotAvailable": "Téléchargement simulé — Fichier PDF non disponible en mode démo.",
+    "results": "résultat(s)",
+    "bookTitle": "Titre",
+    "bookAuthor": "Auteur",
+    "assignedRooms": "Salles Affectées",
+    "manageBook": "Gérer le Livre",
+    "bookAdded": "Livre ajouté",
+    "bookAddedDesc": "Le livre a été inséré dans le catalogue.",
+    "bookUpdated": "Livre mis à jour",
+    "bookUpdatedDesc": "Les modifications ont été enregistrées.",
+    "bookDeleted": "Livre supprimé",
+    "bookDeletedDesc": "Le livre a été retiré du catalogue.",
+    "fillRequired": "Veuillez remplir tous les champs obligatoires."
   },
   "audit": {
     "title": "Journal d'Audit",
@@ -188,15 +319,55 @@
   "stats": {
     "title": "Statistiques & Graphiques",
     "subtitle": "Vue d'ensemble chiffrée de l'établissement",
-    "enrolled": "Élèves Inscrits",
-    "staff": "Personnel",
     "generalAvg": "Moyenne Générale",
-    "recoveryRate": "Taux Recouvrement",
-    "enrollmentByClass": "Effectifs par Classe",
-    "genderDistribution": "Répartition par Genre",
-    "avgBySubject": "Moyennes par Matière",
-    "paymentStatus": "Statut des Paiements",
-    "resultsSummary": "Synthèse des Résultats par Classe"
+    "year": "Année",
+    "kpis": {
+      "enrolled": "Élèves Inscrits",
+      "staff": "Personnel",
+      "average": "Moyenne Générale",
+      "recovery": "Taux Recouvrement"
+    },
+    "sections": {
+      "classSize": "Effectifs par Classe",
+      "gender": "Répartition par Genre",
+      "subjects": "Moyennes par Matière",
+      "payments": "Statut des Paiements",
+      "resultsSummary": "Synthèse des Résultats par Classe",
+      "cepStats": "Statistiques CEP — Certificat d'Études Primaires (CM2)",
+      "cepDesc": "Historique des résultats à l'examen officiel du MINEDUB"
+    },
+    "labels": {
+      "boys": "Garçons",
+      "girls": "Filles",
+      "complete": "Complet",
+      "partial": "Partiel",
+      "unpaid": "Impayé",
+      "fr": "Français",
+      "math": "Maths",
+      "sc": "Sciences",
+      "en": "Anglais",
+      "civ": "Éd. Civ.",
+      "hist": "Histoire"
+    },
+    "table": {
+      "class": "Classe",
+      "size": "Effectif",
+      "average": "Moyenne",
+      "success": "Réussite",
+      "passed": "Admis",
+      "failed": "Refusés",
+      "year": "Année",
+      "registered": "Inscrits",
+      "presented": "Présentés",
+      "successRate": "Taux de Réussite",
+      "bestGrade": "Meilleure Note"
+    },
+    "cepKpis": {
+      "success2025": "Taux de réussite 2025",
+      "passedPresented": "Admis / Présentés",
+      "average2025": "Moyenne CEP 2025",
+      "rank": "Rang Départemental"
+    }
   },
   "common": {
     "search": "Rechercher...",
@@ -219,7 +390,16 @@
     "loading": "Chargement…",
     "noResults": "Aucun résultat trouvé",
     "confirm": "Confirmer",
-    "year": "Année"
+    "year": "Année",
+    "success": "Succès",
+    "error": "Erreur",
+    "profile": "Mon Profil",
+    "settings": "Paramètres",
+    "changePassword": "Changer le mot de passe",
+    "markAllRead": "Tout marquer comme lu",
+    "viewAll": "Voir tout",
+    "photo": "Photo de profil",
+    "clickToAdd": "Cliquez sur l'avatar pour ajouter une image"
   },
   "landing": {
     "hero": "Des outils pensés pour l'efficacité",
@@ -229,7 +409,7 @@
     "featuresSub": "Une suite applicative complète pour les élèves, enseignants, parents et administrateurs.",
     "ctaTitle": "Prêt à nous rejoindre ?",
     "ctaSub": "Boostez la performance de votre écosystème scolaire dès maintenant avec DIGISCHOOL.",
-    "createAccount": "Créer un compte",
+    "createAccount": "",
     "signIn": "Se connecter"
   },
   "errors": {
@@ -249,5 +429,173 @@
     "about": "À propos",
     "help": "Aide",
     "contact": "Contact"
+  },
+  "contact": {
+    "title": "Nous Contacter",
+    "subtitle": "Une question, un problème, ou besoin d'informations ? Nous sommes là pour vous aider.",
+    "infoTitle": "Informations de contact",
+    "address": "Adresse",
+    "addressValue": "École Primaire DIGISCHOOL\nQuartier Bastos, Yaoundé\nCameroun",
+    "phone": "Téléphone",
+    "phoneValue": "+237 677 000 000\nDisponible : Lun – Ven, 7h30 – 16h30",
+    "emailLabel": "Email",
+    "emailValue": "contact@digischool.cm\nRéponse sous 24 h ouvrables",
+    "support": "Support technique",
+    "supportValue": "support@digischool.cm\nPour tout problème lié à la plateforme",
+    "sendMessage": "Envoyer un message",
+    "requiredFields": "Tous les champs marqués * sont obligatoires.",
+    "fullName": "Nom complet *",
+    "emailAddress": "Adresse e-mail *",
+    "subjectLabel": "Objet de la demande *",
+    "selectSubject": "— Sélectionnez un objet —",
+    "subEnroll": "Inscription d'un élève",
+    "subLogin": "Problème de connexion",
+    "subPayment": "Question sur les paiements",
+    "subLibrary": "Accès à la bibliothèque",
+    "subBulletin": "Demande de bulletin scolaire",
+    "subComplaint": "Réclamation ou plainte",
+    "subPartnership": "Partenariat ou information générale",
+    "subOther": "Autre",
+    "yourMessage": "Votre message *",
+    "messagePlaceholder": "Décrivez votre demande en détail…",
+    "sending": "Envoi en cours…",
+    "send": "Envoyer le message",
+    "successMsg": "Message envoyé avec succès ! Nous vous répondrons dans les 24 heures.",
+    "errorMsg": "Une erreur est survenue. Veuillez réessayer."
+  },
+  "dashboards": {
+    "adminTitle": "Secrétariat — Tableau de bord Administrateur",
+    "adminSubtitle": "Suivi des inscriptions et vie scolaire au quotidien",
+    "inscriptionsDay": "Inscriptions du Jour",
+    "activeStudents": "Élèves Actifs",
+    "availableRooms": "Salles Disponibles",
+    "directeurTitle": "Direction — Espace Directeur",
+    "directeurSubtitle": "Suivi de la performance pédagogique et validation des bulletins",
+    "estimatedSuccessRate": "Taux Réussite Estimé",
+    "bulletinsToValidate": "Bulletins à valider",
+    "disciplinaryComplaints": "Plaintes Discipline",
+    "classRankingByAvg": "Classement des Classes par Moyenne",
+    "class": "Classe",
+    "enrollment": "Effectif",
+    "trimesterAvg": "Moyenne Trimestrielle",
+    "status": "Statut",
+    "studentsCount": "élèves",
+    "rising": "En hausse",
+    "scolariteTitle": "Comptabilité — Espace Scolarité",
+    "scolariteSubtitle": "Suivi financier et encaissements des pensions",
+    "latePayments": "Retards",
+    "recordPayment": "Enregistrer Paiement",
+    "monthlyPayments": "Versements Mensuels (XAF)",
+    "enseignantTitle": "Espace Enseignant — Tableau de bord",
+    "enseignantSubtitle": "Gérez vos cours, notes et emploi du temps",
+    "assignedClasses": "Classes Assignées",
+    "studentsConcerned": "Élèves Concernés",
+    "plannedEvals": "Évaluations Planifiées",
+    "weeklyVolume": "Volume Hebdo",
+    "weeklySchedule": "Emploi du Temps — Semaine",
+    "upcomingEvals": "Prochaines Évaluations",
+    "course": "Cours",
+    "date": "Date",
+    "type": "Type",
+    "parentTitle": "Espace Parent — Suivi Scolaire",
+    "parentSubtitle": "Suivez les résultats et la scolarité de votre enfant",
+    "preEnroll": "Préinscrire un enfant",
+    "currentClass": "Classe Actuelle",
+    "paidTrimesters": "Trimestres Payés",
+    "notifications": "Notifications",
+    "recentGrades": "Dernières Notes",
+    "subject": "Matière",
+    "grade": "Note",
+    "outOf": "Barème",
+    "alerts": "Alertes",
+    "reportCardPreview": "Aperçu Bulletin — Trimestre 2",
+    "meetingAlert": "Réunion parents-maîtres le 05/06/2026 à 14h",
+    "pendingPaymentAlert": "Paiement Trimestre 3 en attente — Échéance: 30/05/2026",
+    "reportCardAlert": "Bulletin Trimestre 2 disponible au téléchargement",
+    "fondateurTitle": "Fondation — Espace Promoteur",
+    "fondateurSubtitle": "Indicateurs financiers exécutifs et statistiques de recouvrement",
+    "revenueCollected": "Revenus Encaissés",
+    "recoveryRate": "Taux Recouvrement",
+    "totalEnrollment": "Effectif Total",
+    "activeCycles": "Cycles Actifs",
+    "paymentMethodDistribution": "Répartition par Modes de Paiement",
+    "rootTitle": "Super Admin — Dashboard Root",
+    "rootSubtitle": "Vue d'ensemble et logs d'audit système",
+    "totalAdmins": "Total Admins",
+    "totalStaff": "Total Personnel",
+    "totalStudents": "Total Élèves",
+    "activeConnections": "Connexions Actives",
+    "recentAuditTrails": "Traces d'Audit Récentes",
+    "user": "Utilisateur",
+    "action": "Action",
+    "resource": "Ressource",
+    "ipAddress": "Adresse IP",
+    "auditeurTitle": "Audit — Espace Commission Contrôle",
+    "auditeurSubtitle": "Lecture seule: Intégrité des données financières et pédagogiques",
+    "dbIntegrity": "Intégrité DB",
+    "loggedActions": "Actions Loggées",
+    "totalAccounted": "Total Comptabilisé"
+  },
+  "landingFeatures": {
+    "opPlatform": "Plateforme opérationnelle 2026",
+    "academicTitle": "Gestion académique",
+    "academicDesc": "Suivi rigoureux des matières, classes, inscriptions et emplois du temps.",
+    "financeTitle": "Suivi Financier",
+    "financeDesc": "Immuabilité des versements, rappels automatiques et reçus PDF instantanés.",
+    "commTitle": "Communication",
+    "commDesc": "Messagerie interne directe avec les parents et alertes validées par la direction.",
+    "statsTitle": "Statistiques & rapports",
+    "statsDesc": "Visualisation des indicateurs financiers et des moyennes pédagogiques.",
+    "libraryTitle": "Bibliothèque numérique",
+    "libraryDesc": "Catalogue en ligne avec gestion des prêts et inventaire en temps réel.",
+    "securityTitle": "Sécurité & rôles",
+    "securityDesc": "Authentification JWT, tokens rotatifs et traçabilité complète des actions.",
+    "userRoles": "Rôles utilisateurs",
+    "integratedModules": "Modules intégrés",
+    "availability": "Disponibilité"
+  },
+  "paymentMethods": {
+    "cash": "Espèces",
+    "transfer": "Virement",
+    "mobileMoney": "Mobile Money"
+  },
+  "months": {
+    "jan": "Janv",
+    "feb": "Févr",
+    "mar": "Mars",
+    "apr": "Avril",
+    "may": "Mai"
+  },
+  "dashboardRoot": {
+    "registeredAdmins": "Admins enregistrés",
+    "activeAdmins": "Admins actifs",
+    "database": "Base de données",
+    "availability": "Disponibilité (SLA)",
+    "createAdmin": "Créer un Administrateur",
+    "addAccount": "Ajouter un nouveau compte d'admin",
+    "adminAccounts": "Comptes Administrateurs",
+    "systemLog": "Journal Système (Récent)",
+    "superAdminActivity": "Activité du Super Administrateur",
+    "login": "Login",
+    "type": "Type",
+    "status": "Statut",
+    "actions": "Actions",
+    "date": "Date",
+    "user": "Utilisateur",
+    "action": "Action",
+    "online": "En ligne",
+    "systemOperational": "Système Opérationnel",
+    "errors": {
+      "loginExists": "Le login « {{login}} » est déjà utilisé."
+    },
+    "success": {
+      "adminCreated": "Compte « {{login}} » créé avec succès !"
+    },
+    "auditLog": {
+      "login": "Connexion au panneau système",
+      "create": "Création du compte admin_insc (type 1)",
+      "send": "Identifiants envoyés à admin_dir",
+      "update": "Désactivation du compte admin_aud"
+    }
   }
 }

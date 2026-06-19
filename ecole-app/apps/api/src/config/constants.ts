@@ -30,7 +30,7 @@ export const MESSAGE_TYPES = {
 
 export const LIMITS = {
   MAX_UPLOAD_SIZE: 10 * 1024 * 1024, // 10MB
-  RATE_LIMIT_MAX_ATTEMPTS: 5,
+  RATE_LIMIT_MAX_ATTEMPTS: 50,
   RATE_LIMIT_WINDOW_MS: 10 * 60 * 1000 // 10 minutes
 };
 

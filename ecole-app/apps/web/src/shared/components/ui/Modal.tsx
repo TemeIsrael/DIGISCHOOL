@@ -63,7 +63,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-10 sm:pt-16 animate-fade-in"
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -79,7 +79,7 @@ export const Modal: React.FC<ModalProps> = ({
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className={`relative bg-white w-full ${sizeMap[size]} rounded-2xl shadow-2xl border border-slate-100 overflow-hidden animate-scale-in focus:outline-none flex flex-col max-h-[90vh]`}
+        className={`relative bg-white w-full ${sizeMap[size]} rounded-2xl shadow-2xl border border-slate-100 overflow-hidden animate-scale-in focus:outline-none flex flex-col max-h-[80vh]`}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-100 shrink-0">

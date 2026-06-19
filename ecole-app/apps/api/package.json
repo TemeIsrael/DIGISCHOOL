@@ -4,9 +4,10 @@
   "private": true,
   "main": "src/app.ts",
   "scripts": {
-    "dev": "tsx watch src/app.ts",
+    "dev": "tsx watch src/server.ts",
     "build": "tsc",
-    "start": "node dist/app.js",
+    "start": "node dist/server.js",
+    "seed": "tsx src/scripts/seed-admin.ts",
     "test": "jest",
     "lint": "eslint src --ext .ts"
   },

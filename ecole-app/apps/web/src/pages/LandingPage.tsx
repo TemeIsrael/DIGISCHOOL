@@ -8,7 +8,6 @@ import {
   BarChart3,
   BookOpen,
   ShieldCheck,
-  ArrowRight,
   Users,
   Clock,
   CheckCircle2
@@ -24,47 +23,47 @@ export const LandingPage: React.FC = () => {
 
   const features = [
     {
-      title: 'Gestion académique',
-      desc: 'Suivi rigoureux des matières, classes, inscriptions et emplois du temps.',
+      title: t('landingFeatures.academicTitle'),
+      desc: t('landingFeatures.academicDesc'),
       icon: <GraduationCap className="w-6 h-6" />,
       color: 'bg-digi-purple-bg text-digi-purple'
     },
     {
-      title: 'Suivi Financier',
-      desc: 'Immuabilité des versements, rappels automatiques et reçus PDF instantanés.',
+      title: t('landingFeatures.financeTitle'),
+      desc: t('landingFeatures.financeDesc'),
       icon: <CreditCard className="w-6 h-6" />,
       color: 'bg-emerald-50 text-emerald-600'
     },
     {
-      title: 'Communication',
-      desc: 'Messagerie interne directe avec les parents et alertes validées par la direction.',
+      title: t('landingFeatures.commTitle'),
+      desc: t('landingFeatures.commDesc'),
       icon: <MessageSquare className="w-6 h-6" />,
       color: 'bg-sky-50 text-sky-600'
     },
     {
-      title: 'Statistiques & rapports',
-      desc: 'Visualisation des indicateurs financiers et des moyennes pédagogiques.',
+      title: t('landingFeatures.statsTitle'),
+      desc: t('landingFeatures.statsDesc'),
       icon: <BarChart3 className="w-6 h-6" />,
       color: 'bg-amber-50 text-amber-600'
     },
     {
-      title: 'Bibliothèque numérique',
-      desc: 'Catalogue en ligne avec gestion des prêts et inventaire en temps réel.',
+      title: t('landingFeatures.libraryTitle'),
+      desc: t('landingFeatures.libraryDesc'),
       icon: <BookOpen className="w-6 h-6" />,
       color: 'bg-rose-50 text-rose-600'
     },
     {
-      title: 'Sécurité & rôles',
-      desc: 'Authentification JWT, tokens rotatifs et traçabilité complète des actions.',
+      title: t('landingFeatures.securityTitle'),
+      desc: t('landingFeatures.securityDesc'),
       icon: <ShieldCheck className="w-6 h-6" />,
       color: 'bg-violet-50 text-violet-600'
     }
   ];
 
   const stats = [
-    { value: '5+', label: 'Rôles utilisateurs', icon: <Users className="w-5 h-5" /> },
-    { value: '12+', label: 'Modules intégrés', icon: <CheckCircle2 className="w-5 h-5" /> },
-    { value: '24/7', label: 'Disponibilité', icon: <Clock className="w-5 h-5" /> },
+    { value: '5+', label: t('landingFeatures.userRoles'), icon: <Users className="w-5 h-5" /> },
+    { value: '12+', label: t('landingFeatures.integratedModules'), icon: <CheckCircle2 className="w-5 h-5" /> },
+    { value: '24/7', label: t('landingFeatures.availability'), icon: <Clock className="w-5 h-5" /> },
   ];
 
   return (
@@ -91,7 +90,7 @@ export const LandingPage: React.FC = () => {
           {/* Pill badge */}
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-4 py-1.5 text-xs font-bold text-white/80 animate-fade-in">
             <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-            Plateforme opérationnelle 2026
+            {t('landingFeatures.opPlatform')}
           </div>
 
           <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight animate-fade-in">
@@ -106,18 +105,9 @@ export const LandingPage: React.FC = () => {
               variant="primary"
               size="lg"
               onClick={() => navigate('/login')}
-              rightIcon={<ArrowRight className="w-5 h-5" />}
-              className="shadow-lg shadow-digi-purple/30"
+              className="gap-2 shadow-xl shadow-digi-purple/20 px-8"
             >
-              {t('landing.cta')}
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => navigate('/s-inscrire')}
-              className="border-white/20 text-white hover:bg-white/10"
-            >
-              {t('landing.createAccount')}
+              {t('landing.signIn')}
             </Button>
           </div>
         </div>
@@ -148,7 +138,7 @@ export const LandingPage: React.FC = () => {
       <section className="py-24 px-6 md:px-8 max-w-7xl mx-auto w-full">
         <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
           <span className="text-xs font-extrabold text-digi-purple uppercase tracking-widest bg-digi-purple-bg px-3 py-1 rounded-full border border-digi-purple-border/20">
-            Fonctionnalités
+            {t('landing.featuresTitle')}
           </span>
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-800 mt-4">
             {t('landing.featuresTitle')}
@@ -194,14 +184,7 @@ export const LandingPage: React.FC = () => {
             {t('landing.ctaSub')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => navigate('/s-inscrire')}
-              className="bg-white border-0 text-digi-purple hover:bg-slate-50 shadow-lg"
-            >
-              {t('landing.createAccount')}
-            </Button>
+
             <Button
               variant="outline"
               size="lg"

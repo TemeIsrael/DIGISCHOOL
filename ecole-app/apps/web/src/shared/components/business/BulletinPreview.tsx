@@ -1,6 +1,7 @@
 import React from 'react';
 import { FileText, Download } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { useTranslation } from 'react-i18next';
 
 export interface BulletinMatiereEntry {
   nom: string;
@@ -34,7 +35,55 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
   matieres,
   onDownload
 }) => {
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === 'en';
   const displayName = eleve || (prenom && nom ? `${prenom} ${nom.toUpperCase()}` : '');
+
+  // Determine Rank suffix
+  const getRankSuffix = (r: number) => {
+    if (isEn) {
+      if (r === 1) return 'st';
+      if (r === 2) return 'nd';
+      if (r === 3) return 'rd';
+      return 'th';
+    } else {
+      return r === 1 ? 'er' : 'ème';
+    }
+  };
+
+  const getSubjectName = (name: string) => {
+    switch(name) {
+      case 'Français':
+      case 'French':
+        return t('stats.labels.fr', 'Français');
+      case 'Mathématiques':
+      case 'Maths':
+      case 'Mathematics':
+        return t('stats.labels.math', 'Maths');
+      case 'Anglais':
+      case 'English':
+        return t('stats.labels.en', 'Anglais');
+      case 'Sciences & Technologie':
+      case 'Science & Technology':
+      case 'Sciences':
+        return t('stats.labels.sc', 'Sciences');
+      case 'Histoire':
+      case 'History':
+        return t('stats.labels.hist', 'Histoire');
+      case 'Éd. Civ.':
+      case 'Civics':
+        return t('stats.labels.civ', 'Éd. Civ.');
+      default:
+        return name;
+    }
+  };
+
+  const getTrimestreDisplay = (trim: string) => {
+    if (isEn) {
+      return trim.replace('Trimestre', 'Trimester');
+    }
+    return trim;
+  };
 
   return (
     <div className="space-y-4">
@@ -46,19 +95,19 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
           </div>
           <div className="space-y-0.5">
             <h4 className="text-sm font-bold text-slate-800">
-              Bulletin de {displayName}
+              {t('bulletins.reportCardOf', 'Bulletin de {{name}}', { name: displayName })}
             </h4>
-            <p className="text-xs text-slate-400 font-semibold">{classe} {trimestre ? `— ${trimestre}` : ''}</p>
+            <p className="text-xs text-slate-400 font-semibold">{classe} {trimestre ? `— ${getTrimestreDisplay(trimestre)}` : ''}</p>
             <p className="text-xs text-slate-500 font-bold">
-              Moyenne: <span className="text-digi-purple">{moyenne.toFixed(2)}/20</span> &bull; Rang:{' '}
-              <span className="text-digi-purple">{rang}{rang === 1 ? 'er' : 'ème'}</span>
+              {t('bulletins.average', 'Moyenne')}: <span className="text-digi-purple">{moyenne.toFixed(2)}/10</span> &bull; {t('bulletins.rank', 'Rang')}:{' '}
+              <span className="text-digi-purple">{rang}{getRankSuffix(rang)}</span>
               {effectif && <span className="text-slate-400"> / {effectif}</span>}
             </p>
           </div>
         </div>
         <Button variant="outline" size="sm" onClick={onDownload || (() => {})} className="gap-2 w-full sm:w-auto">
           <Download className="w-4 h-4" />
-          <span>Télécharger</span>
+          <span>{t('bulletins.download', 'Télécharger')}</span>
         </Button>
       </div>
 
@@ -68,18 +117,18 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
           <table className="min-w-full divide-y divide-slate-100 text-sm">
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
-                <th className="px-4 py-2 text-left">Matière</th>
-                <th className="px-4 py-2 text-center">Note / 20</th>
-                <th className="px-4 py-2 text-center">Coefficient</th>
-                <th className="px-4 py-2 text-center">Pondérée</th>
+                <th className="px-4 py-2 text-left">{t('schedules.subject', 'Matière')}</th>
+                <th className="px-4 py-2 text-center">{t('grades.note', 'Note')} / 10</th>
+                <th className="px-4 py-2 text-center">{t('grades.coefficient', 'Coefficient')}</th>
+                <th className="px-4 py-2 text-center">{t('bulletins.weighted', 'Pondérée')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
               {matieres.map((m, i) => (
                 <tr key={i} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-2 font-semibold">{m.nom}</td>
+                  <td className="px-4 py-2 font-semibold">{getSubjectName(m.nom)}</td>
                   <td className="px-4 py-2 text-center">
-                    <span className={`font-bold ${m.note >= 14 ? 'text-digi-success' : m.note >= 10 ? 'text-digi-warning' : 'text-digi-danger'}`}>
+                    <span className={`font-bold ${m.note >= 7 ? 'text-digi-success' : m.note >= 5 ? 'text-digi-warning' : 'text-digi-danger'}`}>
                       {m.note}
                     </span>
                   </td>

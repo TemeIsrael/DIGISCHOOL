@@ -2,13 +2,14 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Personne extends Model {
-  public idPers!: number;
-  public idAdmin!: number | null;
-  public login!: string;
-  public password!: string;
-  public typePersonne!: number; // [1, 2, 4] (1=Teacher, 2=Parent, 4=Other)
-  public actif!: boolean;
-  public isDelete!: boolean;
+  declare idPers: number;
+  declare idAdmin: number | null;
+  declare login: string;
+  declare password: string;
+  declare typePersonne: number;
+  declare actif: boolean;
+  declare isDelete: boolean;
+  declare langue: string;
 }
 
 Personne.init(
@@ -21,10 +22,6 @@ Personne.init(
     idAdmin: {
       type: DataTypes.INTEGER,
       allowNull: true,
-      references: {
-        model: 'Admin',
-        key: 'ID',
-      },
     },
     login: {
       type: DataTypes.STRING(100),
@@ -38,9 +35,6 @@ Personne.init(
     typePersonne: {
       type: DataTypes.TINYINT,
       allowNull: false,
-      validate: {
-        isIn: [[1, 2, 4]],
-      },
     },
     actif: {
       type: DataTypes.BOOLEAN,
@@ -51,6 +45,11 @@ Personne.init(
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
+    },
+    langue: {
+      type: DataTypes.STRING(10),
+      allowNull: false,
+      defaultValue: 'fr',
     },
   },
   {

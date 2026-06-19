@@ -36,7 +36,7 @@ Cours.init(
     noteMax: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultValue: 20,
+      defaultValue: 10,
     },
   },
   {
