@@ -5,9 +5,11 @@ import { Button } from '../shared/components/ui/Button';
 import { Card } from '../shared/components/ui/Card';
 import { PublicNavbar } from '../shared/components/layout/PublicNavbar';
 import { PublicFooter } from '../shared/components/layout/PublicFooter';
+import { useTranslation } from 'react-i18next';
 
 export const About: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col">
@@ -17,14 +19,14 @@ export const About: React.FC = () => {
       <main className="max-w-3xl w-full mx-auto p-8 space-y-8 flex-1">
         <Card className="shadow-lg border border-slate-100 p-8 space-y-6">
           <GraduationCap className="w-12 h-12 text-digi-purple" />
-          <h1 className="font-serif text-3xl font-extrabold text-slate-850 tracking-tight">À propos d'EcoleApp 2026 (P-097)</h1>
+          <h1 className="font-serif text-3xl font-extrabold text-slate-850 tracking-tight">{t('aboutPage.title')}</h1>
           <p className="text-sm text-slate-500 leading-relaxed">
-            Conçue pour répondre aux plus hauts standards d'ingénierie et de sécurité, EcoleApp 2026 est la solution de gestion scolaire de référence proposée par l'écosystème DIGISCHOOL.
+            {t('aboutPage.desc1')}
           </p>
           <p className="text-sm text-slate-500 leading-relaxed">
-            Notre plateforme connecte de manière transparente l'administration, les enseignants, les élèves et les parents d'élèves pour un parcours éducatif moderne et optimisé.
+            {t('aboutPage.desc2')}
           </p>
-          <Button variant="primary" onClick={() => navigate('/')}>Retour à l'accueil</Button>
+          <Button variant="primary" onClick={() => navigate('/')}>{t('aboutPage.backToHome')}</Button>
         </Card>
       </main>
 
@@ -33,4 +35,3 @@ export const About: React.FC = () => {
   );
 };
 export default About;
-

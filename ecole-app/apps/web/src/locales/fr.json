@@ -597,5 +597,93 @@
       "send": "Identifiants envoyés à admin_dir",
       "update": "Désactivation du compte admin_aud"
     }
+  },
+  "helpPage": {
+    "title": "Centre d'Aide",
+    "subtitle": "Trouvez rapidement les réponses à vos questions sur l'utilisation d'EcoleApp 2026.",
+    "searchPlaceholder": "Rechercher une question…",
+    "found": "question(s) trouvée(s)",
+    "noQuestions": "Aucune question trouvée.",
+    "tryAnother": "Essayez un autre terme ou contactez-nous directement.",
+    "notFound": "Vous n'avez pas trouvé votre réponse ?",
+    "teamAvailable": "Notre équipe est disponible pour vous aider.",
+    "contactUs": "Nous contacter",
+    "categories": {
+      "Tous": "Tous",
+      "Connexion": "Connexion",
+      "Inscription": "Inscription",
+      "Bibliothèque": "Bibliothèque",
+      "Paiements": "Paiements",
+      "Messagerie": "Messagerie",
+      "Sécurité": "Sécurité"
+    },
+    "faqs": {
+      "connexion_1": {
+        "q": "Comment me connecter à la plateforme ?",
+        "a": "Rendez-vous sur la page de connexion (/login). Saisissez votre identifiant (login) et votre mot de passe qui vous ont été fournis par votre administrateur scolaire. Cliquez sur \"Se connecter\". Si vous n'avez pas encore reçu vos identifiants, contactez l'administration de votre école."
+      },
+      "connexion_2": {
+        "q": "J'ai oublié mon mot de passe, que faire ?",
+        "a": "Cliquez sur le lien \"Mot de passe oublié ?\" sur la page de connexion. Entrez votre identifiant (login). Vous recevrez un e-mail avec les instructions pour réinitialiser votre mot de passe. Si le problème persiste, contactez directement votre administrateur scolaire."
+      },
+      "connexion_3": {
+        "q": "Ma session expire trop vite, est-ce normal ?",
+        "a": "Oui, pour des raisons de sécurité, les sessions sont automatiquement fermées après une période d'inactivité (généralement 30 minutes). C'est une mesure de protection de vos données. Reconnectez-vous simplement avec vos identifiants habituels."
+      },
+      "inscription_1": {
+        "q": "Comment inscrire mon enfant à l'école via la plateforme ?",
+        "a": "L'inscription des élèves se fait directement par l'administration de l'école. Vous devez vous présenter à l'établissement scolaire avec les documents requis (acte de naissance, photos d'identité, carnet de vaccination, etc.). L'administration créera ensuite votre compte parent et le profil de votre enfant."
+      },
+      "inscription_2": {
+        "q": "Pourquoi ne puis-je pas m'inscrire moi-même sur le site ?",
+        "a": "Pour garantir la sécurité des données des élèves et la conformité avec les réglementations scolaires, tous les comptes (parents, enseignants) sont créés et validés directement par les administrateurs habilités de l'établissement. Cela évite les inscriptions frauduleuses."
+      },
+      "inscription_3": {
+        "q": "Comment accéder aux informations de mon enfant en tant que parent ?",
+        "a": "Une fois votre compte parent créé par l'administration, vous recevrez vos identifiants de connexion. En vous connectant, vous pourrez consulter les notes, les bulletins, l'emploi du temps, les paiements et les messages concernant votre enfant."
+      },
+      "bibliotheque_1": {
+        "q": "Comment accéder aux livres numériques ?",
+        "a": "La bibliothèque numérique est accessible depuis le menu \"Livres\" dans la barre de navigation. Vous pouvez parcourir le catalogue, filtrer par matière ou par salle de classe, et ouvrir n'importe quel livre pour le lire directement en ligne. Aucune inscription n'est requise pour accéder aux livres."
+      },
+      "bibliotheque_2": {
+        "q": "Comment rechercher les livres par salle de classe ?",
+        "a": "Sur la page Bibliothèque, utilisez le menu déroulant \"Salle\" pour filtrer les livres disponibles dans une salle spécifique (SIL A, CP A, CM1 A, etc.). Vous pouvez aussi taper directement le nom d'une salle dans la barre de recherche principale."
+      },
+      "bibliotheque_3": {
+        "q": "Puis-je télécharger les livres ?",
+        "a": "Les livres en version numérique intégrale (PDF) peuvent être téléchargés depuis le lecteur de livres en cliquant sur l'icône de téléchargement (↓). Cette fonctionnalité peut être limitée selon les droits d'accès de votre compte et les droits d'auteur de chaque ouvrage."
+      },
+      "paiements_1": {
+        "q": "Comment payer la scolarité en ligne ?",
+        "a": "Les paiements de scolarité sont enregistrés par l'administration scolaire. En tant que parent, vous pouvez consulter l'historique de vos paiements et les tranches restantes dans la section \"Paiements\" de votre tableau de bord. Pour effectuer un nouveau paiement, rapprochez-vous de la comptabilité de l'école."
+      },
+      "paiements_2": {
+        "q": "Comment obtenir un reçu de paiement ?",
+        "a": "Connectez-vous à votre compte parent, rendez-vous dans la section \"Paiements\", puis cliquez sur \"Exporter PDF\" pour le paiement concerné. Un reçu officiel sera généré automatiquement avec le cachet de l'établissement et les informations de transaction."
+      },
+      "messagerie_1": {
+        "q": "Comment envoyer un message à l'administration ?",
+        "a": "Depuis votre tableau de bord, cliquez sur \"Messages\" dans le menu. Composez votre message en sélectionnant le destinataire (administration, directeur, etc.) et envoyez-le. Vous recevrez une notification lorsque votre message sera lu et qu'une réponse vous sera adressée."
+      },
+      "messagerie_2": {
+        "q": "Puis-je contacter directement l'enseignant de mon enfant ?",
+        "a": "La messagerie de la plateforme permet aux parents d'échanger avec l'administration de l'école. Les messages destinés aux enseignants sont d'abord filtrés et validés par la direction avant d'être transmis, conformément à la politique de communication de l'établissement."
+      },
+      "securite_1": {
+        "q": "Mes données personnelles sont-elles sécurisées ?",
+        "a": "Oui, EcoleApp 2026 utilise des technologies de sécurité avancées : authentification JWT (JSON Web Token), tokens d'accès rotatifs, chiffrement des mots de passe avec bcrypt, et traçabilité complète de toutes les actions via des journaux d'audit. Vos données ne sont jamais partagées avec des tiers."
+      },
+      "securite_2": {
+        "q": "Comment changer mon mot de passe ?",
+        "a": "Une fois connecté, allez dans \"Mon Profil\" ou \"Paramètres\" et sélectionnez \"Changer le mot de passe\". Saisissez votre ancien mot de passe, puis votre nouveau mot de passe deux fois pour confirmation. Votre nouveau mot de passe doit faire au moins 6 caractères."
+      }
+    }
+  },
+  "aboutPage": {
+    "title": "À propos d'EcoleApp 2026 (P-097)",
+    "desc1": "Conçue pour répondre aux plus hauts standards d'ingénierie et de sécurité, EcoleApp 2026 est la solution de gestion scolaire de référence proposée par l'écosystème DIGISCHOOL.",
+    "desc2": "Notre plateforme connecte de manière transparente l'administration, les enseignants, les élèves et les parents d'élèves pour un parcours éducatif moderne et optimisé.",
+    "backToHome": "Retour à l'accueil"
   }
 }

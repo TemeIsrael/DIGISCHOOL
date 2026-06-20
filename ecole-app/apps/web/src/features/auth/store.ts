@@ -9,20 +9,14 @@ export const getRoleDashboardPath = (role: string | null, _typeAdmin?: number, t
       return '/teacher/dashboard';
     case 'PARENT':
       return '/parent/dashboard';
+    case 'ROOT':
+    case 'ADMIN_ROOT':
+    case 'ADMIN_INSCRIPTIONS':
+    case 'ADMIN_SCOLARITE':
+    case 'FONDATEUR':
+    case 'DIRECTEUR':
     case 'ADMIN':
       return '/dashboard';
-    case 'ROOT':
-      return '/dashboardRoot';
-    case 'ADMIN_ROOT':
-      return '/dashboardAdmin';
-    case 'ADMIN_INSCRIPTIONS':
-      return '/dashboardAdmin';
-    case 'ADMIN_SCOLARITE':
-      return '/dashboardScolarite';
-    case 'FONDATEUR':
-      return '/dashboardFondateur';
-    case 'DIRECTEUR':
-      return '/dashboardDirecteur';
     default:
       if (typePersonne === 1) return '/teacher/dashboard';
       if (typePersonne === 2) return '/parent/dashboard';
@@ -35,7 +29,7 @@ interface AuthStore {
   accessToken: string | null;
   refreshToken: string | null;
   user: UserSession | null;
-  role: 'ADMIN' | 'TEACHER' | 'PARENT' | 'STUDENT' | null;
+  role: 'ADMIN_ROOT' | 'ADMIN_INSCRIPTIONS' | 'ADMIN_SCOLARITE' | 'FONDATEUR' | 'DIRECTEUR' | 'ADMIN' | 'TEACHER' | 'PARENT' | 'STUDENT' | null;
   isAuthenticated: boolean;
   isHydrated: boolean;
   lastActivity: number | null;
@@ -81,6 +75,14 @@ export const useAuthStore = create<AuthStore>()(
           isAuthenticated: false,
           lastActivity: null,
         }),
+      // Reset du stockage persistant – utile pour les tests UI
+      resetAuth: () => {
+        try {
+          localStorage.removeItem('ecole-app-auth-storage');
+        } catch (e) {
+          // ignore les erreurs dans les environnements sans localStorage
+        }
+      },
 
       setHydrated: () =>
         set({ isHydrated: true }),

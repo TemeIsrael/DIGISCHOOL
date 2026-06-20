@@ -1,7 +1,7 @@
 import i18n from './i18n';
 
 // ─── Helpers ────────────────────────────────────────────────────────
-const getLocale = (): string => (i18n.language === 'en' ? 'en-GB' : 'fr-FR');
+const getLocale = (): string => (i18n.language?.startsWith('en') ? 'en-GB' : 'fr-FR');
 
 // ─── Currency ───────────────────────────────────────────────────────
 

@@ -19,18 +19,13 @@ export interface RequireAdminTypeProps {
  */
 export const RequireAdminType: React.FC<RequireAdminTypeProps> = ({ allowedTypes, children }) => {
   const user = useAuthStore((state) => state.user);
-  const role = useAuthStore((state) => state.role);
-
-  // Non-admins are already handled by RequireRole; redirect them
-  if (role !== 'ADMIN') {
-    return <Navigate to="/forbidden" replace />;
-  }
 
   const typeAdmin = user?.typeAdmin ?? -1;
 
-  if (!allowedTypes.includes(typeAdmin)) {
-    return <Navigate to="/forbidden" replace />;
+  // typeAdmin === 0 is the Root Admin, they have access to everything
+  if (typeAdmin === 0 || allowedTypes.includes(typeAdmin)) {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  return <Navigate to="/forbidden" replace />;
 };

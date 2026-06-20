@@ -375,7 +375,7 @@ export const DashboardRoot: React.FC = () => {
               {systemAuditLog.map((log, i) => (
                 <tr key={i} className="hover:bg-slate-50/60 transition-colors">
                   <td className="px-6 py-3 font-mono text-xs text-slate-400">
-                    {new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'fr-FR')}
+                    {new Date().toLocaleDateString(i18n.language?.startsWith('en') ? 'en-US' : 'fr-FR')}
                   </td>
                   <td className="px-6 py-3 font-bold text-slate-700 font-mono text-xs">{log.user}</td>
                   <td className="px-6 py-3">

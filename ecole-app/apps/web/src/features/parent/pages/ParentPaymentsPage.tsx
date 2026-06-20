@@ -29,7 +29,7 @@ const formatCFA = (n: number) => `${n.toLocaleString('fr-FR')} XAF`;
 
 export const ParentPaymentsPage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
   const [payments] = useState<Payment[]>(mockPayments);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

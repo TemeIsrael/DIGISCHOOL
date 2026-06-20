@@ -9,7 +9,7 @@ import { exportCSV, exportPDF } from '../../../shared/utils/export';
 
 export const BulletinPage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
 
   const [selectedSection, setSelectedSection] = React.useState('Francophone');
   const [selectedClasse, setSelectedClasse] = React.useState('CM1 A');

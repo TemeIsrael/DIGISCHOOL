@@ -15,7 +15,7 @@ interface Homework {
 
 export const ParentHomeworkPage: React.FC = () => {
   const { i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
 
   // Mock data - in a real app this would come from an API based on the selected child
   const [homeworks] = useState<Homework[]>([

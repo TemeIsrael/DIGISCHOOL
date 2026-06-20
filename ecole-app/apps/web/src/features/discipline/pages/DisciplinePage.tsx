@@ -31,7 +31,7 @@ const graviteColors: Record<string, string> = {
 
 export const DisciplinePage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
 
   const getInitialIncidents = (): Incident[] => isEn ? [
     { id: 1, date: '24/05/2026', eleve: 'TAMBA Isaac',  classe: 'Class 5', type: 'Late arrival', gravite: 'Minor',    description: 'Arrived 15 min late without a pass',          sanction: 'Verbal warning' },

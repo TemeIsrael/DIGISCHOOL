@@ -82,7 +82,7 @@ export const DashboardParent: React.FC = () => {
           </div>
           
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-slate-500 uppercase">{i18n.language === 'en' ? 'Select Child:' : 'Enfant:'}</span>
+            <span className="text-sm font-semibold text-slate-500 uppercase">{i18n.language?.startsWith('en') ? 'Select Child:' : 'Enfant:'}</span>
             <select
               value={selectedChildId}
               onChange={(e) => setSelectedChildId(e.target.value)}

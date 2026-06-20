@@ -13,7 +13,7 @@ const upcomingEvals = [
 
 export const DashboardEnseignant: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
 
   const getTranslatedCourse = (cours: string) => {
     switch(cours) {

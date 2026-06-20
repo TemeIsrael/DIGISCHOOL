@@ -56,7 +56,7 @@ export const usePermissions = (): Permissions => {
 
   return useMemo(() => {
     const typeAdmin = user?.typeAdmin ?? null;
-    const isAdmin = role === 'ADMIN';
+    const isAdmin = ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'].includes(role || '');
     const isTeacher = role === 'TEACHER';
     const isParent = role === 'PARENT';
 

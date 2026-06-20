@@ -35,7 +35,7 @@ const childrenData = [
 
 export const ParentBulletinPage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
   const [selectedChildId, setSelectedChildId] = useState(childrenData[0].id);
   const [selectedTrimester, setSelectedTrimester] = useState('Trimestre 2');
 

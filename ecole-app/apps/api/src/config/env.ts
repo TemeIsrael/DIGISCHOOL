@@ -6,7 +6,7 @@ dotenv.config(); // will look for .env in current working directory
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  PORT: z.string().transform((val) => parseInt(val, 10)).default('4000'),
+  PORT: z.string().transform((val) => parseInt(val, 10)).default('4001'),
   DB_HOST: z.string().default('163.123.183.89'),
   DB_PORT: z.string().transform((val) => parseInt(val, 10)).default('3306'),
   DB_NAME: z.string().default('ecole2026'),

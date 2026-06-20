@@ -14,6 +14,7 @@ interface GradeEntry {
   prenom: string;
   note: number | null;
   noteMax: number;
+  photoUrl?: string;
 }
 
 const mockGradesFrancophones: GradeEntry[] = [
@@ -47,7 +48,7 @@ const sessionsEn = ['Test 1', 'Test 2', 'Test 3', 'Test 4', 'Test 5', 'Test 6'];
 
 export const GradeEntryPage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
   const { toast } = useToast();
 
   const sections = isEn
@@ -184,6 +185,7 @@ export const GradeEntryPage: React.FC = () => {
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
                 <th className="px-4 py-3 text-left w-12">#</th>
+                <th className="px-4 py-3 text-left">{t('common.photo', 'Photo')}</th>
                 <th className="px-4 py-3 text-left">{t('students.matricule', 'Matricule')}</th>
                 <th className="px-4 py-3 text-left">{t('students.nom', 'Nom')}</th>
                 <th className="px-4 py-3 text-left">{t('students.prenom', 'Prénom')}</th>
@@ -195,6 +197,13 @@ export const GradeEntryPage: React.FC = () => {
               {grades.map((g, i) => (
                 <tr key={g.matricule} className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 text-slate-400">{i + 1}</td>
+                  <td className="px-4 py-3">
+                    <img 
+                      src={g.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(g.prenom + ' ' + g.nom)}&background=random`} 
+                      alt="photo" 
+                      className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-sm"
+                    />
+                  </td>
                   <td className="px-4 py-3 font-mono text-xs">{g.matricule}</td>
                   <td className="px-4 py-3 font-semibold">{g.nom}</td>
                   <td className="px-4 py-3">{g.prenom}</td>

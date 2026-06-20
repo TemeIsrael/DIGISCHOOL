@@ -597,5 +597,93 @@
       "send": "Credentials sent to admin_dir",
       "update": "Deactivated admin account admin_aud"
     }
+  },
+  "helpPage": {
+    "title": "Help Center",
+    "subtitle": "Find quick answers to your questions about using EcoleApp 2026.",
+    "searchPlaceholder": "Search for a question...",
+    "found": "question(s) found",
+    "noQuestions": "No questions found.",
+    "tryAnother": "Try another term or contact us directly.",
+    "notFound": "Did you not find your answer?",
+    "teamAvailable": "Our team is available to help you.",
+    "contactUs": "Contact us",
+    "categories": {
+      "Tous": "All",
+      "Connexion": "Login",
+      "Inscription": "Enrollment",
+      "Bibliothèque": "Library",
+      "Paiements": "Payments",
+      "Messagerie": "Messaging",
+      "Sécurité": "Security"
+    },
+    "faqs": {
+      "connexion_1": {
+        "q": "How do I log in to the platform?",
+        "a": "Go to the login page (/login). Enter your username (login) and password provided by your school administrator. Click on \"Login\". If you have not received your credentials yet, contact your school administration."
+      },
+      "connexion_2": {
+        "q": "I forgot my password, what should I do?",
+        "a": "Click on the \"Forgot password?\" link on the login page. Enter your username (login). You will receive an email with instructions to reset your password. If the problem persists, contact your school administrator directly."
+      },
+      "connexion_3": {
+        "q": "My session expires too fast, is this normal?",
+        "a": "Yes, for security reasons, sessions are automatically closed after a period of inactivity (usually 30 minutes). This is a measure to protect your data. Simply log in again with your usual credentials."
+      },
+      "inscription_1": {
+        "q": "How do I enroll my child at school via the platform?",
+        "a": "Student enrollment is done directly by the school administration. You must go to the school with the required documents (birth certificate, ID photos, vaccination record, etc.). The administration will then create your parent account and your child's profile."
+      },
+      "inscription_2": {
+        "q": "Why can't I register myself on the site?",
+        "a": "To ensure the security of student data and compliance with school regulations, all accounts (parents, teachers) are created and validated directly by authorized school administrators. This prevents fraudulent registrations."
+      },
+      "inscription_3": {
+        "q": "How do I access my child's information as a parent?",
+        "a": "Once your parent account is created by the administration, you will receive your login credentials. By logging in, you will be able to view grades, report cards, schedules, payments, and messages regarding your child."
+      },
+      "bibliotheque_1": {
+        "q": "How do I access digital books?",
+        "a": "The digital library is accessible from the \"Books\" menu in the navigation bar. You can browse the catalog, filter by subject or classroom, and open any book to read it directly online. No registration is required to access the books."
+      },
+      "bibliotheque_2": {
+        "q": "How do I search for books by classroom?",
+        "a": "On the Library page, use the \"Room\" dropdown menu to filter the books available in a specific room (SIL A, CP A, CM1 A, etc.). You can also type a room name directly into the main search bar."
+      },
+      "bibliotheque_3": {
+        "q": "Can I download the books?",
+        "a": "Full digital books (PDF) can be downloaded from the book reader by clicking on the download icon (↓). This feature may be limited depending on your account's access rights and the copyrights of each book."
+      },
+      "paiements_1": {
+        "q": "How do I pay tuition online?",
+        "a": "Tuition payments are recorded by the school administration. As a parent, you can view your payment history and remaining installments in the \"Payments\" section of your dashboard. To make a new payment, please contact the school's accounting department."
+      },
+      "paiements_2": {
+        "q": "How do I get a payment receipt?",
+        "a": "Log in to your parent account, go to the \"Payments\" section, and click on \"Export PDF\" for the relevant payment. An official receipt will be generated automatically with the school's stamp and transaction information."
+      },
+      "messagerie_1": {
+        "q": "How do I send a message to the administration?",
+        "a": "From your dashboard, click on \"Messages\" in the menu. Compose your message by selecting the recipient (administration, director, etc.) and send it. You will receive a notification when your message is read and a reply is sent to you."
+      },
+      "messagerie_2": {
+        "q": "Can I contact my child's teacher directly?",
+        "a": "The platform's messaging system allows parents to communicate with the school administration. Messages intended for teachers are first filtered and validated by the direction before being forwarded, in accordance with the school's communication policy."
+      },
+      "securite_1": {
+        "q": "Is my personal data secure?",
+        "a": "Yes, EcoleApp 2026 uses advanced security technologies: JWT (JSON Web Token) authentication, rotating access tokens, bcrypt password encryption, and full traceability of all actions via audit logs. Your data is never shared with third parties."
+      },
+      "securite_2": {
+        "q": "How do I change my password?",
+        "a": "Once logged in, go to \"My Profile\" or \"Settings\" and select \"Change password\". Enter your old password, then your new password twice for confirmation. Your new password must be at least 6 characters long."
+      }
+    }
+  },
+  "aboutPage": {
+    "title": "About EcoleApp 2026 (P-097)",
+    "desc1": "Designed to meet the highest engineering and security standards, EcoleApp 2026 is the benchmark school management solution offered by the DIGISCHOOL ecosystem.",
+    "desc2": "Our platform seamlessly connects administration, teachers, students, and parents for a modern and optimized educational journey.",
+    "backToHome": "Back to Home"
   }
 }

@@ -90,18 +90,29 @@ const AdminLayoutWrapper: React.FC = () => (
 // ─── Role-based Dashboard Redirect ─────────────────────────────────
 const DashboardRedirect: React.FC = () => {
   const { user } = useAuthStore();
-  const typeAdmin = user?.typeAdmin;
 
-  if (user?.role === 'TEACHER') return <DashboardEnseignant />;
-  if (user?.role === 'PARENT')  return <DashboardParent />;
+  if (!user) return null;
 
-  switch (typeAdmin) {
-    case 0:  return <DashboardRoot />;
-    case 1:  return <DashboardAdmin />;
-    case 2:  return <DashboardScolarite />;
-    case 3:  return <DashboardFondateur />;
-    case 4:  return <DashboardDirecteur />;
-    default: return <DashboardAdmin />;
+  // Teachers and Parents have their own dedicated routes
+  if (user.role === 'TEACHER') return <DashboardEnseignant />;
+  if (user.role === 'PARENT') return <DashboardParent />;
+
+  // Admin roles – render the specific dashboard component for each role
+  switch (user.role) {
+    case 'ROOT':
+      return <DashboardRoot />;
+    case 'ADMIN_ROOT':
+    case 'ADMIN_INSCRIPTIONS':
+      return <DashboardAdmin />;
+    case 'ADMIN_SCOLARITE':
+      return <DashboardScolarite />;
+    case 'FONDATEUR':
+      return <DashboardFondateur />;
+    case 'DIRECTEUR':
+      return <DashboardDirecteur />;
+    default:
+      // Fallback to a generic admin dashboard if role is unrecognized
+      return <DashboardAdmin />;
   }
 };
 
@@ -127,7 +138,7 @@ export const Router: React.FC = () => {
           <Route
             element={
               <RequireAuth>
-                <RequireRole allowedRoles={['ADMIN']}>
+                <RequireRole allowedRoles={['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN']}>
                   <AdminLayoutWrapper />
                 </RequireRole>
               </RequireAuth>

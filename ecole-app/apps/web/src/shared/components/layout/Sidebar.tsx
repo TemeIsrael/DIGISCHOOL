@@ -65,9 +65,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false, onToggle })
 
   // Filter links based on role and admin sub-type
   const visibleLinks = allLinks.filter((link) => {
-    if (link.roles && !link.roles.includes(user?.role || '')) return false;
-    if (user?.role === 'ADMIN' && link.adminTypes) {
-      return link.adminTypes.includes(user?.typeAdmin ?? -1);
+    const isAdminUser = user && ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'].includes(user.role);
+
+    if (link.roles) {
+      if (isAdminUser && link.roles.includes('ADMIN')) {
+        // C'est un lien admin, et l'utilisateur est un admin.
+        // On vérifie les permissions spécifiques (adminTypes)
+        if (link.adminTypes) {
+          if (user?.typeAdmin === 0) return true; // Le super-admin voit tout
+          return link.adminTypes.includes(user?.typeAdmin ?? -1);
+        }
+        return true;
+      }
+      
+      // Pour les autres rôles (TEACHER, PARENT)
+      if (!link.roles.includes(user?.role || '')) {
+        return false;
+      }
     }
     return true;
   });

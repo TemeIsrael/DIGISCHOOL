@@ -8,7 +8,6 @@ const admins = [
   { login: 'admin_scol',  password: 'admin123', typeAdmin: 2 },
   { login: 'admin_fond',  password: 'admin123', typeAdmin: 3 },
   { login: 'admin_dir',   password: 'admin123', typeAdmin: 4 },
-  { login: 'admin_aud',   password: 'admin123', typeAdmin: 5 },
 ];
 
 async function setup() {

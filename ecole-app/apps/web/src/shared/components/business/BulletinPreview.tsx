@@ -36,7 +36,7 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
   onDownload
 }) => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
   const displayName = eleve || (prenom && nom ? `${prenom} ${nom.toUpperCase()}` : '');
 
   // Determine Rank suffix

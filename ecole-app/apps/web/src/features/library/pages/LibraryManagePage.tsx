@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuthStore } from '../../auth/store';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
@@ -26,6 +27,7 @@ type BookItem = {
 export const LibraryManagePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
+  const { user } = useAuthStore();
 
   const initialBooks = (): BookItem[] =>
     getBooks(i18n.language).map((b) => ({
@@ -134,10 +136,12 @@ export const LibraryManagePage: React.FC = () => {
           <h1 className="text-2xl font-bold text-slate-800">{t('library.titleManage', 'Gestion de la Bibliothèque')}</h1>
           <p className="text-sm text-slate-400 font-semibold">{t('library.subtitle', 'Catalogue, prêts et inventaire')}</p>
         </div>
-        <Button onClick={() => setAddModalOpen(true)} className="gap-2 w-full sm:w-auto">
-          <FilePlus className="w-4 h-4" />
-          {t('library.addBook', 'Ajouter un Livre')}
-        </Button>
+        {user?.typeAdmin !== 4 && (
+          <Button onClick={() => setAddModalOpen(true)} className="gap-2 w-full sm:w-auto">
+            <FilePlus className="w-4 h-4" />
+            {t('library.addBook', 'Ajouter un Livre')}
+          </Button>
+        )}
       </div>
 
       {/* KPIs */}
@@ -335,13 +339,19 @@ export const LibraryManagePage: React.FC = () => {
             </div>
           </div>
           <div className="flex justify-between gap-2 pt-2 border-t border-slate-100">
-            <Button variant="danger" className="gap-2" onClick={handleDeleteBook}>
-              <Trash2 className="w-4 h-4" />
-              {t('common.delete', 'Supprimer')}
-            </Button>
+            {user?.typeAdmin !== 4 ? (
+              <Button variant="danger" className="gap-2" onClick={handleDeleteBook}>
+                <Trash2 className="w-4 h-4" />
+                {t('common.delete', 'Supprimer')}
+              </Button>
+            ) : <div />}
             <div className="flex gap-2">
-              <Button variant="ghost" onClick={() => setManageModalOpen(false)}>{t('common.cancel', 'Annuler')}</Button>
-              <Button onClick={handleSaveEdit}>{t('common.save', 'Enregistrer')}</Button>
+              <Button variant="ghost" onClick={() => setManageModalOpen(false)}>
+                {user?.typeAdmin !== 4 ? t('common.cancel', 'Annuler') : t('common.close', 'Fermer')}
+              </Button>
+              {user?.typeAdmin !== 4 && (
+                <Button onClick={handleSaveEdit}>{t('common.save', 'Enregistrer')}</Button>
+              )}
             </div>
           </div>
         </div>

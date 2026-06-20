@@ -16,7 +16,7 @@ const loginFormSchema = z.object({
   login: z.string().min(3, 'auth.loginMinLength'),
   password: z.string().min(6, 'auth.passwordMinLength'),
   role: z.enum([
-    'ROOT', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR',
+    'ADMIN_ROOT', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR',
     'DIRECTEUR', 'TEACHER', 'PARENT'
   ])
 });
@@ -41,12 +41,8 @@ export const LoginPage: React.FC = () => {
 
   const onSubmit = async (data: LoginFormInput) => {
     try {
-      let apiRole: string = data.role;
-      if (['ROOT', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR', 'DIRECTEUR'].includes(data.role)) {
-        apiRole = 'ADMIN';
-      }
-      
-      const payload = { ...data, role: apiRole };
+      // Send the exact role selected in the UI (e.g., ADMIN_ROOT, ADMIN_INSCRIPTIONS, …)
+      const payload = { ...data };
       const response = await performLogin(payload);
       
       // Apply the user's saved language from the database
@@ -63,17 +59,21 @@ export const LoginPage: React.FC = () => {
         'DIRECTEUR': 4,
       };
 
-      if (typeAdminMap[data.role] !== undefined) {
-        useAuthStore.getState().setAuth({
-          accessToken: response.accessToken,
-          refreshToken: response.refreshToken,
-          user: { ...response.user, typeAdmin: typeAdminMap[data.role] }
-        });
-      }
-      
-      // Navigate based on the actual authenticated user data (or our overridden one)
-      const finalTypeAdmin = typeAdminMap[data.role] !== undefined ? typeAdminMap[data.role] : response.user.typeAdmin;
-      navigate(getRoleDashboardPath(response.user.role, finalTypeAdmin, response.user.typePersonne));
+      // Store authentication data for all users (admin, teacher, parent)
+      useAuthStore.getState().setAuth({
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+        user: response.user,
+      });
+
+      // Navigate to the appropriate dashboard based on the authenticated user's role
+      navigate(
+        getRoleDashboardPath(
+          response.user.role,
+          response.user.typeAdmin,
+          response.user.typePersonne
+        )
+      );
     } catch (e) {
       // Handled inside useAuth hook notifications
     }
@@ -117,7 +117,7 @@ export const LoginPage: React.FC = () => {
             <Select
               label={t('auth.role')}
               options={[
-                { value: 'ROOT',               label: t('auth.roles.ROOT') },
+                { value: 'ADMIN_ROOT',               label: t('auth.roles.ADMIN_ROOT') },
                 { value: 'ADMIN_INSCRIPTIONS', label: t('auth.roles.ADMIN_INSCRIPTIONS') },
                 { value: 'ADMIN_SCOLARITE',    label: t('auth.roles.ADMIN_SCOLARITE') },
                 { value: 'FONDATEUR',          label: t('auth.roles.FONDATEUR') },

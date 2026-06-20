@@ -16,7 +16,7 @@ interface Homework {
 
 export const TeacherHomeworkPage: React.FC = () => {
   const { i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
 
   const [homeworks, setHomeworks] = useState<Homework[]>([
     { id: '1', classe: 'CM1 A', matiere: 'Mathématiques', titre: 'Exercices sur les fractions', date: '2026-06-20', pdfUrl: '#' },

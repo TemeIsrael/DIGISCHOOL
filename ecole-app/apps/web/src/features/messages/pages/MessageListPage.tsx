@@ -97,7 +97,7 @@ const MessageDetail: React.FC<{
 /* ─── Main Component ─────────────────────────────────────────────── */
 export const MessageListPage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
 
   /* ─── Initial messages ───────────────────────────────────────────── */
   const initialMessages: Message[] = isEn ? [

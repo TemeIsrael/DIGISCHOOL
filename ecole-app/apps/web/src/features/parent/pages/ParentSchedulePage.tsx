@@ -22,7 +22,7 @@ const scheduleData = [
 
 export const ParentSchedulePage: React.FC = () => {
   const { t, i18n } = useTranslation();
-  const isEn = i18n.language === 'en';
+  const isEn = i18n.language?.startsWith('en');
 
   const totalDays = new Set(scheduleData.map(s => s.jour)).size;
   const totalSlots = scheduleData.length;

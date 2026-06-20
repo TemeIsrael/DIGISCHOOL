@@ -27,7 +27,7 @@ const loginLimiter = rateLimit({
 const loginSchema = z.object({
   login: z.string().min(3),
   password: z.string().min(6),
-  role: z.enum(['ADMIN', 'TEACHER', 'PARENT', 'STUDENT'])
+  role: z.enum(['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN','TEACHER','PARENT','STUDENT'])
 });
 
 const changePasswordSchema = z.object({
@@ -48,7 +48,7 @@ console.log("ROLE:", role);
     let typeAdmin: number | undefined;
     let typePersonne: number | undefined;
 
-    if (role === 'ADMIN') {
+    if (['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'].includes(role)) {
       user = await Admin.findOne({
         where: { login, actif: true, isDelete: false },
         attributes: ['ID', 'login', 'password', 'typeAdmin', 'actif', 'isDelete', 'langue']
@@ -68,7 +68,8 @@ console.log("ROLE:", role);
       }
 
     } else if (role === 'PARENT' || role === 'TEACHER') {
-      // PARENT = typePersonne 2, TEACHER = typePersonne 1
+       // PARENT = typePersonne 2, TEACHER = typePersonne 1
+       console.log('DEBUG: entered PERSONNE branch');
       const expectedType = role === 'PARENT' ? 2 : 1;
       user = await Personne.findOne({
         where: { login, typePersonne: expectedType, actif: true, isDelete: false },
@@ -79,14 +80,22 @@ console.log("ROLE:", role);
         return res.status(401).json({ error: { code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' } });
       }
 
-      const data = user.dataValues;
-      userId = data.idPers;
-      typePersonne = data.typePersonne;
-
-      const isValid = await comparePassword(password, data.password);
-      if (!isValid) {
-        return res.status(401).json({ error: { code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' } });
-      }
+         const data = user.dataValues;
+         console.log('DEBUG: after fetching user data');
+        console.log('DEBUG: fetched user data', data);
+        console.log('DEBUG: raw password from DB', data.password);
+        console.log('DEBUG: password sent by client', password);
+        userId = data.idPers;
+        typePersonne = data.typePersonne;
+        // Ensure no trailing whitespace in stored hash
+        const storedHash = data.password.trim();
+        console.log('DEBUG: storedHash length', storedHash.length);
+        const isValid = await comparePassword(password, storedHash);
+        console.log('DEBUG: isValid result', isValid);
+        if (!isValid) {
+          console.log('DEBUG: password mismatch for user', login);
+          return res.status(401).json({ error: { code: 'INVALID_CREDENTIALS', message: 'Invalid credentials' } });
+        }
 
     } else {
       return res.status(400).json({ error: { code: 'INVALID_ROLE', message: 'Role not supported' } });

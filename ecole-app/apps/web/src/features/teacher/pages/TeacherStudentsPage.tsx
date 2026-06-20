@@ -13,6 +13,7 @@ type Student = {
   section: string;
   moyenne: number | null;
   statut: 'actif' | 'inactif';
+  photoUrl?: string;
 };
 
 const mockStudents: Student[] = [
@@ -82,6 +83,7 @@ export const TeacherStudentsPage: React.FC = () => {
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
                 <th className="px-4 py-3 text-left">#</th>
+                <th className="px-4 py-3 text-left">{t('common.photo', 'Photo')}</th>
                 <th className="px-4 py-3 text-left">{t('students.matricule', 'Matricule')}</th>
                 <th className="px-4 py-3 text-left">{t('students.nom', 'Nom')}</th>
                 <th className="px-4 py-3 text-left">{t('students.prenom', 'Prénom')}</th>
@@ -94,6 +96,13 @@ export const TeacherStudentsPage: React.FC = () => {
               {filtered.map((s, i) => (
                 <tr key={s.matricule} className="hover:bg-slate-50 transition-colors">
                   <td className="px-4 py-3 text-slate-400">{i + 1}</td>
+                  <td className="px-4 py-3">
+                    <img 
+                      src={s.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(s.prenom + ' ' + s.nom)}&background=random`} 
+                      alt="photo" 
+                      className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-sm"
+                    />
+                  </td>
                   <td className="px-4 py-3 font-mono text-xs text-slate-500">{s.matricule}</td>
                   <td className="px-4 py-3 font-bold text-slate-800">{s.nom}</td>
                   <td className="px-4 py-3">{s.prenom}</td>
