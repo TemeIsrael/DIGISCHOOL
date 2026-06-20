@@ -29,7 +29,9 @@ app.use(
   cors({
     origin: [
       'http://localhost:5173',
-      'https://digischool-iota.vercel.app'
+      'https://digischool-iota.vercel.app',
+      'https://digischool-app.vercel.app',
+      env.FRONT_URL
     ],
     credentials: true
   })
