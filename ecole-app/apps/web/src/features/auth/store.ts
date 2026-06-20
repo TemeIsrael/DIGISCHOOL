@@ -29,7 +29,7 @@ interface AuthStore {
   accessToken: string | null;
   refreshToken: string | null;
   user: UserSession | null;
-  role: 'ADMIN_ROOT' | 'ADMIN_INSCRIPTIONS' | 'ADMIN_SCOLARITE' | 'FONDATEUR' | 'DIRECTEUR' | 'ADMIN' | 'TEACHER' | 'PARENT' | 'STUDENT' | null;
+  role: 'ROOT' | 'ADMIN_ROOT' | 'ADMIN_INSCRIPTIONS' | 'ADMIN_SCOLARITE' | 'FONDATEUR' | 'DIRECTEUR' | 'ADMIN' | 'TEACHER' | 'PARENT' | 'STUDENT' | null;
   isAuthenticated: boolean;
   isHydrated: boolean;
   lastActivity: number | null;

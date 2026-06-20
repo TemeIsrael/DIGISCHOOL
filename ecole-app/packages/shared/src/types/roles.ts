@@ -1,12 +1,28 @@
 // ─── User Roles ─────────────────────────────────────────────────────
 
-export type UserRole = 'ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT';
+export type UserRole = 
+  | 'ADMIN'
+  | 'TEACHER'
+  | 'STUDENT'
+  | 'PARENT'
+  | 'ROOT'
+  | 'ADMIN_ROOT'
+  | 'ADMIN_INSCRIPTIONS'
+  | 'ADMIN_SCOLARITE'
+  | 'FONDATEUR'
+  | 'DIRECTEUR';
 
 export const ROLES: Record<UserRole, UserRole> = {
   ADMIN: 'ADMIN',
   TEACHER: 'TEACHER',
   STUDENT: 'STUDENT',
   PARENT: 'PARENT',
+  ROOT: 'ROOT',
+  ADMIN_ROOT: 'ADMIN_ROOT',
+  ADMIN_INSCRIPTIONS: 'ADMIN_INSCRIPTIONS',
+  ADMIN_SCOLARITE: 'ADMIN_SCOLARITE',
+  FONDATEUR: 'FONDATEUR',
+  DIRECTEUR: 'DIRECTEUR',
 };
 
 // ─── Admin Sub-Types ────────────────────────────────────────────────
@@ -50,4 +66,10 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   TEACHER: 'Enseignant',
   STUDENT: 'Élève',
   PARENT: 'Parent',
+  ROOT: 'Super Admin',
+  ADMIN_ROOT: 'Admin Root',
+  ADMIN_INSCRIPTIONS: 'Admin Inscriptions',
+  ADMIN_SCOLARITE: 'Admin Scolarité',
+  FONDATEUR: 'Fondateur',
+  DIRECTEUR: 'Directeur',
 };

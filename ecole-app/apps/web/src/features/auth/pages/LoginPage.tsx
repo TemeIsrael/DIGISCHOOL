@@ -50,14 +50,6 @@ export const LoginPage: React.FC = () => {
         i18n.changeLanguage(response.user.langue);
       }
 
-      // FOR TESTING: Override typeAdmin based on user UI selection
-      const typeAdminMap: Record<string, number> = {
-        'ROOT': 0,
-        'ADMIN_INSCRIPTIONS': 1,
-        'ADMIN_SCOLARITE': 2,
-        'FONDATEUR': 3,
-        'DIRECTEUR': 4,
-      };
 
       // Store authentication data for all users (admin, teacher, parent)
       useAuthStore.getState().setAuth({
