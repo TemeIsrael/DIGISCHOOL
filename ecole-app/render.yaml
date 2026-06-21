@@ -17,7 +17,7 @@ services:
       - key: DB_USER
         value: avnadmin
       - key: DB_PASSWORD
-        value: israel235
+        sync: false
       - key: DB_NAME
         value: defaultdb
       - key: DB_SSL
