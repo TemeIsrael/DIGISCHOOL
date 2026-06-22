@@ -43,6 +43,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
   const changeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLang = e.target.value;
     i18n.changeLanguage(newLang);
+    // Emit socket event for real-time sync across devices
+    import('../../lib/socket').then(({ emitLanguageChange }) => {
+      emitLanguageChange(newLang);
+    });
     // Save language preference to the database for cross-device sync
     api.put('/auth/language', { langue: newLang }).catch(() => {});
   };
