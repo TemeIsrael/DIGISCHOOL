@@ -61,7 +61,7 @@ export const LandingPage: React.FC = () => {
   ];
 
   const stats = [
-    { value: '9+', label: t('landingFeatures.userRoles'), icon: <Users className="w-5 h-5" /> },
+    { value: '7+', label: t('landingFeatures.userRoles'), icon: <Users className="w-5 h-5" /> },
     { value: '12+', label: t('landingFeatures.integratedModules'), icon: <CheckCircle2 className="w-5 h-5" /> },
     { value: '24/7', label: t('landingFeatures.availability'), icon: <Clock className="w-5 h-5" /> },
   ];
