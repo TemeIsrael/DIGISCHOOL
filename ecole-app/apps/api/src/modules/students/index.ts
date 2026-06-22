@@ -282,8 +282,19 @@ router.post('/register', requireRole(['ADMIN']), validateBody(registerStudentSch
       
       parentId = newParent.idPers;
       
-      // Simulate sending email
-      console.log(`\n=== EMAIL SIMULATION ===\nTo: ${data.parentInfo.email}\nSubject: Vos identifiants DIGISCHOOL\nBonjour ${data.parentInfo.nom},\nVoici vos accès Parent:\nLogin: ${genLogin}\nMot de passe: ${genPassword}\n========================\n`);
+      // Send real email via mailer service
+      const subject = 'Vos identifiants DIGISCHOOL';
+      const emailContent = `
+        <h3>Bienvenue sur DIGISCHOOL, ${data.parentInfo.nom} !</h3>
+        <p>Votre compte Parent a été créé avec succès.</p>
+        <p>Voici vos identifiants de connexion pour accéder à la plateforme :</p>
+        <ul>
+          <li><strong>Login :</strong> ${genLogin}</li>
+          <li><strong>Mot de passe :</strong> ${genPassword}</li>
+        </ul>
+        <p><i>Pour des raisons de sécurité, nous vous conseillons de changer ce mot de passe lors de votre première connexion.</i></p>
+      `;
+      await require('../../lib/mailer').sendInternalMail(data.parentInfo.email, subject, emailContent);
     }
 
     if (parentId) {

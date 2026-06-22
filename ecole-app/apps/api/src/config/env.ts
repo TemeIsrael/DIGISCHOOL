@@ -21,7 +21,11 @@ const envSchema = z.object({
   MAX_UPLOAD_MB: z.string().transform((val) => parseInt(val, 10)).default('10'),
   FRONT_URL: z.string().url().default('http://localhost:5173'),
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'http', 'debug']).default('info'),
-  VITE_API_URL: z.string().optional()
+  VITE_API_URL: z.string().optional(),
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORT: z.string().optional(),
+  SMTP_USER: z.string().optional(),
+  SMTP_PASS: z.string().optional()
 });
 
 const _env = envSchema.safeParse(process.env);
