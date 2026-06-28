@@ -22,6 +22,7 @@ type BookItem = {
   rating: number;
   salles: string[];
   fileUrl?: string;
+  coverUrl?: string;
 };
 
 export const LibraryManagePage: React.FC = () => {
@@ -40,6 +41,7 @@ export const LibraryManagePage: React.FC = () => {
       available: b.available,
       rating: b.rating,
       salles: b.salles,
+      coverUrl: b.coverUrl,
     }));
 
   const [booksList, setBooksList] = useState<BookItem[]>(initialBooks());
@@ -226,6 +228,7 @@ export const LibraryManagePage: React.FC = () => {
               isbn={b.isbn}
               available={b.available}
               total={b.copies}
+              coverUrl={b.coverUrl}
               onOpen={() => handleOpenManage(b)}
             />
           ))}

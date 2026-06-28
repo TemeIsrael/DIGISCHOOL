@@ -44,6 +44,7 @@ export const getBooks = (lng: string): LibraryBook[] => {
       available: 22,
       rating: 4.5,
       salles: ['CM1 A', 'Class 5'],
+      coverUrl: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=500&q=80',
       pages: isEn ? [
         {
           title: 'Chapter 1 — The Enchanted Forest',
@@ -201,6 +202,7 @@ TOTAL : /20`
       available: 18,
       rating: 4.2,
       salles: ['CE2 A', 'Class 4'],
+      coverUrl: 'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=500&q=80',
       pages: isEn ? [
         {
           title: 'Lesson 1 — Multiplication',
@@ -400,6 +402,7 @@ Qui en a mangé le plus ? Combien reste-t-il ?`
       available: 22,
       rating: 4.3,
       salles: ['CM1 A', 'CM2 A', 'Class 5', 'Class 6'],
+      coverUrl: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=500&q=80',
       pages: isEn ? [
         {
           title: 'Chapter 1 — The Origins of Cameroon',
@@ -593,6 +596,7 @@ d. L'UPC était dirigée par Um Nyobè. ( )`
       available: 15,
       rating: 4.1,
       salles: ['SIL A', 'SIL B', 'CP A', 'CP B', 'Class 1', 'Class 2'],
+      coverUrl: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=500&q=80',
       pages: [
         {
           title: 'Lesson 1 — The Alphabet',
@@ -717,6 +721,7 @@ Exercise — Fill in the blanks:
       available: 28,
       rating: 4.6,
       salles: ['CP A', 'CP B', 'CE1 A', 'CE1 B', 'Class 2', 'Class 3'],
+      coverUrl: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=500&q=80',
       pages: isEn ? [
         {
           title: 'Lesson 1 — Letters and Sounds',
