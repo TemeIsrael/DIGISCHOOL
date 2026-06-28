@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KPICard } from '../../shared/components/ui/KPICard';
 import { Card } from '../../shared/components/ui/Card';
 import { Button } from '../../shared/components/ui/Button';
 import {
-  Shield, Terminal, UserPlus, Send, CheckCircle2,
-  AlertCircle, Users, Database, Activity, Clock,
+  UserPlus, Send, CheckCircle2,
+  AlertCircle, Users, Clock,
   Eye, EyeOff, Trash2, ToggleLeft, ToggleRight
 } from 'lucide-react';
-import { useAuthStore } from '../../features/auth/store';
 
 /* ─── Types ─────────────────────────────────────────────────────── */
 interface AdminAccount {
@@ -82,9 +80,10 @@ export const DashboardRoot: React.FC = () => {
   const [sentTo, setSentTo]                 = useState<number | null>(null);
   const [sendingId, setSendingId]           = useState<number | null>(null);
 
-  /* KPIs */
-  const totalAdmins  = admins.length;
-  const activeAdmins = admins.filter((a) => a.actif).length;
+  /* KPIs – kept for potential future display */
+  const _totalAdmins  = admins.length;
+  const _activeAdmins = admins.filter((a) => a.actif).length;
+  void _totalAdmins; void _activeAdmins;
 
   /* Create admin (simulated) */
   const handleCreate = async (e: React.FormEvent) => {

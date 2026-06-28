@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, Globe, Calendar, Menu, X, Bell, User, Eye, EyeOff } from 'lucide-react';
+import { LogOut, Globe, Calendar, Menu, X, Bell, User } from 'lucide-react';
 import { useAuthStore } from '../../../features/auth/store';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from '../ui/Avatar';

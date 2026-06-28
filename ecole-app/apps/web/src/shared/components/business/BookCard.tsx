@@ -31,7 +31,7 @@ export const BookCard: React.FC<BookCardProps> = ({
   onOpen
 }) => {
   const { t } = useTranslation();
-  
+
   const displayTitle = title || titre || '';
   const displayAuthor = author || auteur || '';
   const displayTag = specialty || isbn || '';
@@ -39,14 +39,15 @@ export const BookCard: React.FC<BookCardProps> = ({
   const stockPct = hasStock ? Math.round((available! / total!) * 100) : null;
 
   return (
-    {coverUrl ? (
-    <img src={coverUrl} alt={displayTitle} className="h-40 w-full object-cover" />
-  ) : (
-    <div className="h-40 bg-slate-100 flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-bg to-slate-100 group-hover:scale-105 transition-transform duration-300" />
-      <BookOpen className="w-10 h-10 text-digi-purple/40 relative z-10" />
-    </div>
-  )}
+    <Card className="overflow-hidden flex flex-col group">
+      {coverUrl ? (
+        <img src={coverUrl} alt={displayTitle} className="h-40 w-full object-cover" />
+      ) : (
+        <div className="h-40 bg-slate-100 flex items-center justify-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-bg to-slate-100 group-hover:scale-105 transition-transform duration-300" />
+          <BookOpen className="w-10 h-10 text-digi-purple/40 relative z-10" />
+        </div>
+      )}
 
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
@@ -81,3 +82,5 @@ export const BookCard: React.FC<BookCardProps> = ({
     </Card>
   );
 };
+
+export default BookCard;

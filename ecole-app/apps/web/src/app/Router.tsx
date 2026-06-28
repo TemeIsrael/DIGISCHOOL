@@ -61,7 +61,7 @@ const StatsPage               = lazy(() => import('../features/stats/pages/Stats
 const SchedulePage            = lazy(() => import('../features/schedules/pages/SchedulePage'));
 const NotificationsPage = lazy(() => import('../features/notifications/pages/NotificationsPage'));
 const NotificationDetailPage = lazy(() => import('../features/notifications/pages/NotificationDetailPage'));
-const ProfilePage = lazy(() => import('../features/profile/pages/ProfilePage'));
+
 const TeacherStudentsPage     = lazy(() => import('../features/teacher/pages/TeacherStudentsPage'));
 const TeacherBulletinPage     = lazy(() => import('../features/teacher/pages/TeacherBulletinPage'));
 const TeacherDisciplinePage   = lazy(() => import('../features/teacher/pages/TeacherDisciplinePage'));
