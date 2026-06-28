@@ -31,7 +31,9 @@ const NotFound           = lazy(() => import('../pages/NotFound'));
 const Forbidden          = lazy(() => import('../pages/Forbidden'));
 const Maintenance        = lazy(() => import('../pages/Maintenance'));
 
-// ─── Lazy-loaded Dashboards ────────────────────────────────────────
+const ProfilePage = lazy(() => import('../features/profile/pages/ProfilePage'));
+
+// ─── Loading Fallback ──────────────────────────────────────────────
 const DashboardRoot       = lazy(() => import('../features/dashboards/DashboardRoot'));
 const DashboardAdmin      = lazy(() => import('../features/dashboards/DashboardAdmin'));
 const DashboardScolarite  = lazy(() => import('../features/dashboards/DashboardScolarite'));
@@ -189,6 +191,7 @@ export const Router: React.FC = () => {
           <Route element={<RequireAuth><AdminLayoutWrapper /></RequireAuth>}>
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/notifications/:id" element={<NotificationDetailPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
 
           {/* ═══ Teacher Routes (Sidebar Layout) ═══ */}

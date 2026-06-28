@@ -7,6 +7,7 @@ import { GradeCell } from '../../../shared/components/business/GradeCell';
 import { ClipboardList, Save, Download } from 'lucide-react';
 import { exportCSV } from '../../../shared/utils/export';
 import { useToast } from '../../../shared/components/ui/Toast';
+import { useAuthStore } from '../../../features/auth/store';
 
 interface GradeEntry {
   matricule: string;
@@ -50,6 +51,8 @@ export const GradeEntryPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const isEn = i18n.language?.startsWith('en');
   const { toast } = useToast();
+  const { user } = useAuthStore();
+  const isDirector = user?.typeAdmin === 4;
 
   const sections = isEn
     ? ['Francophone', 'Anglophone']
@@ -121,10 +124,12 @@ export const GradeEntryPage: React.FC = () => {
             <Download className="w-4 h-4" />
             {t('grades.export', 'Exporter')}
           </Button>
-          <Button className="gap-2" onClick={handleSave}>
-            <Save className="w-4 h-4" />
-            {t('grades.save', 'Enregistrer')}
-          </Button>
+          {!isDirector && (
+            <Button className="gap-2" onClick={handleSave}>
+              <Save className="w-4 h-4" />
+              {t('grades.save', 'Enregistrer')}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -213,7 +218,8 @@ export const GradeEntryPage: React.FC = () => {
                       step={g.noteMax === 100 ? 1 : 0.5}
                       value={g.note ?? ''}
                       onChange={(e) => handleNoteChange(i, e.target.value)}
-                      className="w-20 text-center border border-slate-200 rounded-lg py-1.5 text-sm font-bold focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all"
+                      disabled={isDirector}
+                      className="w-20 text-center border border-slate-200 rounded-lg py-1.5 text-sm font-bold focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed"
                       placeholder="—"
                     />
                   </td>

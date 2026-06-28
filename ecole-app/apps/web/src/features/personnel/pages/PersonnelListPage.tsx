@@ -8,6 +8,7 @@ import { Users, Search, FilePlus, Pencil, Trash2, Shield, BookOpen } from 'lucid
 import { usePermissions } from '../../auth/hooks/usePermissions';
 import { usePersonnel } from '../hooks/usePersonnel';
 import { useToast } from '../../../shared/components/ui/Toast';
+import { useAuthStore } from '../../auth/store';
 
 const getTypeString = (typePersonne: number) => {
   if (typePersonne === 1) return 'Maître';
@@ -26,6 +27,7 @@ const PersonnelListPage: React.FC = () => {
   const { canAddPersonnelOrStudentsOrSchedules } = usePermissions();
   const { personnel, isLoading, createPersonnel } = usePersonnel();
   const { toast } = useToast();
+  const { user } = useAuthStore();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEntry, setNewEntry] = useState({
@@ -259,8 +261,12 @@ const PersonnelListPage: React.FC = () => {
                       <span className={`inline-flex items-center w-2.5 h-2.5 rounded-full ${p.actif ? 'bg-digi-success' : 'bg-slate-300'}`} />
                     </td>
                     <td className="px-4 py-3 text-right flex items-center justify-end gap-2">
-                      <button className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-digi-purple transition-colors"><Pencil className="w-4 h-4" /></button>
-                      <button className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-digi-danger transition-colors"><Trash2 className="w-4 h-4" /></button>
+                      {user?.typeAdmin !== 4 && (
+                        <>
+                          <button className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-digi-purple transition-colors"><Pencil className="w-4 h-4" /></button>
+                          <button className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-digi-danger transition-colors"><Trash2 className="w-4 h-4" /></button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))

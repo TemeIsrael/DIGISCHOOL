@@ -132,6 +132,7 @@ export const Navbar: React.FC = () => {
         </div>
 
             {/* Notifications */}
+            {user?.role !== 'ROOT' && (
               <div className="relative" ref={notifRef}>
               <button 
                 onClick={() => setShowNotifications(!showNotifications)}
@@ -174,6 +175,7 @@ export const Navbar: React.FC = () => {
                 </div>
               )}
             </div>
+            )}
 
         {/* User Avatar + Profile Menu */}
         <div className="relative flex items-center gap-3 pl-3 border-l border-slate-100" ref={profileRef}>
@@ -189,11 +191,15 @@ export const Navbar: React.FC = () => {
 
           {showProfile && (
             <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg z-50 py-1">
-                <button onClick={() => navigate('/profile')} className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-digi-purple flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  {t('common.profile', 'Mon Profil')}
-                </button>
-              <div className="h-px bg-slate-100 my-1"></div>
+              {user?.role !== 'ROOT' && (
+                <>
+                  <button onClick={() => navigate('/profile')} className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-digi-purple flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    {t('common.profile', 'Mon Profil')}
+                  </button>
+                  <div className="h-px bg-slate-100 my-1"></div>
+                </>
+              )}
               <button
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-2 text-sm text-digi-danger hover:bg-rose-50 flex items-center gap-2"

@@ -16,6 +16,7 @@ type Incident = {
   gravite: string;
   description: string;
   sanction: string;
+  points: number;
 };
 
 const graviteColors: Record<string, string> = {
@@ -32,15 +33,15 @@ export const TeacherDisciplinePage: React.FC = () => {
   const isEn = i18n.language?.startsWith('en');
 
   const initialIncidents: Incident[] = isEn ? [
-    { id: 1, date: '24/05/2026', eleve: 'TAMBA Isaac',  classe: 'CM2 A', type: 'Late arrival',  gravite: 'Minor',    description: 'Arrived 15 min late without a pass',                sanction: 'Verbal warning'       },
-    { id: 2, date: '22/05/2026', eleve: 'DUPONT Jean',  classe: 'CM1 A', type: 'Talking',       gravite: 'Minor',    description: 'Persistent talking despite reminders',               sanction: 'Text copy assignment' },
-    { id: 3, date: '20/05/2026', eleve: 'BELLA Sarah',  classe: 'CM1 A', type: 'Absence',       gravite: 'Minor',    description: 'Unjustified absence — 2 days',                       sanction: 'Parent summoning'     },
-    { id: 4, date: '18/05/2026', eleve: 'FOUDA Pierre', classe: 'CE2 A', type: 'Disobedience',  gravite: 'Moderate', description: 'Refused to follow the class teacher instructions',   sanction: 'Written warning'      },
+    { id: 1, date: '24/05/2026', eleve: 'TAMBA Isaac',  classe: 'CM2 A', type: 'Late arrival',  gravite: 'Minor',    description: 'Arrived 15 min late without a pass',                sanction: 'Verbal warning', points: -2 },
+    { id: 2, date: '22/05/2026', eleve: 'DUPONT Jean',  classe: 'CM1 A', type: 'Talking',       gravite: 'Minor',    description: 'Persistent talking despite reminders',               sanction: 'Text copy assignment', points: -3 },
+    { id: 3, date: '20/05/2026', eleve: 'BELLA Sarah',  classe: 'CM1 A', type: 'Absence',       gravite: 'Minor',    description: 'Unjustified absence — 2 days',                       sanction: 'Parent summoning', points: -5 },
+    { id: 4, date: '18/05/2026', eleve: 'FOUDA Pierre', classe: 'CE2 A', type: 'Disobedience',  gravite: 'Moderate', description: 'Refused to follow the class teacher instructions',   sanction: 'Written warning', points: -10 },
   ] : [
-    { id: 1, date: '24/05/2026', eleve: 'TAMBA Isaac',  classe: 'CM2 A', type: 'Retard',       gravite: 'Mineur', description: 'Arrivé 15 min en retard sans justificatif',          sanction: 'Avertissement oral'   },
-    { id: 2, date: '22/05/2026', eleve: 'DUPONT Jean',  classe: 'CM1 A', type: 'Bavardage',    gravite: 'Mineur', description: 'Bavardage persistant en classe malgré rappels',       sanction: 'Copie de texte'       },
-    { id: 3, date: '20/05/2026', eleve: 'BELLA Sarah',  classe: 'CM1 A', type: 'Absence',      gravite: 'Mineur', description: 'Absence non justifiée — 2 jours',                     sanction: 'Convocation parents'  },
-    { id: 4, date: '18/05/2026', eleve: 'FOUDA Pierre', classe: 'CE2 A', type: 'Indiscipline', gravite: 'Moyen',  description: "Refus d'obéir au maître de classe",                  sanction: 'Avertissement écrit'  },
+    { id: 1, date: '24/05/2026', eleve: 'TAMBA Isaac',  classe: 'CM2 A', type: 'Retard',       gravite: 'Mineur', description: 'Arrivé 15 min en retard sans justificatif',          sanction: 'Avertissement oral', points: -2 },
+    { id: 2, date: '22/05/2026', eleve: 'DUPONT Jean',  classe: 'CM1 A', type: 'Bavardage',    gravite: 'Mineur', description: 'Bavardage persistant en classe malgré rappels',       sanction: 'Copie de texte', points: -3 },
+    { id: 3, date: '20/05/2026', eleve: 'BELLA Sarah',  classe: 'CM1 A', type: 'Absence',      gravite: 'Mineur', description: 'Absence non justifiée — 2 jours',                     sanction: 'Convocation parents', points: -5 },
+    { id: 4, date: '18/05/2026', eleve: 'FOUDA Pierre', classe: 'CE2 A', type: 'Indiscipline', gravite: 'Moyen',  description: "Refus d'obéir au maître de classe",                  sanction: 'Avertissement écrit', points: -10 },
   ];
 
   const severities = isEn ? ['Minor', 'Moderate', 'Major'] : ['Mineur', 'Moyen', 'Majeur'];
@@ -53,7 +54,7 @@ export const TeacherDisciplinePage: React.FC = () => {
   const [filterGravite, setFilterGravite] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEntry, setNewEntry] = useState({
-    date: '', eleve: '', classe: 'CM1 A', type: types[0], gravite: severities[0], description: '', sanction: ''
+    date: '', eleve: '', classe: 'CM1 A', type: types[0], gravite: severities[0], description: '', sanction: '', points: -2
   });
 
   const filtered = incidents.filter(inc => {
@@ -117,7 +118,7 @@ export const TeacherDisciplinePage: React.FC = () => {
             date: newEntry.date || new Date().toLocaleDateString(isEn ? 'en-GB' : 'fr-FR')
           }]);
           setIsModalOpen(false);
-          setNewEntry({ date: '', eleve: '', classe: 'CM1 A', type: types[0], gravite: severities[0], description: '', sanction: '' });
+          setNewEntry({ date: '', eleve: '', classe: 'CM1 A', type: types[0], gravite: severities[0], description: '', sanction: '', points: -2 });
         }}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -150,6 +151,10 @@ export const TeacherDisciplinePage: React.FC = () => {
               <label className={labelCls}>{t('discipline.sanction', 'Sanction')}</label>
               <input className={inputCls} placeholder={t('discipline.sanctionPlaceholder', 'Ex: Avertissement')} value={newEntry.sanction} onChange={e => setNewEntry({ ...newEntry, sanction: e.target.value })} />
             </div>
+            <div>
+              <label className={labelCls}>{t('discipline.points', 'Points retirés')}</label>
+              <input type="number" className={inputCls} placeholder="-2" value={newEntry.points} onChange={e => setNewEntry({ ...newEntry, points: Number(e.target.value) })} />
+            </div>
             <div className="md:col-span-2">
               <label className={labelCls}>{t('discipline.description', 'Description')}</label>
               <textarea className={inputCls} placeholder={t('discipline.descriptionPlaceholder', "Détails de l'incident...")} value={newEntry.description} onChange={e => setNewEntry({ ...newEntry, description: e.target.value })} rows={3} />
@@ -174,6 +179,7 @@ export const TeacherDisciplinePage: React.FC = () => {
                 <th className="px-4 py-3 text-left">{t('discipline.type', 'Type')}</th>
                 <th className="px-4 py-3 text-center">{t('discipline.severity', 'Gravité')}</th>
                 <th className="px-4 py-3 text-left">{t('discipline.sanction', 'Sanction')}</th>
+                <th className="px-4 py-3 text-center">{t('discipline.points', 'Points')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
@@ -189,6 +195,7 @@ export const TeacherDisciplinePage: React.FC = () => {
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${graviteColors[inc.gravite] ?? 'bg-slate-100 text-slate-600'}`}>{inc.gravite}</span>
                   </td>
                   <td className="px-4 py-3 text-xs font-semibold text-slate-500">{inc.sanction}</td>
+                  <td className="px-4 py-3 text-center font-bold text-digi-danger">{inc.points}</td>
                 </tr>
               ))}
             </tbody>

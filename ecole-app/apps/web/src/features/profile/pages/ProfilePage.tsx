@@ -2,16 +2,23 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../../../features/auth/store';
 import { Avatar } from '../../../shared/components/ui/Avatar';
+import { Card } from '../../../shared/components/ui/Card';
+import { Button } from '../../../shared/components/ui/Button';
+import { Input } from '../../../shared/components/ui/Input';
+import { User, Mail, Camera, Shield, Key } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfilePage: React.FC = () => {
   const { t } = useTranslation();
   const { user, updateUser } = useAuthStore();
+  const navigate = useNavigate();
 
   const [name, setName] = useState(user?.nom || '');
   const [email, setEmail] = useState((user as any)?.email || '');
   const [photo, setPhoto] = useState<string | null>(null);
 
-  const handleSave = () => {
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
     updateUser({ nom: name, email } as any);
     // In a real app you would also upload the photo
     alert(t('profile.saved', 'Profil mis à jour'));
@@ -29,44 +36,68 @@ export const ProfilePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 glass-bg rounded-xl shadow-lg mt-8">
-      <h1 className="text-2xl font-bold text-slate-800 mb-4">{t('profile.title', 'Mon Profil')}</h1>
-      <div className="flex items-center gap-4 mb-6">
-        <Avatar
-          name={name || user?.login || 'U'}
-          src={photo || undefined}
-          size="lg"
-        />
-        <label className="cursor-pointer text-digi-purple underline">
-          {t('profile.changePhoto', 'Changer la photo')}
-          <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
-        </label>
+    <div className="max-w-3xl mx-auto space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold text-slate-800">{t('profile.title', 'Mon Profil')}</h1>
+        <p className="text-sm text-slate-400 font-semibold">{t('profile.subtitle', 'Gérez vos informations personnelles')}</p>
       </div>
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-600">{t('profile.name', 'Nom')}</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="mt-1 block w-full border border-slate-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-digi-purple"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-600">{t('profile.email', 'E‑mail')}</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 block w-full border border-slate-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-digi-purple"
-          />
-        </div>
-        <button
-          onClick={handleSave}
-          className="mt-4 px-4 py-2 bg-digi-purple text-white rounded-md hover:bg-digi-purple/80 transition-colors"
-        >
-          {t('profile.save', 'Enregistrer')}
-        </button>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <Card className="md:col-span-1 flex flex-col items-center text-center p-6 space-y-4">
+          <div className="relative group">
+            <Avatar
+              name={name || user?.login || 'U'}
+              src={photo || undefined}
+              size="lg"
+            />
+            <label className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+              <Camera className="w-6 h-6" />
+              <span className="text-[10px] font-bold mt-1 uppercase">Modifier</span>
+              <input type="file" accept="image/*" className="hidden" onChange={handlePhotoChange} />
+            </label>
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-800 text-lg">{name || user?.login}</h3>
+            <p className="text-sm font-semibold text-digi-purple flex items-center justify-center gap-1 mt-1">
+              <Shield className="w-4 h-4" />
+              {user?.role}
+            </p>
+          </div>
+        </Card>
+
+        <Card className="md:col-span-2 p-6">
+          <form onSubmit={handleSave} className="space-y-6">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b border-slate-100 pb-2">Informations Personnelles</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Input
+                label={t('profile.name', 'Nom complet')}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                leftIcon={<User className="w-4 h-4" />}
+                required
+              />
+              <Input
+                type="email"
+                label={t('profile.email', 'E-mail')}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                leftIcon={<Mail className="w-4 h-4" />}
+                required
+              />
+            </div>
+
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+              <Button type="button" variant="ghost" onClick={() => navigate('/change-password')} className="gap-2 mr-auto text-slate-600 hover:text-slate-800">
+                <Key className="w-4 h-4" />
+                {t('profile.changePassword', 'Changer le mot de passe')}
+              </Button>
+              <Button type="submit" variant="primary">
+                {t('profile.save', 'Enregistrer les modifications')}
+              </Button>
+            </div>
+          </form>
+        </Card>
       </div>
     </div>
   );

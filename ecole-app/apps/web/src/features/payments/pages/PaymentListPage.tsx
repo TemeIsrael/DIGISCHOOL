@@ -34,10 +34,28 @@ const statusStyle: Record<PaymentStatus, string> = {
   unpaid:   'bg-red-50    text-red-700    border-red-200',
 };
 
+import { useAuthStore } from '../../auth/store';
+import { Modal } from '../../../shared/components/ui/Modal';
+import { Input } from '../../../shared/components/ui/Input';
+import { Settings, Plus, Trash2 } from 'lucide-react';
+
 export const PaymentListPage: React.FC = () => {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
   const [filterStatus, setFilterStatus] = useState('');
   const [search,       setSearch]       = useState('');
+  
+  // Financial Configuration State
+  const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState(['Espèces', 'Mobile Money', 'Virement Bancaire']);
+  const [newMethod, setNewMethod] = useState('');
+  const [tranches, setTranches] = useState([
+    { id: 1, name: 'Tranche 1', amount: 25000 },
+    { id: 2, name: 'Tranche 2', amount: 25000 },
+    { id: 3, name: 'Tranche 3', amount: 25000 },
+  ]);
+  const [newTrancheName, setNewTrancheName] = useState('');
+  const [newTrancheAmount, setNewTrancheAmount] = useState('');
 
   const statusLabel = (s: PaymentStatus) => ({
     complete: t('payments.complete', 'Complet'),
@@ -68,6 +86,29 @@ export const PaymentListPage: React.FC = () => {
     exportPDF(dataToExport, 'Payments_List');
   };
 
+  const handleAddMethod = () => {
+    if (newMethod.trim() && !paymentMethods.includes(newMethod)) {
+      setPaymentMethods([...paymentMethods, newMethod.trim()]);
+      setNewMethod('');
+    }
+  };
+
+  const handleRemoveMethod = (method: string) => {
+    setPaymentMethods(paymentMethods.filter(m => m !== method));
+  };
+
+  const handleAddTranche = () => {
+    if (newTrancheName.trim() && newTrancheAmount) {
+      setTranches([...tranches, { id: Date.now(), name: newTrancheName, amount: Number(newTrancheAmount) }]);
+      setNewTrancheName('');
+      setNewTrancheAmount('');
+    }
+  };
+
+  const handleRemoveTranche = (id: number) => {
+    setTranches(tranches.filter(t => t.id !== id));
+  };
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -75,11 +116,77 @@ export const PaymentListPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-slate-800">{t('payments.title', 'Gestion des Paiements')}</h1>
           <p className="text-sm text-slate-400 font-semibold">{t('payments.subtitle', 'Suivi des frais de scolarité et recouvrements')}</p>
         </div>
-        <Button className="gap-2" onClick={handleExport}>
-          <Download className="w-4 h-4" />
-          {t('payments.export', 'Exporter PDF')}
-        </Button>
+        <div className="flex items-center gap-3">
+          {user?.typeAdmin === 3 && (
+            <Button variant="outline" className="gap-2 text-digi-purple border-digi-purple hover:bg-digi-purple hover:text-white transition-colors" onClick={() => setIsConfigOpen(true)}>
+              <Settings className="w-4 h-4" />
+              Configuration Financière
+            </Button>
+          )}
+          <Button className="gap-2" onClick={handleExport}>
+            <Download className="w-4 h-4" />
+            {t('payments.export', 'Exporter PDF')}
+          </Button>
+        </div>
       </div>
+
+      <Modal isOpen={isConfigOpen} onClose={() => setIsConfigOpen(false)} title="Configuration Financière" size="lg">
+        <div className="space-y-8 pb-4">
+          {/* Tranches Section */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b border-slate-100 pb-2">Définition des Tranches de Paiement</h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              <Input placeholder="Nom de la tranche (ex: Tranche 1)" value={newTrancheName} onChange={e => setNewTrancheName(e.target.value)} />
+              <Input type="number" placeholder="Montant (FCFA)" value={newTrancheAmount} onChange={e => setNewTrancheAmount(e.target.value)} />
+              <Button onClick={handleAddTranche} className="gap-2"><Plus className="w-4 h-4" /> Ajouter</Button>
+            </div>
+
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-2">
+              {tranches.length === 0 && <p className="text-sm text-slate-500 italic">Aucune tranche définie.</p>}
+              {tranches.map(tranche => (
+                <div key={tranche.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-slate-200 shadow-sm">
+                  <span className="font-semibold text-slate-700">{tranche.name}</span>
+                  <div className="flex items-center gap-4">
+                    <span className="font-bold text-digi-purple">{tranche.amount.toLocaleString()} FCFA</span>
+                    <button onClick={() => handleRemoveTranche(tranche.id)} className="text-slate-400 hover:text-digi-danger p-1"><Trash2 className="w-4 h-4" /></button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-end text-sm font-bold text-slate-600">
+              Total: <span className="ml-2 text-digi-success">{tranches.reduce((sum, t) => sum + t.amount, 0).toLocaleString()} FCFA</span>
+            </div>
+          </div>
+
+          {/* Payment Methods Section */}
+          <div className="space-y-4 pt-4 border-t border-slate-100">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b border-slate-100 pb-2">Modes de Paiement Acceptés</h3>
+            
+            <div className="flex items-center gap-4 mb-4">
+              <div className="flex-1">
+                <Input placeholder="Nouveau mode de paiement (ex: Chèque)" value={newMethod} onChange={e => setNewMethod(e.target.value)} />
+              </div>
+              <Button onClick={handleAddMethod} className="gap-2"><Plus className="w-4 h-4" /> Ajouter</Button>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {paymentMethods.length === 0 && <p className="text-sm text-slate-500 italic">Aucun mode de paiement défini.</p>}
+              {paymentMethods.map(method => (
+                <div key={method} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full border border-slate-200 shadow-sm text-sm font-semibold text-slate-700">
+                  {method}
+                  <button onClick={() => handleRemoveMethod(method)} className="text-slate-400 hover:text-digi-danger"><Trash2 className="w-3.5 h-3.5" /></button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-6 border-t border-slate-100">
+            <Button variant="ghost" onClick={() => setIsConfigOpen(false)}>Fermer</Button>
+            <Button variant="primary" onClick={() => setIsConfigOpen(false)}>Enregistrer la configuration</Button>
+          </div>
+        </div>
+      </Modal>
 
       {/* KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
