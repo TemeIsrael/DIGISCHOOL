@@ -1,6 +1,6 @@
-# EcoleApp 2026
+# DIGISCHOOL
 
-EcoleApp 2026 est une application de gestion scolaire moderne pour l'écosystème DIGISCHOOL.
+DIGISCHOOL est une application de gestion scolaire moderne pour l'écosystème DIGISCHOOL.
 
 ## Structure du projet
 

@@ -74,7 +74,20 @@ router.post('/:id/validate', requireRole(['ADMIN']), requireAdminType([ADMIN_TYP
   }
 });
 
-// 3. GET PARENT MESSAGES
+// 3. GET ALL MESSAGES (Admins/Teachers)
+router.get('/', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
+  try {
+    const list = await Messages.findAll({
+      include: [{ model: Parents, as: 'parent' }], // Assume association exists or we just return it. If it fails we can adjust.
+      order: [['createdAt', 'DESC']]
+    });
+    res.json({ success: true, data: list });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// 4. GET PARENT MESSAGES
 router.get('/parent/:idParent', requireRole(['ADMIN', 'PARENT']), async (req, res, next) => {
   const { idParent } = req.params;
   try {

@@ -14,6 +14,7 @@ export interface BookCardProps {
   titre?: string;
   auteur?: string;
   specialty?: string;
+  coverUrl?: string;
   onOpen?: () => void;
 }
 
@@ -26,6 +27,7 @@ export const BookCard: React.FC<BookCardProps> = ({
   titre,
   auteur,
   specialty,
+  coverUrl,
   onOpen
 }) => {
   const { t } = useTranslation();
@@ -37,12 +39,15 @@ export const BookCard: React.FC<BookCardProps> = ({
   const stockPct = hasStock ? Math.round((available! / total!) * 100) : null;
 
   return (
-    <Card hover className="flex flex-col group overflow-hidden border border-slate-100 p-0">
-      {/* Grey Placeholder Cover */}
-      <div className="h-40 bg-slate-100 flex items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-bg to-slate-100 group-hover:scale-105 transition-transform duration-300" />
-        <BookOpen className="w-10 h-10 text-digi-purple/40 relative z-10" />
-      </div>
+    {coverUrl ? (
+    <img src={coverUrl} alt={displayTitle} className="h-40 w-full object-cover" />
+  ) : (
+    <div className="h-40 bg-slate-100 flex items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-bg to-slate-100 group-hover:scale-105 transition-transform duration-300" />
+      <BookOpen className="w-10 h-10 text-digi-purple/40 relative z-10" />
+    </div>
+  )}
+
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
           <span className="text-[10px] font-extrabold text-digi-purple bg-digi-purple-bg px-2 py-0.5 rounded-full border border-digi-purple-border/20 uppercase tracking-wider">

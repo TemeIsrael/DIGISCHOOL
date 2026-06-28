@@ -369,6 +369,13 @@
       "rank": "Rang Départemental"
     }
   },
+  "profile": {
+    "title": "Mon Profil",
+    "name": "Nom",
+    "email": "E‑mail",
+    "save": "Enregistrer",
+    "changePhoto": "Changer la photo"
+  },
   "common": {
     "search": "Rechercher...",
     "filter": "Filtrer",
@@ -393,14 +400,14 @@
     "year": "Année",
     "success": "Succès",
     "error": "Erreur",
-    "profile": "Mon Profil",
+
     "settings": "Paramètres",
     "changePassword": "Changer le mot de passe",
     "markAllRead": "Tout marquer comme lu",
     "viewAll": "Voir tout",
     "photo": "Photo de profil",
     "clickToAdd": "Cliquez sur l'avatar pour ajouter une image"
-  },
+},
   "landing": {
     "hero": "L'excellence académique au cœur de notre pédagogie",
     "heroSub": "Pilotez votre établissement scolaire avec la solution de gestion de nouvelle génération de DIGISCHOOL.",
@@ -600,7 +607,7 @@
   },
   "helpPage": {
     "title": "Centre d'Aide",
-    "subtitle": "Trouvez rapidement les réponses à vos questions sur l'utilisation d'EcoleApp 2026.",
+    "subtitle": "Trouvez rapidement les réponses à vos questions sur l'utilisation d'DIGISCHOOL.",
     "searchPlaceholder": "Rechercher une question…",
     "found": "question(s) trouvée(s)",
     "noQuestions": "Aucune question trouvée.",
@@ -672,7 +679,7 @@
       },
       "securite_1": {
         "q": "Mes données personnelles sont-elles sécurisées ?",
-        "a": "Oui, EcoleApp 2026 utilise des technologies de sécurité avancées : authentification JWT (JSON Web Token), tokens d'accès rotatifs, chiffrement des mots de passe avec bcrypt, et traçabilité complète de toutes les actions via des journaux d'audit. Vos données ne sont jamais partagées avec des tiers."
+        "a": "Oui, DIGISCHOOL utilise des technologies de sécurité avancées : authentification JWT (JSON Web Token), tokens d'accès rotatifs, chiffrement des mots de passe avec bcrypt, et traçabilité complète de toutes les actions via des journaux d'audit. Vos données ne sont jamais partagées avec des tiers."
       },
       "securite_2": {
         "q": "Comment changer mon mot de passe ?",
@@ -681,8 +688,8 @@
     }
   },
   "aboutPage": {
-    "title": "À propos d'EcoleApp 2026 (P-097)",
-    "desc1": "Conçue pour répondre aux plus hauts standards d'ingénierie et de sécurité, EcoleApp 2026 est la solution de gestion scolaire de référence proposée par l'écosystème DIGISCHOOL.",
+    "title": "À propos de DIGISCHOOL",
+    "desc1": "Conçue pour répondre aux plus hauts standards d'ingénierie et de sécurité, DIGISCHOOL est la solution de gestion scolaire de référence proposée par des étudiants de niveau 3 à l'ENSPY.",
     "desc2": "Notre plateforme connecte de manière transparente l'administration, les enseignants, les élèves et les parents d'élèves pour un parcours éducatif moderne et optimisé.",
     "backToHome": "Retour à l'accueil"
   }

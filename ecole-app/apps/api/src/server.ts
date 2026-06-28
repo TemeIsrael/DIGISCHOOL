@@ -16,7 +16,7 @@ const startServer = async () => {
     }
 
     const server = app.listen(env.PORT, '0.0.0.0', () => {
-      logger.info(`🚀 [Server]: EcoleApp 2026 API listening on port ${env.PORT}`);
+      logger.info(`🚀 [Server]: DIGISCHOOL API listening on port ${env.PORT}`);
     });
 
     // Initialize WebSockets

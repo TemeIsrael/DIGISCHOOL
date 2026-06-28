@@ -59,6 +59,9 @@ const AcademicConfigPage      = lazy(() => import('../features/academic/pages/Ac
 const LibraryManagePage       = lazy(() => import('../features/library/pages/LibraryManagePage'));
 const StatsPage               = lazy(() => import('../features/stats/pages/StatsPage'));
 const SchedulePage            = lazy(() => import('../features/schedules/pages/SchedulePage'));
+const NotificationsPage = lazy(() => import('../features/notifications/pages/NotificationsPage'));
+const NotificationDetailPage = lazy(() => import('../features/notifications/pages/NotificationDetailPage'));
+const ProfilePage = lazy(() => import('../features/profile/pages/ProfilePage'));
 const TeacherStudentsPage     = lazy(() => import('../features/teacher/pages/TeacherStudentsPage'));
 const TeacherBulletinPage     = lazy(() => import('../features/teacher/pages/TeacherBulletinPage'));
 const TeacherDisciplinePage   = lazy(() => import('../features/teacher/pages/TeacherDisciplinePage'));
@@ -102,6 +105,7 @@ const DashboardRedirect: React.FC = () => {
     case 'ROOT':
       return <DashboardRoot />;
     case 'ADMIN_ROOT':
+      return <DashboardRoot />;
     case 'ADMIN_INSCRIPTIONS':
       return <DashboardAdmin />;
     case 'ADMIN_SCOLARITE':
@@ -144,7 +148,11 @@ export const Router: React.FC = () => {
               </RequireAuth>
             }
           >
-            {/* Dashboard — accessible to all admin types */}
+            {/* Liste des notifications */}
+            <Route path="/notifications" element={<NotificationsPage />} />
+            {/* Détail d'une notification */}
+            <Route path="/notifications/:id" element={<NotificationDetailPage />} />
+            {/* Page d'accueil après connexion */}
             <Route path="/dashboard" element={<DashboardRedirect />} />
 
             {/* ── Students — Secretary(1), Director(4) ── */}
@@ -173,13 +181,14 @@ export const Router: React.FC = () => {
             <Route path="/discipline" element={<RequireAdminType allowedTypes={[2,4]}><DisciplinePage /></RequireAdminType>} />
 
             {/* ── Library — all except Root(0) ── */}
-            <Route path="/library" element={<RequireAdminType allowedTypes={[1,2,3,4]}><LibraryManagePage /></RequireAdminType>} />
+            <Route path="/library" element={<RequireAdminType allowedTypes={[1,2]}><LibraryManagePage /></RequireAdminType>} />
 
             {/* ── Stats — Founder(3), Director(4) ── */}
             <Route path="/stats" element={<RequireAdminType allowedTypes={[3,4]}><StatsPage /></RequireAdminType>} />
 
             {/* Password change — all admins */}
             <Route path="/change-password" element={<ChangePasswordPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
           </Route>
 
           {/* ═══ Teacher Routes (Sidebar Layout) ═══ */}

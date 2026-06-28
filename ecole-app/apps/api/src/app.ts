@@ -27,12 +27,22 @@ const app = express();
 // Apply Security and Global Middlewar
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'https://digischool-iota.vercel.app',
-      'https://digischool-app.vercel.app',
-      env.FRONT_URL
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'http://localhost:5173',
+        'https://digischool-iota.vercel.app',
+        'https://digischool-app.vercel.app',
+      ];
+      if (env.FRONT_URL) {
+        allowedOrigins.push(env.FRONT_URL);
+      }
+      
+      if (!origin || allowedOrigins.includes(origin) || (origin && origin.endsWith('.vercel.app'))) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true
   })
 );

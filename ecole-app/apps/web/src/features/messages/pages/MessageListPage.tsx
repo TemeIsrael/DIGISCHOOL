@@ -6,6 +6,9 @@ import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown
 import { MessageSquare, Search, Inbox, PenSquare } from 'lucide-react';
 import { Modal } from '../../../shared/components/ui/Modal';
 import { useTranslation } from 'react-i18next';
+import { useMessages } from '../hooks/useMessages';
+import { useParents } from '../hooks/useParents';
+import { useToast } from '../../../shared/components/ui/Toast';
 
 /* ─── Types ──────────────────────────────────────────────────────── */
 interface Message {
@@ -19,31 +22,38 @@ interface Message {
 }
 
 interface NewMessageData {
-  from: string;
+  idParent: number;
   subject: string;
   preview: string;
 }
 
 /* ─── New Message Form ───────────────────────────────────────────── */
 const NewMessageForm: React.FC<{
+  parents: any[];
   onSubmit: (data: NewMessageData) => void;
   onCancel: () => void;
-}> = ({ onSubmit, onCancel }) => {
+}> = ({ parents, onSubmit, onCancel }) => {
   const { t } = useTranslation();
-  const [from,    setFrom]    = React.useState('');
+  const [idParent, setIdParent] = React.useState<number>(parents.length > 0 ? parents[0].idParent : 0);
   const [subject, setSubject] = React.useState('');
   const [preview, setPreview] = React.useState('');
 
   return (
     <div className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-slate-700">{t('messages.from', 'De')}</label>
-        <input
-          className="mt-1 w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all"
-          value={from}
-          onChange={(e) => setFrom(e.target.value)}
-          placeholder={t('messages.yourName', 'Votre nom')}
-        />
+        <label className="block text-sm font-medium text-slate-700">Destinataire (Parent)</label>
+        <select
+          className="mt-1 w-full rounded-xl border border-slate-200 p-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all bg-white"
+          value={idParent}
+          onChange={(e) => setIdParent(Number(e.target.value))}
+        >
+          {parents.length === 0 && <option value={0}>Aucun parent trouvé</option>}
+          {parents.map((p: any) => (
+            <option key={p.idParent} value={p.idParent}>
+              {p.personne ? `${p.personne.nom} ${p.personne.prenom}` : `Parent #${p.idParent}`}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         <label className="block text-sm font-medium text-slate-700">{t('messages.subjectLabel', 'Objet')}</label>
@@ -65,8 +75,8 @@ const NewMessageForm: React.FC<{
         />
       </div>
       <div className="flex justify-end gap-2 pt-2">
-        <Button variant="ghost" onClick={onCancel}>{t('common.cancel', 'Annuler')}</Button>
-        <Button onClick={() => onSubmit({ from, subject, preview })}>{t('messages.send', 'Envoyer')}</Button>
+        <Button variant="ghost" type="button" onClick={onCancel}>{t('common.cancel', 'Annuler')}</Button>
+        <Button type="button" onClick={() => onSubmit({ idParent, subject, preview })}>{t('messages.send', 'Envoyer')}</Button>
       </div>
     </div>
   );
@@ -86,7 +96,7 @@ const MessageDetail: React.FC<{
           {t('messages.fromDetail', 'De : {{from}}', { from: message.from })} • {message.date}
         </p>
       </div>
-      <p className="text-sm text-slate-600 leading-relaxed">{message.preview}</p>
+      <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{message.preview}</p>
       <div className="flex justify-end pt-2">
         <Button variant="ghost" onClick={onClose}>{t('common.close', 'Fermer')}</Button>
       </div>
@@ -98,113 +108,31 @@ const MessageDetail: React.FC<{
 export const MessageListPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const isEn = i18n.language?.startsWith('en');
-
-  /* ─── Initial messages ───────────────────────────────────────────── */
-  const initialMessages: Message[] = isEn ? [
-    {
-      id: 1,
-      from: 'System Admin',
-      subject: 'School calendar update',
-      preview: 'The term 3 calendar has been updated. Please consult the new dates...',
-      date: '24/05/2026 08:30',
-      read: false,
-      category: 'System',
-    },
-    {
-      id: 2,
-      from: 'Mr. FOUDA Pierre',
-      subject: 'Student absence: DUPONT Jean',
-      preview: 'I inform you that the student DUPONT Jean will be absent from May 25 to 27 for medical reasons...',
-      date: '23/05/2026 14:15',
-      read: true,
-      category: 'Teacher',
-    },
-    {
-      id: 3,
-      from: 'Mrs. NGONO Marie',
-      subject: 'Appointment request',
-      preview: 'I would like to make an appointment regarding my son\'s school results...',
-      date: '22/05/2026 10:45',
-      read: true,
-      category: 'Parent',
-    },
-    {
-      id: 4,
-      from: 'Director',
-      subject: 'Pedagogical meeting on 28/05',
-      preview: 'All teachers are requested to attend the pedagogical meeting scheduled on...',
-      date: '21/05/2026 16:00',
-      read: false,
-      category: 'Direction',
-    },
-    {
-      id: 5,
-      from: 'System Admin',
-      subject: 'Attendance report generated',
-      preview: 'The attendance report for the week of May 19 to 23 has been automatically generated...',
-      date: '20/05/2026 18:00',
-      read: true,
-      category: 'System',
-    },
-  ] : [
-    {
-      id: 1,
-      from: 'Admin Système',
-      subject: 'Mise à jour du calendrier scolaire',
-      preview: 'Le calendrier du trimestre 3 a été mis à jour. Veuillez consulter les nouvelles dates...',
-      date: '24/05/2026 08:30',
-      read: false,
-      category: 'Système',
-    },
-    {
-      id: 2,
-      from: 'M. FOUDA Pierre',
-      subject: 'Absence élève DUPONT Jean',
-      preview: "Je vous informe que l'élève DUPONT Jean sera absent du 25 au 27 mai pour raisons médicales...",
-      date: '23/05/2026 14:15',
-      read: true,
-      category: 'Enseignant',
-    },
-    {
-      id: 3,
-      from: 'Mme. NGONO Marie',
-      subject: 'Demande de rendez-vous',
-      preview: "Je souhaiterais prendre rendez-vous concernant les résultats scolaires de mon fils...",
-      date: '22/05/2026 10:45',
-      read: true,
-      category: 'Parent',
-    },
-    {
-      id: 4,
-      from: 'Directeur',
-      subject: 'Réunion pédagogique du 28/05',
-      preview: "Tous les enseignants sont priés d'assister à la réunion pédagogique prévue le...",
-      date: '21/05/2026 16:00',
-      read: false,
-      category: 'Direction',
-    },
-    {
-      id: 5,
-      from: 'Admin Système',
-      subject: 'Rapport de présence généré',
-      preview: "Le rapport de présence de la semaine du 19 au 23 mai a été automatiquement généré...",
-      date: '20/05/2026 18:00',
-      read: true,
-      category: 'Système',
-    },
-  ];
+  const { messages: rawMessages, isLoading, sendMessage } = useMessages();
+  const { parents } = useParents();
+  const { toast } = useToast();
 
   const categories = isEn
     ? ['All', 'System', 'Direction', 'Teacher', 'Parent']
     : ['Tous', 'Système', 'Direction', 'Enseignant', 'Parent'];
 
-  const [messages,         setMessages]         = useState<Message[]>(initialMessages);
   const [filterCat,        setFilterCat]        = useState(isEn ? 'All' : 'Tous');
   const [search,           setSearch]           = useState('');
   const [selectedMsg,      setSelectedMsg]      = useState<number | null>(null);
   const [isNewMessageOpen, setIsNewMessageOpen] = useState(false);
 
-  const filtered = messages.filter((m) => {
+  // Map API messages
+  const mappedMessages: Message[] = Array.isArray(rawMessages) ? rawMessages.map((m: any) => ({
+    id: m.idMsg,
+    from: m.parent?.personne?.nom ? `${m.parent.personne.nom} ${m.parent.personne.prenom}` : 'Utilisateur',
+    subject: m.objet,
+    preview: m.contenu,
+    date: new Date(m.createdAt).toLocaleString(isEn ? 'en-US' : 'fr-FR'),
+    read: m.lu,
+    category: isEn ? 'System' : 'Système', // Simplified mapping
+  })) : [];
+
+  const filtered = mappedMessages.filter((m) => {
     // Check match for "Tous" / "All"
     const isAll = filterCat === 'Tous' || filterCat === 'All';
     
@@ -225,20 +153,25 @@ export const MessageListPage: React.FC = () => {
     return matchCat && matchSearch;
   });
 
-  const unreadCount = messages.filter((m) => !m.read).length;
+  const unreadCount = mappedMessages.filter((m) => !m.read).length;
 
-  const handleNewMessage = (data: NewMessageData) => {
-    const newMsg: Message = {
-      id:       messages.length ? Math.max(...messages.map((m) => m.id)) + 1 : 1,
-      from:     data.from || (isEn ? 'Me' : 'Moi'),
-      subject:  data.subject || (isEn ? '(No subject)' : '(Sans objet)'),
-      preview:  data.preview,
-      date:     new Date().toLocaleString(isEn ? 'en-US' : 'fr-FR'),
-      read:     false,
-      category: isEn ? 'System' : 'Système',
-    };
-    setMessages([newMsg, ...messages]);
-    setIsNewMessageOpen(false);
+  const handleNewMessage = async (data: NewMessageData) => {
+    if (!data.idParent) {
+      toast({ type: 'danger', title: 'Erreur', description: 'Veuillez sélectionner un destinataire' });
+      return;
+    }
+    try {
+      await sendMessage({
+        idParent: data.idParent,
+        objet: data.subject || (isEn ? '(No subject)' : '(Sans objet)'),
+        contenu: data.preview || '...',
+        type: 1 // default type
+      });
+      toast({ type: 'success', title: 'Succès', description: 'Le message a été envoyé.' });
+      setIsNewMessageOpen(false);
+    } catch (err: any) {
+      toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Erreur lors de l\'envoi' });
+    }
   };
 
   return (
@@ -282,7 +215,11 @@ export const MessageListPage: React.FC = () => {
 
       {/* Messages List */}
       <Card className="shadow-sm border border-slate-100 divide-y divide-slate-100">
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          <div className="text-center py-12 text-slate-400">
+            <p className="font-semibold">Chargement...</p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-12 text-slate-400">
             <MessageSquare className="w-12 h-12 mx-auto mb-3 text-slate-200" />
             <p className="font-semibold">{t('messages.noMessages', 'Aucun message trouvé')}</p>
@@ -311,6 +248,7 @@ export const MessageListPage: React.FC = () => {
         size="md"
       >
         <NewMessageForm
+          parents={parents}
           onSubmit={handleNewMessage}
           onCancel={() => setIsNewMessageOpen(false)}
         />
@@ -320,12 +258,12 @@ export const MessageListPage: React.FC = () => {
       <Modal
         isOpen={selectedMsg !== null}
         onClose={() => setSelectedMsg(null)}
-        title={messages.find((m) => m.id === selectedMsg)?.subject || ''}
+        title={mappedMessages.find((m) => m.id === selectedMsg)?.subject || ''}
         size="md"
       >
         {selectedMsg !== null && (
           <MessageDetail
-            message={messages.find((m) => m.id === selectedMsg)!}
+            message={mappedMessages.find((m) => m.id === selectedMsg)!}
             onClose={() => setSelectedMsg(null)}
           />
         )}

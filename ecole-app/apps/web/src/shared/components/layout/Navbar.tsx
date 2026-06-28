@@ -1,19 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { LogOut, Globe, Calendar, Menu, X, Bell, User } from 'lucide-react';
+import { LogOut, Globe, Calendar, Menu, X, Bell, User, Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../../../features/auth/store';
 import { useTranslation } from 'react-i18next';
 import { Avatar } from '../ui/Avatar';
 
 export const Navbar: React.FC = () => {
+  // Mock notifications with read flag
+  const [notifications, setNotifications] = useState([
+    { id: 1, title: 'Nouveau document disponible: Emploi du temps', time: 'Il y a 2 heures', read: false },
+    { id: 2, title: 'Rappel: Réunion parents-professeurs demain à 16h.', time: 'Hier', read: false },
+  ]);
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
   const { user, logout } = useAuthStore();
-  const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  const handleViewAll = () => {
+    setShowNotifications(false);
+    navigate('/notifications');
+  };
+  const handleMarkAllRead = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setNotifications((prev) => prev.map(n => ({ ...n, read: true })));
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -115,38 +131,38 @@ export const Navbar: React.FC = () => {
           </select>
         </div>
 
-        {/* Notifications */}
-        <div className="relative" ref={notifRef}>
-          <button 
-            onClick={() => setShowNotifications(!showNotifications)}
-            className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
-          >
-            <Bell className="w-5 h-5" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
-          </button>
+            {/* Notifications */}
+              <div className="relative" ref={notifRef}>
+              <button 
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
+                )}
+              </button>
 
-          {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-100 rounded-xl shadow-lg z-50">
-              <div className="p-3 border-b border-slate-100 flex justify-between items-center">
-                <span className="font-bold text-slate-800">{t('dashboards.notifications', 'Notifications')}</span>
-                <span className="text-xs text-digi-purple cursor-pointer hover:underline">{t('common.markAllRead', 'Tout marquer comme lu')}</span>
-              </div>
-              <div className="max-h-64 overflow-y-auto">
-                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
-                  <p className="text-sm text-slate-700">Nouveau document disponible: <strong>Emploi du temps</strong></p>
-                  <p className="text-xs text-slate-400 mt-1">Il y a 2 heures</p>
+              {showNotifications && (
+                <div className="absolute right-0 mt-2 w-80 md:w-80 sm:w-full bg-white border border-slate-100 rounded-xl shadow-lg z-50">
+                  <div className="p-3 border-b border-slate-100 flex justify-between items-center">
+                    <span className="font-bold text-slate-800">{t('dashboards.notifications', 'Notifications')}</span>
+                    <span className="text-xs text-digi-purple cursor-pointer hover:underline" onClick={handleMarkAllRead}>{t('common.markAllRead', 'Tout marquer comme lu')}</span>
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {notifications.map((n) => (
+                      <div key={n.id} className={`p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer ${!n.read ? 'bg-slate-50/50' : ''}`}                         onClick={() => { navigate(`/notifications/${n.id}`); setShowNotifications(false); }}>
+                        <p className="text-sm text-slate-700">{n.title}</p>
+                        <p className="text-xs text-slate-400 mt-1">{n.time}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-2 text-center border-t border-slate-100">
+                    <button className="text-sm font-semibold text-digi-purple hover:underline" onClick={handleViewAll}>{t('common.viewAll', 'Voir tout')}</button>
+                  </div>
                 </div>
-                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
-                  <p className="text-sm text-slate-700">Rappel: Réunion parents-professeurs demain à 16h.</p>
-                  <p className="text-xs text-slate-400 mt-1">Hier</p>
-                </div>
-              </div>
-              <div className="p-2 text-center border-t border-slate-100">
-                <button className="text-sm font-semibold text-digi-purple hover:underline">{t('common.viewAll', 'Voir tout')}</button>
-              </div>
+              )}
             </div>
-          )}
-        </div>
 
         {/* User Avatar + Profile Menu */}
         <div className="relative flex items-center gap-3 pl-3 border-l border-slate-100" ref={profileRef}>
@@ -162,10 +178,10 @@ export const Navbar: React.FC = () => {
 
           {showProfile && (
             <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg z-50 py-1">
-              <button className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-digi-purple flex items-center gap-2">
-                <User className="w-4 h-4" />
-                {t('common.profile', 'Mon Profil')}
-              </button>
+                <button onClick={() => navigate('/profile')} className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-digi-purple flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  {t('common.profile', 'Mon Profil')}
+                </button>
               <div className="h-px bg-slate-100 my-1"></div>
               <button
                 onClick={handleLogout}

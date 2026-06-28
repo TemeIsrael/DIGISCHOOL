@@ -3,6 +3,7 @@ import { useAuthStore } from '../../features/auth/store';
 import i18n from './i18n';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4001';
+const SOCKET_URL = API_URL.replace('/api/v1', '');
 
 export let socket: Socket | null = null;
 
@@ -11,7 +12,7 @@ export const connectSocket = () => {
   if (!token) return;
 
   if (!socket) {
-    socket = io(API_URL, {
+    socket = io(SOCKET_URL, {
       auth: { token },
       withCredentials: true,
       transports: ['websocket', 'polling']

@@ -152,17 +152,25 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
                 <span className="text-xs text-digi-purple cursor-pointer hover:underline">{t('common.markAllRead', 'Tout marquer comme lu')}</span>
               </div>
               <div className="max-h-64 overflow-y-auto">
-                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
+                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
                   <p className="text-sm text-slate-700">Nouveau document disponible: <strong>Emploi du temps</strong></p>
                   <p className="text-xs text-slate-400 mt-1">Il y a 2 heures</p>
                 </div>
-                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer">
+                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
                   <p className="text-sm text-slate-700">Rappel: Réunion parents-professeurs demain à 16h.</p>
                   <p className="text-xs text-slate-400 mt-1">Hier</p>
                 </div>
               </div>
               <div className="p-2 text-center border-t border-slate-100">
-                <button className="text-sm font-semibold text-digi-purple hover:underline">{t('common.viewAll', 'Voir tout')}</button>
+                <button
+                  onClick={() => {
+                    navigate('/notifications');
+                    setShowNotifications(false);
+                  }}
+                  className="text-sm font-semibold text-digi-purple hover:underline"
+                >
+                  {t('common.viewAll', 'Voir tout')}
+                </button>
               </div>
             </div>
           )}

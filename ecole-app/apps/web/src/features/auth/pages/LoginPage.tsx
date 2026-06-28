@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { Eye, EyeOff } from 'lucide-react';
 import { Card } from '../../../shared/components/ui/Card';
 import { Input } from '../../../shared/components/ui/Input';
 import { Select } from '../../../shared/components/ui/Select';
@@ -11,7 +12,7 @@ import { Button } from '../../../shared/components/ui/Button';
 import { LanguageSwitcher } from '../../../shared/components/LanguageSwitcher';
 import { useAuth } from '../hooks/useAuth';
 import { getRoleDashboardPath, useAuthStore } from '../store';
-
+import { useToast } from '../../../shared/components/ui/Toast';
 const loginFormSchema = z.object({
   login: z.string().min(3, 'auth.loginMinLength'),
   password: z.string().min(6, 'auth.passwordMinLength'),
@@ -21,12 +22,14 @@ const loginFormSchema = z.object({
   ])
 });
 
+
 type LoginFormInput = z.infer<typeof loginFormSchema>;
 
 export const LoginPage: React.FC = () => {
-  const { login: performLogin, isLoggingIn } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
+  const toast = useToast();
 
   const {
     register,
@@ -35,15 +38,17 @@ export const LoginPage: React.FC = () => {
   } = useForm<LoginFormInput>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      role: 'ADMIN_INSCRIPTIONS'
+      role: ''
     }
   });
+
+  const { login, isLoggingIn } = useAuth();
 
   const onSubmit = async (data: LoginFormInput) => {
     try {
       // Send the exact role selected in the UI (e.g., ADMIN_ROOT, ADMIN_INSCRIPTIONS, …)
       const payload = { ...data };
-      const response = await performLogin(payload);
+      const response = await login(payload);
       
       // Apply the user's saved language from the database
       if (response.user?.langue) {
@@ -57,6 +62,27 @@ export const LoginPage: React.FC = () => {
         refreshToken: response.refreshToken,
         user: response.user,
       });
+
+      // After successful login, validate role consistency
+      const roleMap: Record<number, string> = {
+        0: 'ADMIN_ROOT',
+        1: 'ADMIN_INSCRIPTIONS',
+        2: 'ADMIN_SCOLARITE',
+        3: 'FONDATEUR',
+        4: 'DIRECTEUR'
+      };
+      const actualRole = roleMap[response.user.typeAdmin] ?? '';
+      if (data.role !== actualRole) {
+        // Role mismatch: show error and clear auth
+        useToast().toast({
+          type: 'danger',
+          title: t('auth.loginFailed'),
+          description: t('auth.roleMismatch')
+        });
+        // Reset auth state
+        useAuthStore.getState().logout();
+        return;
+      }
 
       // Navigate to the appropriate dashboard based on the authenticated user's role
       navigate(
@@ -99,17 +125,28 @@ export const LoginPage: React.FC = () => {
             />
 
             <Input
-              type="password"
+              type={showPassword ? "text" : "password"}
               label={t('auth.password')}
               placeholder={t('auth.passwordPlaceholder')}
               error={errors.password?.message ? t(errors.password.message) : undefined}
+              rightIcon={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(prev => !prev)}
+                  className="focus:outline-none"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              }
               {...register('password')}
             />
+
+
 
             <Select
               label={t('auth.role')}
               options={[
-                { value: 'ADMIN_ROOT',               label: t('auth.roles.ADMIN_ROOT') },
+                { value: 'ADMIN_ROOT',        label: t('auth.roles.ADMIN_ROOT') },
                 { value: 'ADMIN_INSCRIPTIONS', label: t('auth.roles.ADMIN_INSCRIPTIONS') },
                 { value: 'ADMIN_SCOLARITE',    label: t('auth.roles.ADMIN_SCOLARITE') },
                 { value: 'FONDATEUR',          label: t('auth.roles.FONDATEUR') },
@@ -120,7 +157,6 @@ export const LoginPage: React.FC = () => {
               error={errors.role?.message ? t(errors.role.message) : undefined}
               {...register('role')}
             />
-
             <Button type="submit" className="w-full mt-2" disabled={isLoggingIn}>
               {isLoggingIn ? t('auth.loggingIn') : t('auth.login')}
             </Button>

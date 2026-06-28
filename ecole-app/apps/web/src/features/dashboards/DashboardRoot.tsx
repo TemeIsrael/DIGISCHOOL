@@ -8,6 +8,7 @@ import {
   AlertCircle, Users, Database, Activity, Clock,
   Eye, EyeOff, Trash2, ToggleLeft, ToggleRight
 } from 'lucide-react';
+import { useAuthStore } from '../../features/auth/store';
 
 /* ─── Types ─────────────────────────────────────────────────────── */
 interface AdminAccount {
@@ -153,13 +154,7 @@ export const DashboardRoot: React.FC = () => {
         </div>
       </div>
 
-      {/* System KPIs */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KPICard value={totalAdmins}  label={t('dashboardRoot.registeredAdmins')}  icon={<Shield className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value={activeAdmins} label={t('dashboardRoot.activeAdmins')}       icon={<Activity className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value={t('dashboardRoot.online')}     label={t('dashboardRoot.database')}     icon={<Database className="w-5 h-5 text-emerald-500" />} />
-        <KPICard value="99.9%"        label={t('dashboardRoot.availability')} icon={<Terminal className="w-5 h-5 text-digi-purple" />} />
-      </div>
+
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-8">

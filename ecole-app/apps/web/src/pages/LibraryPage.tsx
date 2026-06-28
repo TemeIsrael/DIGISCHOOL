@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BookOpen, Search, Tags, Layers, BookMarked, X, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Download, Home } from 'lucide-react';
+import html2pdf from 'html2pdf.js';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../shared/components/ui/Button';
 import { Card } from '../shared/components/ui/Card';
@@ -29,17 +30,26 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ book, onClose }) => {
   const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages - 1));
 
   const downloadBook = () => {
-    const content = `Titre: ${book.titre}\nAuteur: ${book.auteur}\nMatière: ${book.specialty}\n\n` + 
-      book.pages.map(p => `=== ${p.title} ===\n\n${p.content}`).join('\n\n');
-    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${book.titre.replace(/\s+/g, '_')}.txt`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    // Create a temporary element containing cover image and book content
+    const coverImg = book.coverUrl || 'https://via.placeholder.com/600x800.png?text=Cover';
+    const contentHtml = `
+      <div style="font-family:Arial,sans-serif; padding:20px;">
+        <img src="${coverImg}" alt="Cover" style="width:100%; max-width:600px; display:block; margin:0 auto 20px;"/>
+        <h2 style="text-align:center;">${book.titre}</h2>
+        <p style="text-align:center; color:#555;">${book.auteur}</p>
+        ${book.pages.map(p => `<h3>${p.title}</h3><pre style="white-space:pre-wrap;">${p.content}</pre>`).join('')}
+      </div>`;
+    const container = document.createElement('div');
+    container.innerHTML = contentHtml;
+    // Use html2pdf to generate PDF
+    // @ts-ignore - html2pdf is loaded via script
+    html2pdf().from(container).set({
+      margin: 10,
+      filename: `${book.titre.replace(/\s+/g, '_')}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).save();
   };
 
   return (
@@ -227,10 +237,15 @@ export const LibraryPage: React.FC = () => {
                 className="border border-slate-100 hover:shadow-xl hover:border-slate-200 transition-all overflow-hidden flex flex-col group"
                 hover
               >
-                <div className="h-44 bg-gradient-to-br from-digi-purple/10 to-digi-purple-light/20 w-full relative overflow-hidden flex items-center justify-center">
-                  <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle,rgba(83,74,183,0.3)_1px,transparent_1px)] bg-[length:16px_16px]" />
-                  <BookMarked className="relative z-10 w-14 h-14 text-digi-purple/50 group-hover:scale-110 transition-transform duration-300" />
-                </div>
+                <div className="h-44 w-full relative overflow-hidden rounded-t-xl bg-slate-100">
+  {book.coverUrl ? (
+    <img src={book.coverUrl} alt={book.titre} className="object-cover w-full h-full" />
+  ) : (
+    <div className="flex items-center justify-center h-full bg-gradient-to-br from-digi-purple/10 to-digi-purple-light/20">
+      <BookMarked className="w-14 h-14 text-digi-purple/50" />
+    </div>
+  )}
+</div>
 
                 <div className="p-5 flex-1 flex flex-col justify-between gap-4">
                   <div className="space-y-2">

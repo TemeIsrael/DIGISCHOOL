@@ -85,7 +85,7 @@ router.post('/:id/send-credentials', async (req, res, next) => {
 
     await sendInternalMail(
       admin.login,
-      'Vos identifiants de connexion EcoleApp 2026',
+      'Vos identifiants de connexion DIGISCHOOL',
       `Bonjour,\n\nVotre compte administrateur a été créé avec les accès suivants :\n\nLogin : ${admin.login}\nType  : ${typeLabels[admin.typeAdmin] ?? 'Administrateur'}\n\nVeuillez vous connecter à la plateforme et changer votre mot de passe dès la première connexion.\n\nCordialement,\nLe Super Administrateur DIGISCHOOL`
     );
 

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter @ecole-app/api dev & pnpm --filter @ecole-app/web dev",
+    "dev": "pnpm --filter @ecole-app/web dev",
+    "dev:all": "pnpm --filter @ecole-app/api dev & pnpm --filter @ecole-app/web dev",
     "build": "pnpm --filter @ecole-app/shared build && pnpm --filter @ecole-app/api build && pnpm --filter @ecole-app/web build",
     "test": "pnpm --filter @ecole-app/api test & pnpm --filter @ecole-app/web test",
     "test:ui": "playwright test"

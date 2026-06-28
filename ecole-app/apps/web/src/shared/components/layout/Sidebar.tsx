@@ -29,7 +29,8 @@ const allLinks: SidebarLink[] = [
   { to: '/payments',  labelKey: 'sidebar.payments',  icon: <CreditCard className="w-5 h-5" />,    adminTypes: [1, 3, 4], roles: ['ADMIN'] },
   { to: '/messages',  labelKey: 'sidebar.messages',  icon: <MessageSquare className="w-5 h-5" />, adminTypes: [1, 4], roles: ['ADMIN'] },
   { to: '/discipline',labelKey: 'sidebar.discipline',icon: <ShieldCheck className="w-5 h-5" />,   adminTypes: [2, 4], roles: ['ADMIN'] },
-  { to: '/library',   labelKey: 'sidebar.library',   icon: <BookOpen className="w-5 h-5" />,      adminTypes: [1, 2, 3, 4], roles: ['ADMIN'] },
+  { to: '/library',   labelKey: 'sidebar.library', icon: <BookOpen className="w-5 h-5" />, adminTypes: [1, 2], roles: ['ADMIN'] },
+  { to: '/livres', labelKey: 'sidebar.library', icon: <BookOpen className="w-5 h-5" />, adminTypes: [4], roles: ['ADMIN'] },
   { to: '/stats',     labelKey: 'sidebar.stats',     icon: <BarChart3 className="w-5 h-5" />,     adminTypes: [3, 4], roles: ['ADMIN'] },
 
   // Teacher links
@@ -72,8 +73,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false, onToggle })
         // C'est un lien admin, et l'utilisateur est un admin.
         // On vérifie les permissions spécifiques (adminTypes)
         if (link.adminTypes) {
-          if (user?.typeAdmin === 0) return true; // Le super-admin voit tout
-          return link.adminTypes.includes(user?.typeAdmin ?? -1);
+           if (user?.typeAdmin === 0) {
+             // Le super admin ne voit que les liens génériques (ex. tableau de bord)
+             return link.to === '/dashboard';
+           }
+           return link.adminTypes.includes(user?.typeAdmin ?? -1);
         }
         return true;
       }

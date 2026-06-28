@@ -25,6 +25,7 @@ export interface LibraryBook {
   rating: number;
   salles: string[];
   pages: BookPage[];
+  coverUrl?: string;
 }
 
 export const getBooks = (lng: string): LibraryBook[] => {

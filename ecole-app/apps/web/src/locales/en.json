@@ -600,7 +600,7 @@
   },
   "helpPage": {
     "title": "Help Center",
-    "subtitle": "Find quick answers to your questions about using EcoleApp 2026.",
+    "subtitle": "Find quick answers to your questions about using DIGISCHOOL.",
     "searchPlaceholder": "Search for a question...",
     "found": "question(s) found",
     "noQuestions": "No questions found.",
@@ -672,7 +672,7 @@
       },
       "securite_1": {
         "q": "Is my personal data secure?",
-        "a": "Yes, EcoleApp 2026 uses advanced security technologies: JWT (JSON Web Token) authentication, rotating access tokens, bcrypt password encryption, and full traceability of all actions via audit logs. Your data is never shared with third parties."
+        "a": "Yes, DIGISCHOOL uses advanced security technologies: JWT (JSON Web Token) authentication, rotating access tokens, bcrypt password encryption, and full traceability of all actions via audit logs. Your data is never shared with third parties."
       },
       "securite_2": {
         "q": "How do I change my password?",
@@ -681,8 +681,8 @@
     }
   },
   "aboutPage": {
-    "title": "About EcoleApp 2026 (P-097)",
-    "desc1": "Designed to meet the highest engineering and security standards, EcoleApp 2026 is the benchmark school management solution offered by the DIGISCHOOL ecosystem.",
+    "title": "About DIGISCHOOL (P-097)",
+    "desc1": "Designed to meet the highest engineering and security standards, DIGISCHOOL is the benchmark school management solution offered by the DIGISCHOOL ecosystem.",
     "desc2": "Our platform seamlessly connects administration, teachers, students, and parents for a modern and optimized educational journey.",
     "backToHome": "Back to Home"
   }

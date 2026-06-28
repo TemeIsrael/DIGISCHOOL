@@ -12,14 +12,16 @@ const router = Router();
 const createPersonneSchema = z.object({
   login: z.string().min(3),
   password: z.string().min(6),
-  typePersonne: z.union([z.literal(1), z.literal(2), z.literal(4)]) // 1=Teacher, 2=Parent, 4=Other
+  typePersonne: z.union([z.literal(1), z.literal(2), z.literal(4)]), // 1=Teacher, 2=Parent, 4=Other
+  nom: z.string().optional(),
+  prenom: z.string().optional(),
 });
 
 router.use(authenticate);
 
 // CREATE
 router.post('/', requireRole(['ADMIN']), validateBody(createPersonneSchema), async (req, res, next) => {
-  const { login, password, typePersonne } = req.body;
+  const { login, password, typePersonne, nom, prenom } = req.body;
   try {
     const existing = await Personne.findOne({ where: { login } });
     if (existing) {
@@ -31,7 +33,9 @@ router.post('/', requireRole(['ADMIN']), validateBody(createPersonneSchema), asy
     const personne = await Personne.create({
       login,
       password: hashedPassword,
-      typePersonne
+      typePersonne,
+      nom: nom || '',
+      prenom: prenom || ''
     });
 
     res.status(201).json({
@@ -40,6 +44,8 @@ router.post('/', requireRole(['ADMIN']), validateBody(createPersonneSchema), asy
         idPers: personne.idPers,
         login: personne.login,
         typePersonne: personne.typePersonne,
+        nom: personne.nom,
+        prenom: personne.prenom,
         actif: personne.actif
       }
     });
@@ -53,7 +59,21 @@ router.get('/', requireRole(['ADMIN']), async (req, res, next) => {
   try {
     const list = await Personne.findAll({
       where: { isDelete: false },
-      attributes: ['idPers', 'idAdmin', 'login', 'typePersonne', 'actif']
+      attributes: ['idPers', 'idAdmin', 'login', 'typePersonne', 'actif', 'nom', 'prenom']
+    });
+    res.json({ success: true, data: list });
+  } catch (err) {
+    next(err);
+  }
+});
+
+import { Parents } from '../../db/models';
+
+// GET ALL PARENTS
+router.get('/parents', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
+  try {
+    const list = await Parents.findAll({
+      include: [{ model: Personne, as: 'personne', attributes: ['nom', 'prenom', 'login'] }]
     });
     res.json({ success: true, data: list });
   } catch (err) {
@@ -74,7 +94,7 @@ router.post('/:id/send-credentials', requireRole(['ADMIN']), async (req, res, ne
     // Send internal mail stub
     await sendInternalMail(
       personne.login,
-      'Vos Identifiants de connexion EcoleApp 2026',
+      'Vos Identifiants de connexion DIGISCHOOL',
       `Bonjour,\n\nVos identifiants de connexion sont :\nLogin: ${personne.login}\n\nMerci de vous connecter pour configurer votre compte.`
     );
 

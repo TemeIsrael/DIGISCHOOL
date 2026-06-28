@@ -25,7 +25,8 @@ export const getRoleDashboardPath = (role: string | null, _typeAdmin?: number, t
 };
 
 // ─── Store Interface ────────────────────────────────────────────────
-interface AuthStore {
+
+export interface AuthStore {
   accessToken: string | null;
   refreshToken: string | null;
   user: UserSession | null;
@@ -40,6 +41,7 @@ interface AuthStore {
   logout: () => void;
   setHydrated: () => void;
   touchActivity: () => void;
+  updateUser: (data: Partial<UserSession>) => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -89,6 +91,8 @@ export const useAuthStore = create<AuthStore>()(
 
       touchActivity: () =>
         set({ lastActivity: Date.now() }),
+      
+      updateUser: (data) => set((state) => ({ user: state.user ? { ...state.user, ...data } : null })),
     }),
     {
       name: 'ecole-app-auth-storage',

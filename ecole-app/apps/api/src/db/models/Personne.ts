@@ -10,6 +10,13 @@ export class Personne extends Model {
   declare actif: boolean;
   declare isDelete: boolean;
   declare langue: string;
+  // Nouveaux champs pour l'inscription parent/enseignant
+  declare nom: string;
+  declare prenom: string;
+  declare sexe: string;
+  declare dateNaissance: Date;
+  declare email: string;
+  declare telephone1: string;
 }
 
 Personne.init(
@@ -50,6 +57,36 @@ Personne.init(
       type: DataTypes.STRING(10),
       allowNull: false,
       defaultValue: 'fr',
+    },
+    nom: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      defaultValue: '',
+    },
+    prenom: {
+      type: DataTypes.STRING(60),
+      allowNull: true,
+      defaultValue: '',
+    },
+    sexe: {
+      type: DataTypes.CHAR(1),
+      allowNull: true,
+      defaultValue: 'M',
+    },
+    dateNaissance: {
+      type: DataTypes.DATEONLY,
+      allowNull: true,
+      defaultValue: '2000-01-01',
+    },
+    email: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      defaultValue: '',
+    },
+    telephone1: {
+      type: DataTypes.STRING(30),
+      allowNull: true,
+      defaultValue: '',
     },
   },
   {

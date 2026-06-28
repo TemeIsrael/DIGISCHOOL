@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Eleve extends Model {
-  public matricule!: number;
+  public matricule!: string;
   public nom!: string;
   public prenom!: string;
   public dateNaissance!: Date;
@@ -19,8 +19,7 @@ export class Eleve extends Model {
 Eleve.init(
   {
     matricule: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
+      type: DataTypes.STRING(50),
       primaryKey: true,
     },
     nom: {

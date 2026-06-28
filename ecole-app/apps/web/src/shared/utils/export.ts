@@ -7,12 +7,12 @@
 export function exportCSV(data: Record<string, unknown>[], filename = 'data.csv') {
   if (!data.length) return;
   const headers = Object.keys(data[0]);
-  const rows    = data.map((row) => headers.map((h) => JSON.stringify(row[h] ?? '')).join(','));
+  const rows = data.map((row) => headers.map((h) => JSON.stringify(row[h] ?? '')).join(','));
   const csvContent = [headers.join(','), ...rows].join('\n');
-  const blob   = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url    = URL.createObjectURL(blob);
-  const link   = document.createElement('a');
-  link.href     = url;
+  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
   link.download = filename;
   link.style.visibility = 'hidden';
   document.body.appendChild(link);
@@ -22,43 +22,44 @@ export function exportCSV(data: Record<string, unknown>[], filename = 'data.csv'
 }
 
 /**
- * Export data as a print-ready HTML page (browser print dialog).
- * Used as a PDF-export alternative that requires no external library.
+ * Export data as a PDF file using jsPDF and html2pdf.js.
+ * Generates a cover page with the title and then the content.
  */
-export function exportPDF(data: Record<string, unknown>[], filename = 'data') {
+import html2pdf from 'html2pdf.js';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+
+export function exportPDF(data: Record<string, unknown>[], filename = 'Export') {
   if (!data.length) return;
+  const doc = new jsPDF();
+  // Cover page
+  doc.setFontSize(22);
+  doc.text(filename, doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
+  doc.addPage();
+  // Table
   const headers = Object.keys(data[0]);
+  const rows = data.map((row) => headers.map((h) => String(row[h] ?? '')));
+  autoTable(doc, {
+    head: [headers],
+    body: rows,
+    startY: 20,
+    theme: 'grid',
+    headStyles: { fillColor: [240, 240, 240], textColor: 0 },
+  });
+  doc.save(`${filename}.pdf`);
+}
 
-  const tableRows = data
-    .map((row) => `<tr>${headers.map((h) => `<td>${String(row[h] ?? '')}</td>`).join('')}</tr>`)
-    .join('');
-
-  const html = `<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <title>${filename}</title>
-  <style>
-    body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
-    h2   { color: #4b40b0; margin-bottom: 12px; }
-    table { border-collapse: collapse; width: 100%; }
-    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
-    th { background: #f1effd; color: #4b40b0; font-weight: bold; }
-    tr:nth-child(even) { background: #f9f9f9; }
-  </style>
-</head>
-<body>
-  <h2>${filename}</h2>
-  <table>
-    <thead><tr>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
-    <tbody>${tableRows}</tbody>
-  </table>
-</body>
-</html>`;
-
-  const win = window.open('', '_blank');
-  if (!win) return;
-  win.document.write(html);
-  win.document.close();
-  win.print();
+/**
+ * Generate a PDF from HTML content using html2pdf.js.
+ * This utility is used for the book export with cover image.
+ */
+export function exportHTMLToPDF(htmlElement: HTMLElement, filename = 'document.pdf') {
+  // @ts-ignore - html2pdf is loaded via script
+  html2pdf().from(htmlElement).set({
+    margin: 10,
+    filename,
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+  }).save();
 }
