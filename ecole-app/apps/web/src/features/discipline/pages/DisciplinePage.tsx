@@ -15,7 +15,6 @@ type Incident = {
   type: string;
   gravite: string;
   description: string;
-  description: string;
   sanction: string;
   points: number;
 };
