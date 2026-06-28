@@ -148,11 +148,6 @@ export const Router: React.FC = () => {
               </RequireAuth>
             }
           >
-            {/* Liste des notifications */}
-            <Route path="/notifications" element={<NotificationsPage />} />
-            {/* Détail d'une notification */}
-            <Route path="/notifications/:id" element={<NotificationDetailPage />} />
-            {/* Page d'accueil après connexion */}
             <Route path="/dashboard" element={<DashboardRedirect />} />
 
             {/* ── Students — Secretary(1), Director(4) ── */}
@@ -188,7 +183,12 @@ export const Router: React.FC = () => {
 
             {/* Password change — all admins */}
             <Route path="/change-password" element={<ChangePasswordPage />} />
+          </Route>
+
+          {/* ═══ Shared Authenticated Routes (All roles) ═══ */}
+          <Route element={<RequireAuth><AdminLayoutWrapper /></RequireAuth>}>
             <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/notifications/:id" element={<NotificationDetailPage />} />
           </Route>
 
           {/* ═══ Teacher Routes (Sidebar Layout) ═══ */}

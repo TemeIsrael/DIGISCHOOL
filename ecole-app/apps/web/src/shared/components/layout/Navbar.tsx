@@ -151,13 +151,24 @@ export const Navbar: React.FC = () => {
                   </div>
                   <div className="max-h-64 overflow-y-auto">
                     {notifications.map((n) => (
-                      <div key={n.id} className={`p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer ${!n.read ? 'bg-slate-50/50' : ''}`}                         onClick={() => { navigate(`/notifications/${n.id}`); setShowNotifications(false); }}>
-                        <p className="text-sm text-slate-700">{n.title}</p>
-                        <p className="text-xs text-slate-400 mt-1">{n.time}</p>
+                      <div 
+                        key={n.id} 
+                        className={`p-4 border-b border-slate-50 cursor-pointer transition-colors ${
+                          !n.read 
+                            ? 'bg-digi-purple/5 hover:bg-digi-purple/10' 
+                            : 'bg-white hover:bg-slate-50'
+                        }`}                         
+                        onClick={() => { navigate(`/notifications/${n.id}`); setShowNotifications(false); }}
+                      >
+                        <div className="flex justify-between items-start mb-1">
+                          <p className={`text-sm ${!n.read ? 'font-bold text-digi-purple' : 'font-semibold text-slate-700'}`}>{n.title}</p>
+                          {!n.read && <span className="w-2 h-2 rounded-full bg-digi-purple mt-1.5 shrink-0" />}
+                        </div>
+                        <p className={`text-xs ${!n.read ? 'font-medium text-slate-500' : 'text-slate-400'}`}>{n.time}</p>
                       </div>
                     ))}
                   </div>
-                  <div className="p-2 text-center border-t border-slate-100">
+                  <div className="p-2 text-center border-t border-slate-100 bg-slate-50/50 rounded-b-xl">
                     <button className="text-sm font-semibold text-digi-purple hover:underline" onClick={handleViewAll}>{t('common.viewAll', 'Voir tout')}</button>
                   </div>
                 </div>
