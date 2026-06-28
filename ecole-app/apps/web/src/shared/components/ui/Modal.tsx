@@ -46,7 +46,7 @@ export const Modal: React.FC<ModalProps> = ({
       document.addEventListener('keydown', handleKeyDown);
       document.body.style.overflow = 'hidden';
 
-      // Focus the dialog
+      // Focus the dialog after it is rendered
       requestAnimationFrame(() => {
         dialogRef.current?.focus();
       });
