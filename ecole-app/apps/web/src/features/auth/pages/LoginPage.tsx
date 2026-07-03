@@ -11,8 +11,7 @@ import { Select } from '../../../shared/components/ui/Select';
 import { Button } from '../../../shared/components/ui/Button';
 import { LanguageSwitcher } from '../../../shared/components/LanguageSwitcher';
 import { useAuth } from '../hooks/useAuth';
-import { getRoleDashboardPath, useAuthStore } from '../store';
-import { useToast } from '../../../shared/components/ui/Toast';
+import { getRoleDashboardPath } from '../store';
 
 const loginFormSchema = z.object({
   login: z.string().min(3, 'auth.loginMinLength'),
@@ -29,7 +28,6 @@ export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const { toast } = useToast();
   const { login, isLoggingIn } = useAuth();
 
   const {
@@ -45,44 +43,15 @@ export const LoginPage: React.FC = () => {
 
   const onSubmit = async (data: LoginFormInput) => {
     try {
+      // login() appelle l'API, stocke le token (via onSuccess dans useAuth) et retourne les données
       const response = await login(data);
 
-      // Apply the user's saved language from the database
+      // Appliquer la langue préférée de l'utilisateur
       if (response.user?.langue) {
         i18n.changeLanguage(response.user.langue);
       }
 
-      // Store authentication data for all users (admin, teacher, parent)
-      useAuthStore.getState().setAuth({
-        accessToken: response.accessToken,
-        refreshToken: response.refreshToken,
-        user: response.user,
-      });
-
-      // After successful login, validate role consistency for admin accounts
-      const roleMap: Record<number, string> = {
-        0: 'ADMIN_ROOT',
-        1: 'ADMIN_INSCRIPTIONS',
-        2: 'ADMIN_SCOLARITE',
-        3: 'FONDATEUR',
-        4: 'DIRECTEUR'
-      };
-
-      // For non-teacher/parent roles, verify typeAdmin matches selected role
-      if (response.user.role !== 'TEACHER' && response.user.role !== 'PARENT') {
-        const actualRole = roleMap[response.user.typeAdmin] ?? '';
-        if (data.role !== actualRole) {
-          toast({
-            type: 'danger',
-            title: t('auth.loginFailed', 'Échec de connexion'),
-            description: t('auth.roleMismatch', 'Le rôle sélectionné ne correspond pas à votre compte.')
-          });
-          useAuthStore.getState().logout();
-          return;
-        }
-      }
-
-      // Navigate to the appropriate dashboard based on the authenticated user's role
+      // Naviguer vers le tableau de bord correspondant au rôle
       navigate(
         getRoleDashboardPath(
           response.user.role,
@@ -91,7 +60,7 @@ export const LoginPage: React.FC = () => {
         )
       );
     } catch (e) {
-      // Handled inside useAuth hook notifications
+      // L'erreur est déjà gérée et affichée dans useAuth (onError)
     }
   };
 
