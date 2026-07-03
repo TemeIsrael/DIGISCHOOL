@@ -19,8 +19,18 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [hasUnreadNotifs, setHasUnreadNotifs] = useState(true);
+  const [academicYear, setAcademicYear] = useState(() => localStorage.getItem('academicYear') || '2025-2026');
   const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
+
+  const handleAcademicYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const year = e.target.value;
+    setAcademicYear(year);
+    localStorage.setItem('academicYear', year);
+    // Optionally trigger a reload or event if data needs to be refetched globally
+    window.dispatchEvent(new Event('academicYearChanged'));
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -114,13 +124,21 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
 
       <div className="flex items-center gap-3 md:gap-5">
         {/* Academic Year */}
-        <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1 text-xs font-semibold text-slate-600">
-          <Calendar className="w-3.5 h-3.5 text-digi-purple" />
-          <select className="bg-transparent border-0 focus:ring-0 p-0 text-xs font-bold cursor-pointer">
-            <option value="2025-2026">2025-2026</option>
-            <option value="2026-2027">2026-2027</option>
-          </select>
-        </div>
+        {user && user.role !== 'PARENT' && user.role !== 'ADMIN_ROOT' && (
+          <div className="hidden sm:flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1 text-xs font-semibold text-slate-600">
+            <Calendar className="w-3.5 h-3.5 text-digi-purple" />
+            <select 
+              value={academicYear}
+              onChange={handleAcademicYearChange}
+              className="bg-transparent border-0 focus:ring-0 p-0 text-xs font-bold cursor-pointer"
+            >
+              <option value="2024-2025">2024-2025</option>
+              <option value="2025-2026">2025-2026</option>
+              <option value="2026-2027">2026-2027</option>
+              <option value="2027-2028">2027-2028</option>
+            </select>
+          </div>
+        )}
 
         {/* Language */}
         <div className="flex items-center gap-1 sm:gap-2 bg-slate-50 border border-slate-200 rounded-full px-2 sm:px-3 py-1 text-xs font-semibold text-slate-600">
@@ -142,24 +160,40 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
             className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
           >
             <Bell className="w-5 h-5" />
-            <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
+            {hasUnreadNotifs && (
+              <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
+            )}
           </button>
           
           {showNotifications && (
             <div className="absolute right-0 mt-2 w-80 bg-white border border-slate-100 rounded-xl shadow-lg z-50">
               <div className="p-3 border-b border-slate-100 flex justify-between items-center">
                 <span className="font-bold text-slate-800">{t('dashboards.notifications', 'Notifications')}</span>
-                <span className="text-xs text-digi-purple cursor-pointer hover:underline">{t('common.markAllRead', 'Tout marquer comme lu')}</span>
+                <span 
+                  onClick={() => setHasUnreadNotifs(false)}
+                  className="text-xs text-digi-purple cursor-pointer hover:underline"
+                >
+                  {t('common.markAllRead', 'Tout marquer comme lu')}
+                </span>
               </div>
               <div className="max-h-64 overflow-y-auto">
-                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
-                  <p className="text-sm text-slate-700">Nouveau document disponible: <strong>Emploi du temps</strong></p>
-                  <p className="text-xs text-slate-400 mt-1">Il y a 2 heures</p>
-                </div>
-                <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
-                  <p className="text-sm text-slate-700">Rappel: Réunion parents-professeurs demain à 16h.</p>
-                  <p className="text-xs text-slate-400 mt-1">Hier</p>
-                </div>
+                {user?.role === 'ADMIN_ROOT' ? (
+                  <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
+                    <p className="text-sm text-slate-700">Mise à jour système: <strong>Version 1.2 déployée</strong></p>
+                    <p className="text-xs text-slate-400 mt-1">Il y a 1 heure</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
+                      <p className="text-sm text-slate-700">Nouveau document disponible: <strong>Emploi du temps</strong></p>
+                      <p className="text-xs text-slate-400 mt-1">Il y a 2 heures</p>
+                    </div>
+                    <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
+                      <p className="text-sm text-slate-700">Rappel: Réunion parents-professeurs demain à 16h.</p>
+                      <p className="text-xs text-slate-400 mt-1">Hier</p>
+                    </div>
+                  </>
+                )}
               </div>
               <div className="p-2 text-center border-t border-slate-100">
                 <button
@@ -184,6 +218,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
           >
             <Avatar
               name={user?.nom ? `${user.nom} ${user.prenom || ''}` : user?.login}
+              src={(user as any)?.photoUrl || (user as any)?.photoURL}
               size="sm"
             />
             <div className="hidden md:block min-w-0 text-left">

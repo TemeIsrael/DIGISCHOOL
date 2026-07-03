@@ -88,7 +88,7 @@ export const usePermissions = (): Permissions => {
       canManageUsers:      isSecretary,
       canManageFinances:   isSecretary || isFounder,
       canAccessAudit:      isDirector,
-      canConfigureAcademic: isRegistrar,
+      canConfigureAcademic: isRegistrar || isSecretary,
       canEnterGrades:      isRegistrar || isTeacher,
       canManageDiscipline: isRegistrar,
       canAddPersonnelOrStudentsOrSchedules: isSecretary || isRegistrar,

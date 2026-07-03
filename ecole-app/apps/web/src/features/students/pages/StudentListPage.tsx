@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { DataTable } from '../../../shared/components/tables/DataTable';
 import { Badge } from '../../../shared/components/ui/Badge';
 import { Button } from '../../../shared/components/ui/Button';
+import { AvatarCell } from '../../../shared/components/ui/AvatarCell';
 import { useStudents } from '../hooks/useStudents';
 import { useNavigate } from 'react-router-dom';
 import { usePermissions } from '../../auth/hooks/usePermissions';
@@ -21,18 +22,15 @@ export const StudentListPage: React.FC = () => {
       sortable: true,
       render: (row: any) => (
         <div className="flex items-center gap-3">
-          <img
-            src={
-              row.photoURL && row.photoURL !== '/uploads/anonym.png'
-                ? row.photoURL
-                : `https://ui-avatars.com/api/?name=${encodeURIComponent(row.prenom + ' ' + row.nom)}&background=random`
-            }
-            alt="photo"
-            className="w-8 h-8 rounded-full object-cover shadow-sm border border-slate-200"
-          />
+          <AvatarCell url={row.photoURL} name={`${row.prenom} ${row.nom}`} />
           <span className="font-semibold text-slate-800">{row.nom.toUpperCase()} {row.prenom}</span>
         </div>
       )
+    },
+    { 
+      key: 'classe', 
+      header: t('students.classe', 'Classe'),
+      render: (row: any) => row.Classe?.nom || row.classe || '—'
     },
     { key: 'langue', header: t('students.langue') },
     {

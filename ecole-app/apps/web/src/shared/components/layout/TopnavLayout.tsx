@@ -10,7 +10,7 @@ export const TopnavLayout: React.FC<TopnavLayoutProps> = ({ children }) => {
     <div className="min-h-screen bg-digi-bg flex flex-col">
       <Navbar />
 
-      <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto max-w-7xl w-full mx-auto">
+      <main className="flex-1 min-w-0 p-4 md:p-6 lg:p-8 overflow-y-auto max-w-7xl w-full mx-auto">
         <div className="animate-fade-in">
           {children}
         </div>

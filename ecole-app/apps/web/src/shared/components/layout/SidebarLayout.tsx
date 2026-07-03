@@ -33,7 +33,7 @@ export const SidebarLayout: React.FC<SidebarLayoutProps> = ({ children }) => {
 
       {/* Main Content Area */}
       <div
-        className={`flex-1 flex flex-col min-h-screen w-full transition-all duration-300 pl-0 ${sidebarMarginClass}`}
+        className={`flex-1 min-w-0 flex flex-col min-h-screen w-full transition-all duration-300 pl-0 ${sidebarMarginClass}`}
       >
         <Topbar
           onMenuToggle={() => setMobileOpen(!mobileOpen)}

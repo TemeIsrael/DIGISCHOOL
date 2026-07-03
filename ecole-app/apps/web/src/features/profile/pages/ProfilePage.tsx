@@ -15,12 +15,13 @@ export const ProfilePage: React.FC = () => {
 
   const [name, setName] = useState(user?.nom || '');
   const [email, setEmail] = useState((user as any)?.email || '');
+  const [username, setUsername] = useState(user?.login || '');
   const [photo, setPhoto] = useState<string | null>(null);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    updateUser({ nom: name, email } as any);
-    // In a real app you would also upload the photo
+    updateUser({ nom: name, email, login: username, photoUrl: photo } as any);
+    // In a real app you would also upload the photo to the backend here
     alert(t('profile.saved', 'Profil mis à jour'));
   };
 
@@ -74,6 +75,13 @@ export const ProfilePage: React.FC = () => {
                 label={t('profile.name', 'Nom complet')}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                leftIcon={<User className="w-4 h-4" />}
+                required
+              />
+              <Input
+                label={t('profile.username', "Nom d'utilisateur")}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 leftIcon={<User className="w-4 h-4" />}
                 required
               />

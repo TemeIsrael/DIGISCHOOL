@@ -10,7 +10,7 @@ export class Eleve extends Model {
   public sexe!: number;
   public idVilleNaissance!: number;
   public langue!: string;
-  public photoURL!: string | null;
+
   public actif!: boolean;
   public isDelete!: boolean;
   public idAdmin!: number;
@@ -48,11 +48,7 @@ Eleve.init(
       allowNull: false,
       defaultValue: 'NON DEFINI',
     },
-    photoURL: {
-      type: DataTypes.STRING(255),
-      allowNull: true,
-      defaultValue: '/uploads/anonym.png',
-    },
+
     actif: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,

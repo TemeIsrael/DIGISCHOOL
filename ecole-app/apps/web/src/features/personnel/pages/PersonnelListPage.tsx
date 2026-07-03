@@ -6,6 +6,7 @@ import { Modal } from '../../../shared/components/ui/Modal';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
 import { Users, Search, FilePlus, Pencil, Trash2, Shield, BookOpen } from 'lucide-react';
 import { usePermissions } from '../../auth/hooks/usePermissions';
+import { AvatarCell } from '../../../shared/components/ui/AvatarCell';
 import { usePersonnel } from '../hooks/usePersonnel';
 import { useToast } from '../../../shared/components/ui/Toast';
 import { useAuthStore } from '../../auth/store';
@@ -244,12 +245,12 @@ const PersonnelListPage: React.FC = () => {
                   <tr key={p.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-3">{p.id}</td>
                     <td className="px-4 py-3 flex items-center">
-                      <img 
-                        src={p.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(p.prenom + ' ' + p.nom)}&background=random`} 
-                        alt="photo" 
-                        className="w-8 h-8 rounded-full mr-3 object-cover shadow-sm border border-slate-200" 
+                      <AvatarCell
+                        url={p.photoUrl}
+                        name={`${p.prenom} ${p.nom}`}
+                        size={32}
                       />
-                      <span className="font-semibold text-slate-800">{p.nom}</span>
+                      <span className="font-semibold text-slate-800 ml-3">{p.nom.toUpperCase()}</span>
                     </td>
                     <td className="px-4 py-3">{p.prenom}</td>
                     <td className="px-4 py-3">

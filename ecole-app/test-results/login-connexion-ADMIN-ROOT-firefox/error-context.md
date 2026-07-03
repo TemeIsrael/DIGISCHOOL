@@ -12,7 +12,7 @@
 # Error details
 
 ```
-Error: browserType.launch: Executable doesn't exist at /home/teme/DIGISCHOOL1/ecole-app/node_modules/.pnpm/playwright-core@1.60.0/node_modules/playwright-core/.local-browsers/firefox-1522/firefox/firefox
+Error: browserType.launch: Executable doesn't exist at /home/teme/.cache/ms-playwright/firefox-1522/firefox/firefox
 ╔════════════════════════════════════════════════════════════╗
 ║ Looks like Playwright was just installed or updated.       ║
 ║ Please run the following command to download new browsers: ║

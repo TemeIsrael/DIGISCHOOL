@@ -9,7 +9,7 @@ export class Personne extends Model {
   declare typePersonne: number;
   declare actif: boolean;
   declare isDelete: boolean;
-  declare langue: string;
+  declare photoURL!: string | null;
   // Nouveaux champs pour l'inscription parent/enseignant
   declare nom: string;
   declare prenom: string;
@@ -82,6 +82,11 @@ Personne.init(
       type: DataTypes.STRING(100),
       allowNull: true,
       defaultValue: '',
+    },
+    photoURL: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      defaultValue: '/uploads/anonym.png',
     },
     telephone1: {
       type: DataTypes.STRING(30),
