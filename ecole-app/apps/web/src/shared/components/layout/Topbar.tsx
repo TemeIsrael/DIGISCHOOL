@@ -19,7 +19,12 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [hasUnreadNotifs, setHasUnreadNotifs] = useState(true);
+  // Les notifications ne sont "non lues" que si l'utilisateur n'a pas encore ouvert le panneau
+  // On utilise localStorage pour persister l'état entre les rechargements
+  const [hasUnreadNotifs, setHasUnreadNotifs] = useState(() => {
+    return localStorage.getItem('notifs_read') !== 'true';
+  });
+
   const [academicYear, setAcademicYear] = useState(() => localStorage.getItem('academicYear') || '2025-2026');
   const notifRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -156,12 +161,20 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
           <button 
-            onClick={() => setShowNotifications(!showNotifications)}
+            onClick={() => {
+              const next = !showNotifications;
+              setShowNotifications(next);
+              // Marquer toutes les notifications comme lues à l'ouverture du panneau
+              if (next && hasUnreadNotifs) {
+                setHasUnreadNotifs(false);
+                localStorage.setItem('notifs_read', 'true');
+              }
+            }}
             className="relative p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
           >
             <Bell className="w-5 h-5" />
             {hasUnreadNotifs && (
-              <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-digi-danger rounded-full animate-pulse" />
             )}
           </button>
           
@@ -170,7 +183,10 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
               <div className="p-3 border-b border-slate-100 flex justify-between items-center">
                 <span className="font-bold text-slate-800">{t('dashboards.notifications', 'Notifications')}</span>
                 <span 
-                  onClick={() => setHasUnreadNotifs(false)}
+                  onClick={() => {
+                    setHasUnreadNotifs(false);
+                    localStorage.setItem('notifs_read', 'true');
+                  }}
                   className="text-xs text-digi-purple cursor-pointer hover:underline"
                 >
                   {t('common.markAllRead', 'Tout marquer comme lu')}

@@ -16,13 +16,16 @@ export const ProfilePage: React.FC = () => {
   const [name, setName] = useState(user?.nom || '');
   const [email, setEmail] = useState((user as any)?.email || '');
   const [username, setUsername] = useState(user?.login || '');
-  const [photo, setPhoto] = useState<string | null>(null);
+  // Initialiser la photo depuis le store (photo déjà enregistrée)
+  const [photo, setPhoto] = useState<string | null>((user as any)?.photoUrl || (user as any)?.photoURL || null);
+  const [saved, setSaved] = useState(false);
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    // Persister dans le store (affiché partout : Topbar, Avatar, etc.)
     updateUser({ nom: name, email, login: username, photoUrl: photo } as any);
-    // In a real app you would also upload the photo to the backend here
-    alert(t('profile.saved', 'Profil mis à jour'));
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,6 +67,11 @@ export const ProfilePage: React.FC = () => {
               {user?.role}
             </p>
           </div>
+          {photo && (
+            <p className="text-xs text-emerald-600 font-semibold">
+              📸 Photo sélectionnée — cliquez sur « Enregistrer »
+            </p>
+          )}
         </Card>
 
         <Card className="md:col-span-2 p-6">
@@ -76,14 +84,12 @@ export const ProfilePage: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 leftIcon={<User className="w-4 h-4" />}
-                required
               />
               <Input
                 label={t('profile.username', "Nom d'utilisateur")}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 leftIcon={<User className="w-4 h-4" />}
-                required
               />
               <Input
                 type="email"
@@ -91,7 +97,6 @@ export const ProfilePage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 leftIcon={<Mail className="w-4 h-4" />}
-                required
               />
             </div>
 
@@ -101,7 +106,7 @@ export const ProfilePage: React.FC = () => {
                 {t('profile.changePassword', 'Changer le mot de passe')}
               </Button>
               <Button type="submit" variant="primary">
-                {t('profile.save', 'Enregistrer les modifications')}
+                {saved ? '✅ Enregistré !' : t('profile.save', 'Enregistrer les modifications')}
               </Button>
             </div>
           </form>
