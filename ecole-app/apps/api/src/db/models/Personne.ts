@@ -9,7 +9,7 @@ export class Personne extends Model {
   declare typePersonne: number;
   declare actif: boolean;
   declare isDelete: boolean;
-  declare photoURL!: string | null;
+  declare photoURL: string | null;
   // Nouveaux champs pour l'inscription parent/enseignant
   declare nom: string;
   declare prenom: string;
