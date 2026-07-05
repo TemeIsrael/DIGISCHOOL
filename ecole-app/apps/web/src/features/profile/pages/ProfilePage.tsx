@@ -7,11 +7,40 @@ import { Button } from '../../../shared/components/ui/Button';
 import { Input } from '../../../shared/components/ui/Input';
 import { User, Mail, Camera, Shield, Key } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import { useToast } from '../../../shared/components/ui/Toast';
+import { api } from '../../../shared/lib/api';
+
+// ─── Validation Schema for Password ────────────────────────────────
+const changePasswordSchema = z
+  .object({
+    oldPassword: z
+      .string()
+      .min(6, 'L\'ancien mot de passe doit contenir au moins 6 caractères'),
+    newPassword: z
+      .string()
+      .min(6, 'Le nouveau mot de passe doit contenir au moins 6 caractères'),
+    confirmPassword: z.string()
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Les mots de passe ne correspondent pas',
+    path: ['confirmPassword']
+  })
+  .refine((data) => data.oldPassword !== data.newPassword, {
+    message: 'Le nouveau mot de passe doit être différent de l\'ancien',
+    path: ['newPassword']
+  });
+
+type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 
 export const ProfilePage: React.FC = () => {
   const { t } = useTranslation();
   const { user, updateUser } = useAuthStore();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [name, setName] = useState(user?.nom || '');
   const [email, setEmail] = useState((user as any)?.email || '');
@@ -20,12 +49,17 @@ export const ProfilePage: React.FC = () => {
   const [photo, setPhoto] = useState<string | null>((user as any)?.photoUrl || (user as any)?.photoURL || null);
   const [saved, setSaved] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
+  const handleSaveInfo = (e: React.FormEvent) => {
     e.preventDefault();
     // Persister dans le store (affiché partout : Topbar, Avatar, etc.)
     updateUser({ nom: name, email, login: username, photoUrl: photo } as any);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    toast({
+      type: 'success',
+      title: 'Profil mis à jour',
+      description: 'Vos informations ont été enregistrées avec succès.'
+    });
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,15 +73,60 @@ export const ProfilePage: React.FC = () => {
     }
   };
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm<ChangePasswordInput>({
+    resolver: zodResolver(changePasswordSchema)
+  });
+
+  const changeMutation = useMutation({
+    mutationFn: async (data: Omit<ChangePasswordInput, 'confirmPassword'>) => {
+      const response = await api.post('/auth/change-password', {
+        oldPassword: data.oldPassword,
+        newPassword: data.newPassword
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      toast({
+        type: 'success',
+        title: 'Mot de passe modifié',
+        description: 'Votre mot de passe a été mis à jour avec succès.'
+      });
+      reset();
+    },
+    onError: (error: any) => {
+      const msg =
+        error.response?.data?.error?.message ||
+        'Échec de la modification. Vérifiez votre ancien mot de passe.';
+      toast({
+        type: 'danger',
+        title: 'Erreur',
+        description: msg
+      });
+    }
+  });
+
+  const onSubmitPassword = (data: ChangePasswordInput) => {
+    changeMutation.mutate({
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword
+    });
+  };
+
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
         <h1 className="text-2xl font-bold text-slate-800">{t('profile.title', 'Mon Profil')}</h1>
-        <p className="text-sm text-slate-400 font-semibold">{t('profile.subtitle', 'Gérez vos informations personnelles')}</p>
+        <p className="text-sm text-slate-400 font-semibold">{t('profile.subtitle', 'Gérez vos informations personnelles et votre sécurité')}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Card className="md:col-span-1 flex flex-col items-center text-center p-6 space-y-4">
+        {/* Colonne Avatar */}
+        <Card className="md:col-span-1 flex flex-col items-center text-center p-6 space-y-4 self-start">
           <div className="relative group">
             <Avatar
               name={name || user?.login || 'U'}
@@ -74,43 +153,95 @@ export const ProfilePage: React.FC = () => {
           )}
         </Card>
 
-        <Card className="md:col-span-2 p-6">
-          <form onSubmit={handleSave} className="space-y-6">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b border-slate-100 pb-2">Informations Personnelles</h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Input
-                label={t('profile.name', 'Nom complet')}
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                leftIcon={<User className="w-4 h-4" />}
-              />
-              <Input
-                label={t('profile.username', "Nom d'utilisateur")}
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                leftIcon={<User className="w-4 h-4" />}
-              />
-              <Input
-                type="email"
-                label={t('profile.email', 'E-mail')}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                leftIcon={<Mail className="w-4 h-4" />}
-              />
-            </div>
+        {/* Colonne Formulaires */}
+        <div className="md:col-span-2 space-y-8">
+          {/* Informations Personnelles */}
+          <Card className="p-6">
+            <form onSubmit={handleSaveInfo} className="space-y-6">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b border-slate-100 pb-2 flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Informations Personnelles
+              </h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Input
+                  label={t('profile.name', 'Nom complet')}
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  leftIcon={<User className="w-4 h-4" />}
+                />
+                <Input
+                  label={t('profile.username', "Nom d'utilisateur")}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  leftIcon={<User className="w-4 h-4" />}
+                />
+                <Input
+                  type="email"
+                  label={t('profile.email', 'E-mail')}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  leftIcon={<Mail className="w-4 h-4" />}
+                  className="md:col-span-2"
+                />
+              </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
-              <Button type="button" variant="ghost" onClick={() => navigate('/change-password')} className="gap-2 mr-auto text-slate-600 hover:text-slate-800">
+              <div className="flex justify-end pt-4 border-t border-slate-100">
+                <Button type="submit" variant="primary">
+                  {saved ? '✅ Enregistré !' : t('profile.save', 'Enregistrer les modifications')}
+                </Button>
+              </div>
+            </form>
+          </Card>
+
+          {/* Mot de passe */}
+          <Card className="p-6">
+            <form onSubmit={handleSubmit(onSubmitPassword)} className="space-y-6">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b border-slate-100 pb-2 flex items-center gap-2">
                 <Key className="w-4 h-4" />
-                {t('profile.changePassword', 'Changer le mot de passe')}
-              </Button>
-              <Button type="submit" variant="primary">
-                {saved ? '✅ Enregistré !' : t('profile.save', 'Enregistrer les modifications')}
-              </Button>
-            </div>
-          </form>
-        </Card>
+                Sécurité et Mot de passe
+              </h3>
+              
+              <div className="space-y-5">
+                <Input
+                  type="password"
+                  label="Ancien mot de passe"
+                  placeholder="••••••••"
+                  error={errors.oldPassword?.message}
+                  {...register('oldPassword')}
+                />
+
+                <Input
+                  type="password"
+                  label="Nouveau mot de passe"
+                  placeholder="••••••••"
+                  error={errors.newPassword?.message}
+                  {...register('newPassword')}
+                />
+
+                <Input
+                  type="password"
+                  label="Confirmer le nouveau mot de passe"
+                  placeholder="••••••••"
+                  error={errors.confirmPassword?.message}
+                  {...register('confirmPassword')}
+                />
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-slate-100">
+                <Button
+                  type="submit"
+                  variant="outline"
+                  disabled={changeMutation.isPending}
+                >
+                  {changeMutation.isPending
+                    ? 'Modification...'
+                    : 'Modifier le mot de passe'}
+                </Button>
+              </div>
+            </form>
+          </Card>
+        </div>
       </div>
     </div>
   );

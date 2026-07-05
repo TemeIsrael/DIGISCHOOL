@@ -247,7 +247,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
           {showProfile && (
             <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-slate-100 rounded-xl shadow-lg z-50 py-1">
               <button 
-                onClick={() => { setShowProfile(false); navigate(getChangePasswordPath()); }}
+                onClick={() => { setShowProfile(false); navigate('/profile'); }}
                 className="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 hover:text-digi-purple flex items-center gap-2"
               >
                 <User className="w-4 h-4" />
