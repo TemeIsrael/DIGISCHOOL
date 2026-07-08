@@ -66,6 +66,16 @@ export const LandingPage: React.FC = () => {
     { value: '24/7', label: t('landingFeatures.availability'), icon: <Clock className="w-5 h-5" /> },
   ];
 
+  // Demo accounts for each role
+  const demoAccounts = [
+    { role: 'ADMIN', username: 'admin', password: 'admin123' },
+    { role: 'ADMIN_INSCRIPTIONS', username: 'insc', password: 'insc123' },
+    { role: 'ADMIN_SCOLARITE', username: 'scol', password: 'scol123' },
+    { role: 'TEACHER', username: 'teacher', password: 'teach123' },
+    { role: 'PARENT', username: 'parent', password: 'parent123' },
+    { role: 'STUDENT', username: 'student', password: 'stud123' },
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col">
       <PublicNavbar />

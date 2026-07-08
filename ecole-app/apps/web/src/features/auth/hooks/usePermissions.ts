@@ -91,7 +91,7 @@ export const usePermissions = (): Permissions => {
       canConfigureAcademic: isRegistrar || isSecretary,
       canEnterGrades:      isRegistrar || isTeacher,
       canManageDiscipline: isRegistrar,
-      canAddPersonnelOrStudentsOrSchedules: isSecretary || isRegistrar,
+      canAddPersonnelOrStudentsOrSchedules: isSecretary || isRegistrar || isAdmin,
 
       hasAdminType,
     };

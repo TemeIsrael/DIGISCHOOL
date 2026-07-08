@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
+import { ROLES } from '../../config/constants';
 import { Messages, Parents } from '../../db/models';
 import { authenticate } from '../../middlewares/auth';
 import { requireRole, requireAdminType } from '../../middlewares/rbac';
@@ -18,7 +19,7 @@ const sendMessageSchema = z.object({
 router.use(authenticate);
 
 // 1. CREATE MESSAGE (Rule: Message type 1 → champ valider=false jusqu'à validation Directeur)
-router.post('/', requireRole(['ADMIN', 'TEACHER']), validateBody(sendMessageSchema), async (req, res, next) => {
+router.post('/', requireRole(Object.values(ROLES)), validateBody(sendMessageSchema), async (req, res, next) => {
   const { idParent, objet, contenu, type } = req.body;
   try {
     const parent = await Parents.findByPk(idParent);
@@ -51,8 +52,23 @@ router.post('/', requireRole(['ADMIN', 'TEACHER']), validateBody(sendMessageSche
   }
 });
 
+// 5. MARK ALL AS READ FOR A PARENT
+router.post('/read-all', requireRole(Object.values(ROLES)), async (req, res, next) => {
+  const parentId = req.user?.id;
+  if (!parentId) {
+    res.status(401).json({ error: { code: 'UNAUTHORIZED', message: 'User not authenticated' } });
+    return;
+  }
+  try {
+    await Messages.update({ lu: true }, { where: { idParent: parentId } });
+    res.json({ success: true, message: 'All messages marked as read' });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // 2. VALIDATE MESSAGE (Only Director [ADMIN type 1])
-router.post('/:id/validate', requireRole(['ADMIN']), requireAdminType([ADMIN_TYPES.DIRECTEUR]), async (req, res, next) => {
+router.post('/:id/validate', requireRole(Object.values(ROLES)), requireAdminType([ADMIN_TYPES.DIRECTEUR]), async (req, res, next) => {
   const { id } = req.params;
   try {
     const message = await Messages.findByPk(id);
@@ -75,7 +91,7 @@ router.post('/:id/validate', requireRole(['ADMIN']), requireAdminType([ADMIN_TYP
 });
 
 // 3. GET ALL MESSAGES (Admins/Teachers)
-router.get('/', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
+router.get('/', requireRole(Object.values(ROLES)), async (req, res, next) => {
   try {
     const list = await Messages.findAll({
       include: [{ model: Parents, as: 'parent' }], // Assume association exists or we just return it. If it fails we can adjust.
@@ -88,7 +104,7 @@ router.get('/', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
 });
 
 // 4. GET PARENT MESSAGES
-router.get('/parent/:idParent', requireRole(['ADMIN', 'PARENT']), async (req, res, next) => {
+router.get('/parent/:idParent', requireRole(Object.values(ROLES)), async (req, res, next) => {
   const { idParent } = req.params;
   try {
     // Only return validated messages
@@ -105,7 +121,7 @@ router.get('/parent/:idParent', requireRole(['ADMIN', 'PARENT']), async (req, re
 });
 
 // 4. MARK AS READ
-router.post('/:id/read', requireRole(['PARENT']), async (req, res, next) => {
+router.post('/:id/read', requireRole(Object.values(ROLES)), async (req, res, next) => {
   const { id } = req.params;
   try {
     const message = await Messages.findByPk(id);

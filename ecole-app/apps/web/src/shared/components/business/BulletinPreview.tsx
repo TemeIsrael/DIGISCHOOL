@@ -15,12 +15,14 @@ export interface BulletinPreviewProps {
   nom?: string;
   prenom?: string;
   classe: string;
-  trimestre?: string;
+  salle?: string;
+  teacherName?: string;
   moyenne: number;
   rang: number;
   effectif?: number;
   matieres?: BulletinMatiereEntry[];
   onDownload?: () => void;
+  mention?: string;
 }
 
 export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
@@ -38,6 +40,18 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
   const { t, i18n } = useTranslation();
   const isEn = i18n.language?.startsWith('en');
   const displayName = eleve || (prenom && nom ? `${prenom} ${nom.toUpperCase()}` : '');
+  
+  const getMention = (avg: number) => {
+    if (avg >= 16) return 'Très Bien';
+    if (avg >= 14) return 'Bien';
+    if (avg >= 12) return 'Assez Bien';
+    if (avg >= 10) return 'Passable';
+    return 'Insuffisant';
+  };
+
+  const mention = props.mention ?? getMention(moyenne);
+  const salle = props.salle ?? '';
+  const teacher = props.teacherName ?? '';
 
   // Determine Rank suffix
   const getRankSuffix = (r: number) => {
@@ -97,7 +111,9 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
             <h4 className="text-sm font-bold text-slate-800">
               {t('bulletins.reportCardOf', 'Bulletin de {{name}}', { name: displayName })}
             </h4>
-            <p className="text-xs text-slate-400 font-semibold">{classe} {trimestre ? `— ${getTrimestreDisplay(trimestre)}` : ''}</p>
+            <p className="text-xs text-slate-400 font-semibold">{classe} {salle && `— Salle ${salle}`} {trimestre ? `— ${getTrimestreDisplay(trimestre)}` : ''}</p>
+            <p className="text-xs text-slate-400 font-semibold">Enseignant : {teacher}</p>
+            <p className="text-xs font-bold {mention === 'Très Bien' ? 'text-green-600' : mention === 'Bien' ? 'text-emerald-600' : mention === 'Assez Bien' ? 'text-yellow-600' : mention === 'Passable' ? 'text-orange-600' : 'text-red-600'}">Mention : {mention}</p>
             <p className="text-xs text-slate-500 font-bold">
               {t('bulletins.average', 'Moyenne')}: <span className="text-digi-purple">{moyenne.toFixed(2)}/10</span> &bull; {t('bulletins.rank', 'Rang')}:{' '}
               <span className="text-digi-purple">{rang}{getRankSuffix(rang)}</span>

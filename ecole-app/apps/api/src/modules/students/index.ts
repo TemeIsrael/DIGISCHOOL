@@ -119,7 +119,7 @@ const validatePreRegSchema = z.object({
   idAcademi: z.number()
 });
 
-router.put('/validate/:tempMatricule', requireRole(['ADMIN']), validateBody(validatePreRegSchema), async (req, res, next) => {
+router.put('/validate/:tempMatricule', requireRole(['ADMIN','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE']), validateBody(validatePreRegSchema), async (req, res, next) => {
   const { tempMatricule } = req.params;
   const data = req.body;
   const ip = req.ip || 'unknown';
