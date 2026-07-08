@@ -11,15 +11,15 @@ services:
       - key: PNPM_VERSION
         value: 9.1.0
       - key: DB_HOST
-        value: 163.123.183.89
+        value: mysql-digischool-temeisrael65-91e3.b.aivencloud.com
       - key: DB_PORT
-        value: 17705
+        value: 24262
       - key: DB_USER
-        value: ecole
+        value: avnadmin
       - key: DB_PASSWORD
-        sync: false
+        value: israel235
       - key: DB_NAME
-        value: ecole2026
+        value: defaultdb
       - key: DB_SSL
         value: true
       - key: JWT_ACCESS_SECRET
