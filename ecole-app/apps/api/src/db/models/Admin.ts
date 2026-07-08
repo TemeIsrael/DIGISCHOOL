@@ -19,7 +19,6 @@ Admin.init(
       primaryKey: true,
     },
     login: {
-      field: 'username',
       type: DataTypes.STRING(100),
       allowNull: false,
       unique: true,
