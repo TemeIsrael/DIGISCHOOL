@@ -101,11 +101,16 @@ router.get('/', requireRole(['ADMIN', 'PARENT']), async (req, res, next) => {
   try {
     let list;
     if (user.role === 'PARENT') {
-      // Parents only see payments for their linked students
-      // We can query payments where matricule belongs to linked kids
-      list = await Paiement.findAll({ where: { actif: true } }); // Mock parent filtering
+      list = await Paiement.findAll({ 
+        where: { actif: true },
+        include: [{ model: AnneeAcademique, as: 'anneeAcademique' }] // mock
+      });
     } else {
-      list = await Paiement.findAll();
+      list = await Paiement.findAll({
+        include: [
+          { model: AnneeAcademique, as: 'anneeAcademique' }
+        ]
+      });
     }
     res.json({ success: true, data: list });
   } catch (err) {

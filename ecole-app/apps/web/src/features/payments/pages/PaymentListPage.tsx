@@ -4,29 +4,15 @@ import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { KPICard } from '../../../shared/components/ui/KPICard';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
-import { CreditCard, Download, Search, TrendingUp, AlertCircle, CheckCircle } from 'lucide-react';
+import { CreditCard, Download, Search, TrendingUp, AlertCircle, CheckCircle, Settings, Plus, Trash2 } from 'lucide-react';
 import { exportPDF } from '../../../shared/utils/export';
+import { useAuthStore } from '../../auth/store';
+import { Modal } from '../../../shared/components/ui/Modal';
+import { Input } from '../../../shared/components/ui/Input';
+import { usePayments } from '../hooks/usePayments';
+import { useStudents } from '../../students/hooks/useStudents'; // Reuse hook to get student names
 
 type PaymentStatus = 'complete' | 'partial' | 'unpaid';
-
-type Payment = {
-  id: number;
-  matricule: string;
-  eleve: string;
-  classe: string;
-  montant: number;
-  paye: number;
-  status: PaymentStatus;
-  date: string;
-};
-
-const mockPayments: Payment[] = [
-  { id: 1, matricule: 'EL-001', eleve: 'DUPONT Jean',  classe: 'CM1 A', montant: 75000, paye: 50000, status: 'partial',  date: '15/03/2026' },
-  { id: 2, matricule: 'EL-002', eleve: 'MBARGA Paul',  classe: 'CE2 A', montant: 75000, paye: 75000, status: 'complete', date: '10/01/2026' },
-  { id: 3, matricule: 'EL-003', eleve: 'NGONO Marie',  classe: 'CE1 A', montant: 65000, paye: 0,     status: 'unpaid',   date: '-'          },
-  { id: 4, matricule: 'EL-004', eleve: 'TAMBA Isaac',  classe: 'CM2 A', montant: 85000, paye: 85000, status: 'complete', date: '05/02/2026' },
-  { id: 5, matricule: 'EL-005', eleve: 'BELLA Sarah',  classe: 'CM1 A', montant: 75000, paye: 35000, status: 'partial',  date: '20/04/2026' },
-];
 
 const statusStyle: Record<PaymentStatus, string> = {
   complete: 'bg-emerald-50 text-emerald-700 border-emerald-200',
@@ -34,16 +20,14 @@ const statusStyle: Record<PaymentStatus, string> = {
   unpaid:   'bg-red-50    text-red-700    border-red-200',
 };
 
-import { useAuthStore } from '../../auth/store';
-import { Modal } from '../../../shared/components/ui/Modal';
-import { Input } from '../../../shared/components/ui/Input';
-import { Settings, Plus, Trash2 } from 'lucide-react';
-
 export const PaymentListPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAuthStore();
   const [filterStatus, setFilterStatus] = useState('');
   const [search,       setSearch]       = useState('');
+  
+  const { payments, isLoading: isLoadingPayments } = usePayments();
+  const { students } = useStudents();
   
   // Financial Configuration State
   const [isConfigOpen, setIsConfigOpen] = useState(false);
@@ -63,14 +47,47 @@ export const PaymentListPage: React.FC = () => {
     unpaid:   t('payments.unpaid',   'Impayé'),
   }[s]);
 
-  const filtered = mockPayments.filter((p) => {
+  // Aggregate payments by student (since real API returns individual payment lines)
+  // For the list, we group by matricule to show a summary per student.
+  const summaryByStudent = React.useMemo(() => {
+    const map = new Map<string, any>();
+    (payments || []).forEach((p: any) => {
+      if (!p.actif) return; // Skip cancelled payments
+      if (!map.has(p.matricule)) {
+        const studentInfo = (students || []).find((s: any) => s.matricule === p.matricule);
+        const currentFreq = studentInfo?.frequentations?.[0];
+        map.set(p.matricule, {
+          matricule: p.matricule,
+          eleve: studentInfo ? `${studentInfo.nom} ${studentInfo.prenom}` : 'Inconnu',
+          classe: currentFreq?.salle?.classe?.libelle || 'Non assigné',
+          montant: 75000, // In real app, fetch from Scolarite table
+          paye: 0,
+          date: p.createdAt
+        });
+      }
+      const existing = map.get(p.matricule)!;
+      existing.paye += p.montant;
+      if (new Date(p.createdAt) > new Date(existing.date)) {
+        existing.date = p.createdAt;
+      }
+    });
+
+    return Array.from(map.values()).map(s => {
+      let status: PaymentStatus = 'unpaid';
+      if (s.paye >= s.montant) status = 'complete';
+      else if (s.paye > 0) status = 'partial';
+      return { ...s, status };
+    });
+  }, [payments, students]);
+
+  const filtered = summaryByStudent.filter((p) => {
     const matchStatus = !filterStatus || p.status === filterStatus;
     const matchSearch = p.eleve.toLowerCase().includes(search.toLowerCase()) || p.matricule.toLowerCase().includes(search.toLowerCase());
     return matchStatus && matchSearch;
   });
 
-  const totalDue    = mockPayments.reduce((s, p) => s + p.montant, 0);
-  const totalPaid   = mockPayments.reduce((s, p) => s + p.paye,    0);
+  const totalDue    = summaryByStudent.reduce((s, p) => s + p.montant, 0);
+  const totalPaid   = summaryByStudent.reduce((s, p) => s + p.paye,    0);
   const totalUnpaid = totalDue - totalPaid;
 
   const handleExport = () => {
@@ -81,7 +98,7 @@ export const PaymentListPage: React.FC = () => {
       [t('payments.totalDue', 'Montant Dû') + ' (F)']: p.montant,
       [t('payments.totalPaid', 'Montant Payé') + ' (F)']: p.paye,
       [t('common.status', 'Statut')]: statusLabel(p.status),
-      [t('payments.lastPayment', 'Dernier Paiement')]: p.date,
+      [t('payments.lastPayment', 'Dernier Paiement')]: new Date(p.date).toLocaleDateString(),
     }));
     exportPDF(dataToExport, 'Payments_List');
   };
@@ -193,7 +210,7 @@ export const PaymentListPage: React.FC = () => {
         <KPICard value={totalDue.toLocaleString('fr-FR') + ' F'}    label={t('payments.totalDue',   'Total Attendu')}         icon={<CreditCard   className="w-5 h-5 text-digi-purple"  />} />
         <KPICard value={totalPaid.toLocaleString('fr-FR') + ' F'}   label={t('payments.totalPaid',  'Total Recouvré')}        icon={<TrendingUp   className="w-5 h-5 text-digi-success" />} />
         <KPICard value={totalUnpaid.toLocaleString('fr-FR') + ' F'} label={t('payments.remaining',  'Reste à Recouvrer')}     icon={<AlertCircle  className="w-5 h-5 text-digi-danger"  />} />
-        <KPICard value={Math.round((totalPaid / totalDue) * 100) + '%'} label={t('payments.rate',   'Taux de Recouvrement')}  icon={<CheckCircle  className="w-5 h-5 text-digi-success" />} />
+        <KPICard value={totalDue === 0 ? '0%' : Math.round((totalPaid / totalDue) * 100) + '%'} label={t('payments.rate',   'Taux de Recouvrement')}  icon={<CheckCircle  className="w-5 h-5 text-digi-success" />} />
       </div>
 
       {/* Filters */}
@@ -237,21 +254,31 @@ export const PaymentListPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-              {filtered.map((p) => (
-                <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 font-mono text-xs">{p.matricule}</td>
-                  <td className="px-4 py-3 font-semibold">{p.eleve}</td>
-                  <td className="px-4 py-3">{p.classe}</td>
-                  <td className="px-4 py-3 text-right font-semibold">{p.montant.toLocaleString('fr-FR')} F</td>
-                  <td className="px-4 py-3 text-right font-semibold text-digi-success">{p.paye.toLocaleString('fr-FR')} F</td>
-                  <td className="px-4 py-3 text-center">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusStyle[p.status]}`}>
-                      {statusLabel(p.status)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">{p.date}</td>
+              {isLoadingPayments ? (
+                <tr>
+                  <td colSpan={7} className="px-4 py-8 text-center text-slate-400">Chargement des paiements...</td>
                 </tr>
-              ))}
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-4 py-8 text-center text-slate-400">Aucun paiement trouvé.</td>
+                </tr>
+              ) : (
+                filtered.map((p) => (
+                  <tr key={p.matricule} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 font-mono text-xs">{p.matricule}</td>
+                    <td className="px-4 py-3 font-semibold">{p.eleve}</td>
+                    <td className="px-4 py-3">{p.classe}</td>
+                    <td className="px-4 py-3 text-right font-semibold">{p.montant.toLocaleString('fr-FR')} F</td>
+                    <td className="px-4 py-3 text-right font-semibold text-digi-success">{p.paye.toLocaleString('fr-FR')} F</td>
+                    <td className="px-4 py-3 text-center">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusStyle[p.status as PaymentStatus]}`}>
+                        {statusLabel(p.status)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">{new Date(p.date).toLocaleDateString()}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

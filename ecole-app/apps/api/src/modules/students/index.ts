@@ -212,11 +212,11 @@ router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS']), validateBo
     const [ville] = await sequelize.models.VilleNaissance.findOrCreate({ where: { libelle: data.idVilleNaissance }, transaction: t });
     
     // For Salle, we need a Classe. If Classe 1 doesn't exist, we fallback.
-    let defaultClasse = await sequelize.models.Classe.findOne({ transaction: t });
-    if (!defaultClasse) {
-      const [cycle] = await sequelize.models.Cycle.findOrCreate({ where: { libelle: 'Primaire' }, transaction: t });
-      defaultClasse = await sequelize.models.Classe.create({ libelle: 'Classe par défaut', idCycle: (cycle as any).idCycle, section: 'FRANCOPHONE' }, { transaction: t });
-    }
+      let defaultClasse = await sequelize.models.Classe.findOne({ transaction: t });
+      if (!defaultClasse) {
+        const [cycle] = await sequelize.models.Cycle.findOrCreate({ where: { libelle: 'Primaire' }, transaction: t });
+        defaultClasse = await sequelize.models.Classe.create({ libelle: 'Classe par défaut', idCycle: (cycle as any).idCycle || cycle.get('idCycle'), section: 'FRANCOPHONE' }, { transaction: t });
+      }
     const [salle] = await sequelize.models.Salle.findOrCreate({ 
       where: { libelle: data.idSalle }, 
       defaults: { idClasse: (defaultClasse as any).idClasse, surface: 0, position: 'N/A' },
@@ -335,7 +335,22 @@ router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS']), validateBo
 // CRUD - GET ALL
 router.get('/', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
   try {
-    const list = await Eleve.findAll({ where: { isDelete: false, statut: 'INSCRIT' } });
+    const list = await Eleve.findAll({
+      where: { isDelete: false, statut: 'INSCRIT' },
+      include: [
+        {
+          model: Frequente,
+          as: 'frequentations',
+          include: [
+            {
+              model: sequelize.models.Salle,
+              as: 'salle',
+              include: [{ model: sequelize.models.Classe, as: 'classe' }]
+            }
+          ]
+        }
+      ]
+    });
     res.json({ success: true, data: list });
   } catch (err) {
     next(err);

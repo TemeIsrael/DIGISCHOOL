@@ -4,16 +4,14 @@ import { KPICard } from '../../shared/components/ui/KPICard';
 import { Card } from '../../shared/components/ui/Card';
 import { ScheduleGrid } from '../../shared/components/business/ScheduleGrid';
 import { BookOpen, Users, ClipboardList, Clock } from 'lucide-react';
-
-const upcomingEvals = [
-  { cours: 'Français', classe: 'CM1 A', date: '28/05/2026', type: 'Séquence 4' },
-  { cours: 'Mathématiques', classe: 'CE2 A', date: '30/05/2026', type: 'Séquence 4' },
-  { cours: 'Sciences & Technologie', classe: 'CM2 A', date: '02/06/2026', type: 'Séquence 4' },
-];
+import { useDashboardStats } from './hooks/useDashboardStats';
 
 export const DashboardEnseignant: React.FC = () => {
   const { t, i18n } = useTranslation();
   const isEn = i18n.language?.startsWith('en');
+  const { stats, isLoading } = useDashboardStats('TEACHER');
+
+  const upcomingEvals = stats?.upcomingEvals || [];
 
   const getTranslatedCourse = (cours: string) => {
     switch(cours) {
@@ -39,9 +37,9 @@ export const DashboardEnseignant: React.FC = () => {
 
         {/* KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <KPICard value="4" label={t('dashboards.assignedClasses')} icon={<BookOpen className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="127" label={t('dashboards.studentsConcerned')} icon={<Users className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="3" label={t('dashboards.plannedEvals')} icon={<ClipboardList className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value={isLoading ? '...' : String(stats?.assignedClasses || 0)} label={t('dashboards.assignedClasses')} icon={<BookOpen className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value={isLoading ? '...' : String(stats?.studentsConcerned || 0)} label={t('dashboards.studentsConcerned')} icon={<Users className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value={isLoading ? '...' : String(stats?.plannedEvals || 0)} label={t('dashboards.plannedEvals')} icon={<ClipboardList className="w-5 h-5 text-digi-purple" />} />
           <KPICard value="24h" label={t('dashboards.weeklyVolume')} icon={<Clock className="w-5 h-5 text-digi-purple" />} />
         </div>
 
@@ -83,7 +81,7 @@ export const DashboardEnseignant: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-                  {upcomingEvals.map((e, i) => (
+                  {upcomingEvals.map((e: any, i: number) => (
                     <tr key={i} className="hover:bg-slate-50 transition-colors">
                       <td className="px-4 py-3 font-semibold">{getTranslatedCourse(e.cours)}</td>
                       <td className="px-4 py-3">{e.classe}</td>

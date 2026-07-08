@@ -1,77 +1,78 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { BulletinPreview } from '../../../shared/components/business/BulletinPreview';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
-import { FileText, Download, Printer, BookOpen } from 'lucide-react';
-import { exportPDF } from '../../../shared/utils/export';
-
-const mockBulletins = [
-  {
-    eleve: 'DUPONT Jean',
-    classe: 'CM1 A',
-    trimestre: 'Trimestre 2',
-    moyenne: 7.6,
-    rang: 3,
-    effectif: 35,
-    matieres: [
-      { nom: 'Français', note: 8, coefficient: 3 },
-      { nom: 'Mathématiques', note: 7, coefficient: 3 },
-      { nom: 'Anglais', note: 9, coefficient: 1 },
-      { nom: 'Sciences & Technologie', note: 6, coefficient: 2 },
-      { nom: 'Éducation Civique', note: 8, coefficient: 1 },
-    ],
-  },
-  {
-    eleve: 'NGONO Marie',
-    classe: 'CE2 A',
-    trimestre: 'Trimestre 2',
-    moyenne: 6.3,
-    rang: 12,
-    effectif: 32,
-    matieres: [
-      { nom: 'Français', note: 6, coefficient: 3 },
-      { nom: 'Mathématiques', note: 5, coefficient: 3 },
-      { nom: 'Anglais', note: 7, coefficient: 1 },
-      { nom: 'Sciences & Technologie', note: 6, coefficient: 2 },
-      { nom: 'Éducation Civique', note: 8, coefficient: 1 },
-    ],
-  },
-  {
-    eleve: 'TAMBA Isaac',
-    classe: 'CM2 A',
-    trimestre: 'Trimestre 2',
-    moyenne: 8.1,
-    rang: 2,
-    effectif: 30,
-    matieres: [
-      { nom: 'Français', note: 8, coefficient: 3 },
-      { nom: 'Mathématiques', note: 9, coefficient: 3 },
-      { nom: 'Anglais', note: 7, coefficient: 1 },
-      { nom: 'Sciences & Technologie', note: 8, coefficient: 2 },
-      { nom: 'Éducation Civique', note: 9, coefficient: 1 },
-    ],
-  },
-];
-
-const classes = ['Toutes', 'CM1 A', 'CE2 A', 'CM2 A'];
-const trimesters = ['Trimestre 1', 'Trimestre 2', 'Trimestre 3'];
+import { FileText, Download, Printer } from 'lucide-react';
+import { useStudents } from '../../students/hooks/useStudents';
+import { api } from '../../../shared/lib/api';
+import { useToast } from '../../../shared/components/ui/Toast';
 
 export const TeacherBulletinPage: React.FC = () => {
-  const { t } = useTranslation();
-  const [selectedClass, setSelectedClass] = useState('Toutes');
-  const [selectedTrimester, setSelectedTrimester] = useState('Trimestre 2');
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language?.startsWith('en');
+  const { toast } = useToast();
 
-  const filteredBulletins = mockBulletins.filter(b => {
-    const classMatch = selectedClass === 'Toutes' || b.classe === selectedClass;
-    const trimMatch = b.trimestre === selectedTrimester;
-    return classMatch && trimMatch;
-  });
+  const [selectedClasse, setSelectedClasse] = React.useState('Classe par défaut');
+  const [selectedTrimestre, setSelectedTrimestre] = React.useState('Trimestre 1');
+
+  const { students, isLoading } = useStudents();
+
+  const classesOptions = useMemo(() => {
+    if (!students) return [];
+    const set = new Set<string>();
+    students.forEach((s: any) => {
+      const freq = s.frequentations?.[0];
+      if (freq?.salle?.classe?.libelle || freq?.salle?.libelle) {
+        set.add(freq.salle.classe?.libelle || freq.salle.libelle);
+      }
+    });
+    const arr = Array.from(set);
+    if (arr.length > 0 && !arr.includes(selectedClasse)) {
+      setSelectedClasse(arr[0]);
+    }
+    return arr;
+  }, [students]);
+
+  const filteredStudents = useMemo(() => {
+    if (!students) return [];
+    return students.filter((s: any) => {
+      const currentFreq = s.frequentations?.[0];
+      const classeName = currentFreq?.salle?.classe?.libelle || currentFreq?.salle?.libelle || 'Non assigné';
+      return selectedClasse === classeName && s.statut === 'INSCRIT';
+    });
+  }, [students, selectedClasse]);
+
+  const handleDownloadRealBulletin = async (matricule: string) => {
+    try {
+      toast({ type: 'info', title: 'Téléchargement', description: 'Génération du bulletin en cours...' });
+      const currentFreq = students.find((s: any) => s.matricule === matricule)?.frequentations?.[0];
+      
+      const res = await api.get(`/evaluations/bulletins/${matricule}/download`, {
+        params: {
+          idSession: 1, 
+          idSalle: currentFreq?.idSalle || 1,
+          idAcademi: currentFreq?.idAcademi || 1
+        },
+        responseType: 'blob'
+      });
+      
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `bulletin_${matricule}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      toast({ type: 'danger', title: 'Erreur', description: 'Impossible de générer le bulletin. Vérifiez les notes.' });
+    }
+  };
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">{t('bulletins.title', 'Bulletins Scolaires')}</h1>
           <p className="text-sm text-slate-400 font-semibold">{t('bulletins.subtitle', 'Génération et consultation des bulletins trimestriels')}</p>
@@ -81,58 +82,43 @@ export const TeacherBulletinPage: React.FC = () => {
             <Printer className="w-4 h-4" />
             {t('bulletins.print', 'Imprimer Tout')}
           </Button>
-          <Button className="gap-2" onClick={() => exportPDF(filteredBulletins.map(({ matieres, ...r }) => r), 'bulletins-enseignant.pdf')}>
-            <Download className="w-4 h-4" />
-            {t('bulletins.export', 'Exporter PDF')}
-          </Button>
         </div>
       </div>
 
       {/* Filters */}
       <Card className="shadow-sm border border-slate-100">
         <div className="flex items-center gap-4 flex-wrap">
-          <FilterDropdown
-            label={t('grades.class', 'Classe')}
-            value={selectedClass}
-            options={classes.map(c => ({ value: c, label: c }))}
-            onChange={setSelectedClass}
-          />
-          <FilterDropdown
-            label={t('bulletins.trimester', 'Trimestre')}
-            value={selectedTrimester}
-            options={trimesters.map(tr => ({ value: tr, label: tr }))}
-            onChange={setSelectedTrimester}
-          />
+          <FilterDropdown label={t('grades.class', 'Classe')} value={selectedClasse} options={classesOptions.map(c => ({ value: c, label: c }))} onChange={setSelectedClasse} />
+          <FilterDropdown label={t('bulletins.trimester', 'Trimestre')} value={selectedTrimestre} options={['Trimestre 1', 'Trimestre 2', 'Trimestre 3'].map(t => ({ value: t, label: t }))} onChange={setSelectedTrimestre} />
           <span className="ml-auto text-sm text-slate-500 font-semibold flex items-center gap-2">
             <FileText className="w-4 h-4 text-digi-purple" />
-            {filteredBulletins.length} {t('bulletins.found', 'bulletin(s) trouvé(s)')}
+            {isLoading ? '...' : filteredStudents.length} {t('bulletins.found', 'bulletin(s) trouvé(s)')}
           </span>
         </div>
       </Card>
 
       {/* Bulletin Cards */}
-      {filteredBulletins.length === 0 ? (
-        <Card className="shadow-sm border border-slate-100">
-          <div className="flex flex-col items-center justify-center py-16 gap-4 text-slate-400">
-            <BookOpen className="w-12 h-12 text-slate-200" />
-            <p className="text-sm font-semibold">{t('common.noResults', 'Aucun résultat trouvé')}</p>
-          </div>
-        </Card>
-      ) : (
-        <div className="space-y-6">
-          {filteredBulletins.map((b, i) => {
-            const { matieres, ...flatB } = b;
-            return (
-              <Card key={i} className="shadow-sm border border-slate-100">
-                <BulletinPreview
-                  {...b}
-                  onDownload={() => exportPDF([flatB], `bulletin_${b.eleve.replace(/\s+/g, '_')}.pdf`)}
-                />
-              </Card>
-            );
-          })}
-        </div>
-      )}
+      <div className="space-y-6">
+        {isLoading ? (
+          <p className="text-center text-slate-400 italic py-8">Chargement des élèves...</p>
+        ) : filteredStudents.length === 0 ? (
+          <p className="text-center text-slate-400 italic py-8">Aucun élève trouvé pour cette classe.</p>
+        ) : (
+          filteredStudents.map((s: any, i: number) => (
+            <Card key={s.matricule} className="shadow-sm border border-slate-100">
+              <BulletinPreview 
+                eleve={`${s.nom} ${s.prenom}`}
+                classe={selectedClasse}
+                trimestre={selectedTrimestre}
+                moyenne={0}
+                rang={0}
+                effectif={filteredStudents.length}
+                onDownload={() => handleDownloadRealBulletin(s.matricule)} 
+              />
+            </Card>
+          ))
+        )}
+      </div>
     </div>
   );
 };

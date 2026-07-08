@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
 import { GradeCell } from '../../../shared/components/business/GradeCell';
-import { ClipboardList, Save, Download } from 'lucide-react';
+import { ClipboardList, Save, Download, Loader2 } from 'lucide-react';
 import { exportCSV } from '../../../shared/utils/export';
 import { useToast } from '../../../shared/components/ui/Toast';
 import { useAuthStore } from '../../../features/auth/store';
+import { useStudents } from '../../students/hooks/useStudents';
+import { useEvaluations } from '../hooks/useEvaluations';
 
 interface GradeEntry {
   matricule: string;
@@ -16,34 +18,12 @@ interface GradeEntry {
   note: number | null;
   noteMax: number;
   photoUrl?: string;
+  idCours?: number;
+  idSession?: number;
 }
-
-const mockGradesFrancophones: GradeEntry[] = [
-  { matricule: 'EL-001', nom: 'DUPONT', prenom: 'Jean',   note: 8,    noteMax: 10 },
-  { matricule: 'EL-002', nom: 'MBARGA', prenom: 'Paul',   note: 6,    noteMax: 10 },
-  { matricule: 'EL-003', nom: 'NGONO',  prenom: 'Marie',  note: 4,    noteMax: 10 },
-  { matricule: 'EL-004', nom: 'TAMBA',  prenom: 'Isaac',  note: 9,    noteMax: 10 },
-  { matricule: 'EL-005', nom: 'BELLA',  prenom: 'Sarah',  note: null, noteMax: 10 },
-  { matricule: 'EL-006', nom: 'FOUDA',  prenom: 'Pierre', note: 7,    noteMax: 10 },
-  { matricule: 'EL-007', nom: 'EKANGA', prenom: 'Lise',   note: 8,    noteMax: 10 },
-];
-
-const mockGradesAnglophones: GradeEntry[] = [
-  { matricule: 'AN-001', nom: 'SMITH',   prenom: 'John',    note: 85,   noteMax: 100 },
-  { matricule: 'AN-002', nom: 'JOHNSON', prenom: 'Emily',   note: 72,   noteMax: 100 },
-  { matricule: 'AN-003', nom: 'NKENG',   prenom: 'Peter',   note: 65,   noteMax: 100 },
-  { matricule: 'AN-004', nom: 'FOMBEN',  prenom: 'Grace',   note: 90,   noteMax: 100 },
-  { matricule: 'AN-005', nom: 'AYUK',    prenom: 'Daniel',  note: null, noteMax: 100 },
-  { matricule: 'AN-006', nom: 'NTAH',    prenom: 'Ruth',    note: 78,   noteMax: 100 },
-  { matricule: 'AN-007', nom: 'AGBOR',   prenom: 'Michael', note: 82,   noteMax: 100 },
-];
 
 const coursesFrancophones = ['Français', 'Mathématiques', 'Sciences & Technologie', 'Anglais', 'Éducation Civique', 'Histoire', 'Géographie'];
 const coursesAnglophones  = ['English Language', 'Mathematics', 'Science & Tech', 'French', 'Civics', 'History', 'Geography'];
-
-const classesFrancophones = ['SIL A', 'CP A', 'CE1 A', 'CE2 A', 'CM1 A', 'CM2 A'];
-const classesAnglophones  = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6'];
-
 const sessionsFr = ['Séquence 1', 'Séquence 2', 'Séquence 3', 'Séquence 4', 'Séquence 5', 'Séquence 6'];
 const sessionsEn = ['Test 1', 'Test 2', 'Test 3', 'Test 4', 'Test 5', 'Test 6'];
 
@@ -54,33 +34,65 @@ export const GradeEntryPage: React.FC = () => {
   const { user } = useAuthStore();
   const isDirector = user?.typeAdmin === 4;
 
-  const sections = isEn
-    ? ['Francophone', 'Anglophone']
-    : ['Francophone', 'Anglophone'];
+  const sections = ['Francophone', 'Anglophone'];
 
   const [selectedSection, setSelectedSection] = useState('Francophone');
-  const [grades,          setGrades]          = useState<GradeEntry[]>(mockGradesFrancophones);
   const [selectedCours,   setSelectedCours]   = useState(coursesFrancophones[0]);
-  const [selectedClasse,  setSelectedClasse]  = useState(classesFrancophones[4]); // CM1 A
+  const [selectedClasse,  setSelectedClasse]  = useState('Classe par défaut');
   const [selectedSession, setSelectedSession] = useState(isEn ? sessionsEn[2] : sessionsFr[2]);
 
+  const { students, isLoading: isLoadingStudents } = useStudents();
+  const { submitGrades, isSubmitting } = useEvaluations();
+
+  const [grades, setGrades] = useState<GradeEntry[]>([]);
+
+  // Map API students to UI rows when filters change
   useEffect(() => {
-    if (selectedSection === 'Francophone') {
-      setGrades(mockGradesFrancophones);
-      setSelectedCours(coursesFrancophones[0]);
-      setSelectedClasse(classesFrancophones[4]);
-      setSelectedSession(isEn ? sessionsEn[2] : sessionsFr[2]);
-    } else {
-      setGrades(mockGradesAnglophones);
-      setSelectedCours(coursesAnglophones[0]);
-      setSelectedClasse(classesAnglophones[4]);
-      setSelectedSession(sessionsEn[2]);
-    }
-  }, [selectedSection, isEn]);
+    if (!students) return;
+    
+    // Filter by class and section
+    const filteredStudents = students.filter((s: any) => {
+      const currentFreq = s.frequentations?.[0];
+      const classeName = currentFreq?.salle?.classe?.libelle || currentFreq?.salle?.libelle || 'Non assigné';
+      const sectionName = currentFreq?.salle?.classe?.section || 'FRANCOPHONE';
+      
+      const secMatch = selectedSection.toUpperCase() === sectionName.toUpperCase();
+      const clsMatch = selectedClasse === classeName;
+      return secMatch && clsMatch && s.statut === 'INSCRIT';
+    });
+
+    setGrades(filteredStudents.map((s: any) => ({
+      matricule: s.matricule,
+      nom: s.nom,
+      prenom: s.prenom,
+      note: null,
+      noteMax: selectedSection === 'Francophone' ? 20 : 100, // standard scale depending on system
+      photoUrl: s.photo,
+      idCours: 1, // Mocked until we fetch real courses
+      idSession: 1 // Mocked until we fetch real sessions
+    })));
+  }, [students, selectedClasse, selectedSection]);
 
   const coursOptions  = selectedSection === 'Francophone' ? coursesFrancophones : coursesAnglophones;
-  const classeOptions = selectedSection === 'Francophone' ? classesFrancophones : classesAnglophones;
   const sessionOptions = selectedSection === 'Francophone' ? (isEn ? sessionsEn : sessionsFr) : sessionsEn;
+  
+  // Dynamic classes based on actual fetched students
+  const classeOptions = useMemo(() => {
+    if (!students) return [];
+    const sec = selectedSection.toUpperCase();
+    const set = new Set<string>();
+    students.forEach((s: any) => {
+      const freq = s.frequentations?.[0];
+      if (freq?.salle?.classe?.section === sec) {
+        set.add(freq.salle.classe.libelle || freq.salle.libelle);
+      }
+    });
+    const arr = Array.from(set);
+    if (arr.length > 0 && !arr.includes(selectedClasse)) {
+      setSelectedClasse(arr[0]);
+    }
+    return arr;
+  }, [students, selectedSection]);
 
   const handleNoteChange = (index: number, value: string) => {
     const updated = [...grades];
@@ -90,7 +102,7 @@ export const GradeEntryPage: React.FC = () => {
 
   const filledCount = grades.filter((g) => g.note !== null).length;
   const average     = grades.filter((g) => g.note !== null).reduce((s, g) => s + (g.note || 0), 0) / (filledCount || 1);
-  const noteMax     = grades[0]?.noteMax || 10;
+  const noteMax     = grades[0]?.noteMax || 20;
 
   const handleExport = () => {
     const dataToExport = grades.map((g) => ({
@@ -104,12 +116,33 @@ export const GradeEntryPage: React.FC = () => {
     toast({ type: 'success', title: t('grades.exportSuccess', 'Export réussi'), description: t('grades.exportDesc', 'Le fichier CSV des notes a été téléchargé.') });
   };
 
-  const handleSave = () => {
-    toast({
-      type: 'success',
-      title: t('grades.saveSuccess', 'Enregistrement réussi'),
-      description: `${t('grades.savedDesc', 'Notes sauvegardées')} — ${selectedClasse} (${selectedCours} / ${selectedSession})`,
-    });
+  const handleSave = async () => {
+    try {
+      const evalsToSubmit = grades
+        .filter(g => g.note !== null)
+        .map(g => ({
+          matricule: g.matricule,
+          idEpreuve: null,
+          idCours: g.idCours,
+          idSession: g.idSession,
+          note: g.note,
+          appreciation: g.note! >= (g.noteMax / 2) ? 'Acquis' : 'Non Acquis'
+        }));
+      
+      if (evalsToSubmit.length === 0) {
+        toast({ type: 'danger', title: 'Erreur', description: 'Veuillez saisir au moins une note.' });
+        return;
+      }
+
+      await submitGrades({ evaluations: evalsToSubmit });
+      toast({
+        type: 'success',
+        title: t('grades.saveSuccess', 'Enregistrement réussi'),
+        description: `${t('grades.savedDesc', 'Notes sauvegardées')} — ${selectedClasse} (${selectedCours} / ${selectedSession})`,
+      });
+    } catch (error: any) {
+      toast({ type: 'danger', title: 'Erreur', description: error.response?.data?.error?.message || 'Erreur lors de l\'enregistrement' });
+    }
   };
 
   return (
@@ -125,8 +158,8 @@ export const GradeEntryPage: React.FC = () => {
             {t('grades.export', 'Exporter')}
           </Button>
           {!isDirector && (
-            <Button className="gap-2" onClick={handleSave}>
-              <Save className="w-4 h-4" />
+            <Button className="gap-2" onClick={handleSave} disabled={isSubmitting}>
+              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               {t('grades.save', 'Enregistrer')}
             </Button>
           )}
@@ -199,35 +232,41 @@ export const GradeEntryPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-              {grades.map((g, i) => (
-                <tr key={g.matricule} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 text-slate-400">{i + 1}</td>
-                  <td className="px-4 py-3">
-                    <img 
-                      src={g.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(g.prenom + ' ' + g.nom)}&background=random`} 
-                      alt="photo" 
-                      className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-sm"
-                    />
-                  </td>
-                  <td className="px-4 py-3 font-mono text-xs">{g.matricule}</td>
-                  <td className="px-4 py-3 font-semibold">{g.nom}</td>
-                  <td className="px-4 py-3">{g.prenom}</td>
-                  <td className="px-4 py-3 text-center">
-                    <input
-                      type="number" min="0" max={g.noteMax}
-                      step={g.noteMax === 100 ? 1 : 0.5}
-                      value={g.note ?? ''}
-                      onChange={(e) => handleNoteChange(i, e.target.value)}
-                      disabled={isDirector}
-                      className="w-20 text-center border border-slate-200 rounded-lg py-1.5 text-sm font-bold focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed"
-                      placeholder="—"
-                    />
-                  </td>
-                  <td className="px-4 py-3 text-center">
-                    <GradeCell note={g.note} max={g.noteMax} />
-                  </td>
-                </tr>
-              ))}
+              {isLoadingStudents ? (
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400">Chargement des élèves...</td></tr>
+              ) : grades.length === 0 ? (
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400">Aucun élève trouvé pour cette classe.</td></tr>
+              ) : (
+                grades.map((g, i) => (
+                  <tr key={g.matricule} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 text-slate-400">{i + 1}</td>
+                    <td className="px-4 py-3">
+                      <img 
+                        src={g.photoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(g.prenom + ' ' + g.nom)}&background=random`} 
+                        alt="photo" 
+                        className="w-8 h-8 rounded-full object-cover border border-slate-200 shadow-sm"
+                      />
+                    </td>
+                    <td className="px-4 py-3 font-mono text-xs">{g.matricule}</td>
+                    <td className="px-4 py-3 font-semibold">{g.nom}</td>
+                    <td className="px-4 py-3">{g.prenom}</td>
+                    <td className="px-4 py-3 text-center">
+                      <input
+                        type="number" min="0" max={g.noteMax}
+                        step={g.noteMax === 100 ? 1 : 0.5}
+                        value={g.note ?? ''}
+                        onChange={(e) => handleNoteChange(i, e.target.value)}
+                        disabled={isDirector || isSubmitting}
+                        className="w-20 text-center border border-slate-200 rounded-lg py-1.5 text-sm font-bold focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all disabled:opacity-50 disabled:bg-slate-50 disabled:cursor-not-allowed"
+                        placeholder="—"
+                      />
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <GradeCell note={g.note} max={g.noteMax} />
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

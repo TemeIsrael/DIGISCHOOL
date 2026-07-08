@@ -138,5 +138,21 @@ router.post('/:id/read', requireRole(Object.values(ROLES)), async (req, res, nex
     next(err);
   }
 });
+// 6. GET SINGLE MESSAGE
+router.get('/:id', requireRole(Object.values(ROLES)), async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const message = await Messages.findByPk(id, {
+      include: [{ model: Parents, as: 'parent' }]
+    });
+    if (!message) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Message introuvable' } });
+      return;
+    }
+    res.json({ success: true, data: message });
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;

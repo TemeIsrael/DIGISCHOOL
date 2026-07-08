@@ -6,55 +6,7 @@ import { KPICard } from '../../../shared/components/ui/KPICard';
 import { Layers, Home, GraduationCap, Calendar, FilePlus, Trash2, Globe } from 'lucide-react';
 import { Modal } from '../../../shared/components/ui/Modal';
 import { useToast } from '../../../shared/components/ui/Toast';
-
-/* ──── Mock Data — École Primaire (MINEDUB Cameroun) ──── */
-const mockCycles = [
-  { id: 1, libelle: 'Maternel / Nursery', classes: 5 },
-  { id: 2, libelle: 'Primaire / Primary',  classes: 15 },
-];
-
-const mockClasses = [
-  { id: 1,  cycle: 'Maternel / Nursery', libelle: 'Petite Section',  salles: 1, section: 'FRANCOPHONE' as const },
-  { id: 2,  cycle: 'Maternel / Nursery', libelle: 'Moyenne Section', salles: 1, section: 'FRANCOPHONE' as const },
-  { id: 3,  cycle: 'Maternel / Nursery', libelle: 'Grande Section',  salles: 1, section: 'FRANCOPHONE' as const },
-  { id: 4,  cycle: 'Primaire / Primary', libelle: 'SIL',  salles: 2, section: 'FRANCOPHONE' as const },
-  { id: 5,  cycle: 'Primaire / Primary', libelle: 'CP',   salles: 2, section: 'FRANCOPHONE' as const },
-  { id: 6,  cycle: 'Primaire / Primary', libelle: 'CE1',  salles: 2, section: 'FRANCOPHONE' as const },
-  { id: 7,  cycle: 'Primaire / Primary', libelle: 'CE2',  salles: 1, section: 'FRANCOPHONE' as const },
-  { id: 8,  cycle: 'Primaire / Primary', libelle: 'CM1',  salles: 1, section: 'FRANCOPHONE' as const },
-  { id: 9,  cycle: 'Primaire / Primary', libelle: 'CM2',  salles: 1, section: 'FRANCOPHONE' as const },
-  { id: 10, cycle: 'Maternel / Nursery', libelle: 'Nursery 1', salles: 1, section: 'ANGLOPHONE' as const },
-  { id: 11, cycle: 'Maternel / Nursery', libelle: 'Nursery 2', salles: 1, section: 'ANGLOPHONE' as const },
-  { id: 12, cycle: 'Primaire / Primary', libelle: 'Class 1', salles: 1, section: 'ANGLOPHONE' as const },
-  { id: 13, cycle: 'Primaire / Primary', libelle: 'Class 2', salles: 1, section: 'ANGLOPHONE' as const },
-  { id: 14, cycle: 'Primaire / Primary', libelle: 'Class 3', salles: 1, section: 'ANGLOPHONE' as const },
-  { id: 15, cycle: 'Primaire / Primary', libelle: 'Class 4', salles: 1, section: 'ANGLOPHONE' as const },
-  { id: 16, cycle: 'Primaire / Primary', libelle: 'Class 5', salles: 1, section: 'ANGLOPHONE' as const },
-  { id: 17, cycle: 'Primaire / Primary', libelle: 'Class 6', salles: 1, section: 'ANGLOPHONE' as const },
-];
-
-const mockSalles = [
-  { id: 1, classe: 'SIL',     libelle: 'SIL A',   surface: '40m²', position: 'Bât. A — RDC' },
-  { id: 2, classe: 'SIL',     libelle: 'SIL B',   surface: '38m²', position: 'Bât. A — RDC' },
-  { id: 3, classe: 'CP',      libelle: 'CP A',    surface: '42m²', position: 'Bât. A — 1er' },
-  { id: 4, classe: 'CP',      libelle: 'CP B',    surface: '40m²', position: 'Bât. A — 1er' },
-  { id: 5, classe: 'CE1',     libelle: 'CE1 A',   surface: '45m²', position: 'Bât. B — RDC' },
-  { id: 6, classe: 'CE1',     libelle: 'CE1 B',   surface: '42m²', position: 'Bât. B — RDC' },
-  { id: 7, classe: 'CE2',     libelle: 'CE2 A',   surface: '44m²', position: 'Bât. B — 1er' },
-  { id: 8, classe: 'CM1',     libelle: 'CM1 A',   surface: '48m²', position: 'Bât. C — RDC' },
-  { id: 9, classe: 'CM2',     libelle: 'CM2 A',   surface: '50m²', position: 'Bât. C — 1er' },
-  { id: 10, classe: 'Class 1', libelle: 'Class 1', surface: '40m²', position: 'Block D — GF' },
-  { id: 11, classe: 'Class 2', libelle: 'Class 2', surface: '40m²', position: 'Block D — GF' },
-  { id: 12, classe: 'Class 3', libelle: 'Class 3', surface: '42m²', position: 'Block D — 1F' },
-  { id: 13, classe: 'Class 4', libelle: 'Class 4', surface: '42m²', position: 'Block D — 1F' },
-  { id: 14, classe: 'Class 5', libelle: 'Class 5', surface: '45m²', position: 'Block E — GF' },
-  { id: 15, classe: 'Class 6', libelle: 'Class 6', surface: '48m²', position: 'Block E — 1F' },
-];
-
-const mockAnnees = [
-  { id: 1, libelle: '2025-2026', courante: true },
-  { id: 2, libelle: '2024-2025', courante: false },
-];
+import { useAcademicConfig } from '../hooks/useAcademicConfig';
 
 type Tab = 'cycles' | 'classes' | 'salles' | 'annees';
 
@@ -64,19 +16,25 @@ export const AcademicConfigPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('cycles');
   const [sectionFilter, setSectionFilter] = useState<'ALL' | 'FRANCOPHONE' | 'ANGLOPHONE'>('ALL');
 
-  const [cyclesList,  setCyclesList]  = useState(mockCycles);
-  const [classesList, setClassesList] = useState(mockClasses);
-  const [sallesList,  setSallesList]  = useState(mockSalles);
-  const [anneesList,  setAnneesList]  = useState(mockAnnees);
+  const {
+    cycles: cyclesList,
+    classes: classesList,
+    salles: sallesList,
+    years: anneesList,
+    createCycle,
+    createClass,
+    createSalle,
+    createYear
+  } = useAcademicConfig();
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
 
-  const [cycleForm, setCycleForm] = useState({ libelle: '', classes: 0 });
-  const [classForm, setClassForm] = useState({ cycle: 'Primaire / Primary', libelle: '', salles: 0, section: 'FRANCOPHONE' as 'FRANCOPHONE' | 'ANGLOPHONE' });
-  const [salleForm, setSalleForm] = useState({ classe: '', libelle: '', surface: '', position: '' });
+  const [cycleForm, setCycleForm] = useState({ libelle: '' });
+  const [classForm, setClassForm] = useState({ idCycle: '', libelle: '', section: 'FRANCOPHONE' as 'FRANCOPHONE' | 'ANGLOPHONE' });
+  const [salleForm, setSalleForm] = useState({ idClasse: '', libelle: '', surface: '', position: '' });
   const [anneeForm, setAnneeForm] = useState({ libelle: '', courante: false });
 
-  const filteredClasses = sectionFilter === 'ALL' ? classesList : classesList.filter(c => c.section === sectionFilter);
+  const filteredClasses = sectionFilter === 'ALL' ? classesList : classesList.filter((c: any) => c.section === sectionFilter);
 
   const tabs: { key: Tab; label: string; icon: React.ReactNode }[] = [
     { key: 'cycles',  label: t('academic.cycles',  'Cycles'),           icon: <Layers        className="w-4 h-4" /> },
@@ -92,39 +50,37 @@ export const AcademicConfigPage: React.FC = () => {
     annees:  t('academic.addYear',   'Ajouter une Année Scolaire'),
   }[activeTab];
 
-  const handleAddSubmit = () => {
-    if (activeTab === 'cycles') {
-      if (!cycleForm.libelle) return;
-      setCyclesList(prev => [...prev, { id: Date.now(), libelle: cycleForm.libelle, classes: Number(cycleForm.classes) }]);
-      setCycleForm({ libelle: '', classes: 0 });
-      toast({ type: 'success', title: t('common.success', 'Succès'), description: t('academic.cycleAdded', 'Le cycle a été ajouté.') });
-    } else if (activeTab === 'classes') {
-      if (!classForm.libelle) return;
-      setClassesList(prev => [...prev, { id: Date.now(), cycle: classForm.cycle, libelle: classForm.libelle, salles: Number(classForm.salles), section: classForm.section }]);
-      setClassForm({ cycle: 'Primaire / Primary', libelle: '', salles: 0, section: 'FRANCOPHONE' });
-      toast({ type: 'success', title: t('common.success', 'Succès'), description: t('academic.classAdded', 'La classe a été ajoutée.') });
-    } else if (activeTab === 'salles') {
-      if (!salleForm.libelle || !salleForm.classe) return;
-      setSallesList(prev => [...prev, { id: Date.now(), classe: salleForm.classe, libelle: salleForm.libelle, surface: salleForm.surface || '35m²', position: salleForm.position || 'Bâtiment Principal' }]);
-      setSalleForm({ classe: '', libelle: '', surface: '', position: '' });
-      toast({ type: 'success', title: t('common.success', 'Succès'), description: t('academic.roomAdded', 'La salle a été ajoutée.') });
-    } else if (activeTab === 'annees') {
-      if (!anneeForm.libelle) return;
-      const isCourante = anneeForm.courante;
-      const updatedList = isCourante ? anneesList.map(a => ({ ...a, courante: false })) : anneesList;
-      setAnneesList([...updatedList, { id: Date.now(), libelle: anneeForm.libelle, courante: isCourante }]);
-      setAnneeForm({ libelle: '', courante: false });
-      toast({ type: 'success', title: t('common.success', 'Succès'), description: t('academic.yearAdded', "L'année scolaire a été ajoutée.") });
+  const handleAddSubmit = async () => {
+    try {
+      if (activeTab === 'cycles') {
+        if (!cycleForm.libelle) return;
+        await createCycle({ libelle: cycleForm.libelle });
+        setCycleForm({ libelle: '' });
+        toast({ type: 'success', title: t('common.success', 'Succès'), description: t('academic.cycleAdded', 'Le cycle a été ajouté.') });
+      } else if (activeTab === 'classes') {
+        if (!classForm.libelle || !classForm.idCycle) return;
+        await createClass({ idCycle: Number(classForm.idCycle), libelle: classForm.libelle, section: classForm.section });
+        setClassForm({ idCycle: '', libelle: '', section: 'FRANCOPHONE' });
+        toast({ type: 'success', title: t('common.success', 'Succès'), description: t('academic.classAdded', 'La classe a été ajoutée.') });
+      } else if (activeTab === 'salles') {
+        if (!salleForm.libelle || !salleForm.idClasse) return;
+        await createSalle({ idClasse: Number(salleForm.idClasse), libelle: salleForm.libelle, surface: salleForm.surface || '35m²', position: salleForm.position || 'Bâtiment Principal' });
+        setSalleForm({ idClasse: '', libelle: '', surface: '', position: '' });
+        toast({ type: 'success', title: t('common.success', 'Succès'), description: t('academic.roomAdded', 'La salle a été ajoutée.') });
+      } else if (activeTab === 'annees') {
+        if (!anneeForm.libelle) return;
+        await createYear({ libelle: anneeForm.libelle, courante: anneeForm.courante });
+        setAnneeForm({ libelle: '', courante: false });
+        toast({ type: 'success', title: t('common.success', 'Succès'), description: t('academic.yearAdded', "L'année scolaire a été ajoutée.") });
+      }
+      setAddModalOpen(false);
+    } catch (err: any) {
+      toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Une erreur est survenue' });
     }
-    setAddModalOpen(false);
   };
 
   const handleDeleteItem = (id: number, type: Tab) => {
-    const desc = { cycles: t('academic.cycleRemoved', 'Le cycle a été retiré.'), classes: t('academic.classRemoved', 'La classe a été retirée.'), salles: t('academic.roomRemoved', 'La salle a été retirée.'), annees: '' };
-    if (type === 'cycles')  setCyclesList(prev  => prev.filter(c => c.id !== id));
-    if (type === 'classes') setClassesList(prev => prev.filter(c => c.id !== id));
-    if (type === 'salles')  setSallesList(prev  => prev.filter(s => s.id !== id));
-    if (desc[type]) toast({ type: 'success', title: t('common.delete', 'Suppression'), description: desc[type] });
+    toast({ type: 'danger', title: 'Non implémenté', description: "La suppression n'est pas encore disponible via l'API." });
   };
 
   const inputCls = 'w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all';
@@ -148,7 +104,7 @@ export const AcademicConfigPage: React.FC = () => {
         <KPICard value={String(cyclesList.length)}  label={t('academic.cycles',  'Cycles')}         icon={<Layers        className="w-5 h-5 text-digi-purple" />} />
         <KPICard value={String(classesList.length)} label={t('academic.classes', 'Classes')}        icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
         <KPICard value={String(sallesList.length)}  label={t('academic.rooms',   'Salles')}         icon={<Home          className="w-5 h-5 text-digi-purple" />} />
-        <KPICard value={anneesList.find(a => a.courante)?.libelle || 'N/A'} label={t('academic.currentYear', 'Année Courante')} icon={<Calendar className="w-5 h-5 text-digi-purple" />} />
+        <KPICard value={anneesList.find((a: any) => a.courante)?.libelle || 'N/A'} label={t('academic.currentYear', 'Année Courante')} icon={<Calendar className="w-5 h-5 text-digi-purple" />} />
       </div>
 
       {/* Tab Navigation */}
@@ -178,18 +134,16 @@ export const AcademicConfigPage: React.FC = () => {
                 <tr>
                   <th className="px-4 py-3 text-left">ID</th>
                   <th className="px-4 py-3 text-left">{t('academic.label', 'Libellé')}</th>
-                  <th className="px-4 py-3 text-center">{t('academic.classCount', 'Nb Classes')}</th>
                   <th className="px-4 py-3 text-right">{t('common.actions', 'Actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-                {cyclesList.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3">{c.id}</td>
+                {cyclesList.map((c: any) => (
+                  <tr key={c.idCycle} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3">{c.idCycle}</td>
                     <td className="px-4 py-3 font-semibold">{c.libelle}</td>
-                    <td className="px-4 py-3 text-center">{c.classes}</td>
                     <td className="px-4 py-3 text-right flex items-center justify-end gap-2">
-                      <button className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-digi-danger transition-colors" onClick={() => handleDeleteItem(c.id, 'cycles')}><Trash2 className="w-4 h-4" /></button>
+                      <button className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-digi-danger transition-colors" onClick={() => handleDeleteItem(c.idCycle, 'cycles')}><Trash2 className="w-4 h-4" /></button>
                     </td>
                   </tr>
                 ))}
@@ -228,16 +182,15 @@ export const AcademicConfigPage: React.FC = () => {
                     <th className="px-4 py-3 text-left">{t('academic.cycle', 'Cycle')}</th>
                     <th className="px-4 py-3 text-left">{t('academic.label', 'Libellé')}</th>
                     <th className="px-4 py-3 text-center">{t('academic.section', 'Section')}</th>
-                    <th className="px-4 py-3 text-center">{t('academic.roomCount', 'Nb Salles')}</th>
                     <th className="px-4 py-3 text-right">{t('common.actions', 'Actions')}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-                  {filteredClasses.map((c) => (
-                    <tr key={c.id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3">{c.id}</td>
+                  {filteredClasses.map((c: any) => (
+                    <tr key={c.idClasse} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3">{c.idClasse}</td>
                       <td className="px-4 py-3 text-xs">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold bg-digi-purple-bg text-digi-purple">{c.cycle}</span>
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-bold bg-digi-purple-bg text-digi-purple">{c.cycle?.libelle || '-'}</span>
                       </td>
                       <td className="px-4 py-3 font-semibold">{c.libelle}</td>
                       <td className="px-4 py-3 text-center">
@@ -245,9 +198,8 @@ export const AcademicConfigPage: React.FC = () => {
                           {c.section === 'ANGLOPHONE' ? '🇬🇧 Anglophone' : '🇫🇷 Francophone'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-center">{c.salles}</td>
                       <td className="px-4 py-3 text-right flex items-center justify-end gap-2">
-                        <button className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-digi-danger transition-colors" onClick={() => handleDeleteItem(c.id, 'classes')}><Trash2 className="w-4 h-4" /></button>
+                        <button className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-digi-danger transition-colors" onClick={() => handleDeleteItem(c.idClasse, 'classes')}><Trash2 className="w-4 h-4" /></button>
                       </td>
                     </tr>
                   ))}
@@ -270,15 +222,15 @@ export const AcademicConfigPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-                {sallesList.map((s) => (
-                  <tr key={s.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3">{s.id}</td>
-                    <td className="px-4 py-3">{s.classe}</td>
+                {sallesList.map((s: any) => (
+                  <tr key={s.idSalle} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3">{s.idSalle}</td>
+                    <td className="px-4 py-3">{s.classe?.libelle || '-'}</td>
                     <td className="px-4 py-3 font-semibold">{s.libelle}</td>
                     <td className="px-4 py-3">{s.surface}</td>
                     <td className="px-4 py-3 text-xs text-slate-500">{s.position}</td>
                     <td className="px-4 py-3 text-right flex items-center justify-end gap-2">
-                      <button className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-digi-danger transition-colors" onClick={() => handleDeleteItem(s.id, 'salles')}><Trash2 className="w-4 h-4" /></button>
+                      <button className="p-1.5 rounded-lg hover:bg-red-50 text-slate-400 hover:text-digi-danger transition-colors" onClick={() => handleDeleteItem(s.idSalle, 'salles')}><Trash2 className="w-4 h-4" /></button>
                     </td>
                   </tr>
                 ))}
@@ -297,9 +249,9 @@ export const AcademicConfigPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-                {anneesList.map((a) => (
-                  <tr key={a.id} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-3">{a.id}</td>
+                {anneesList.map((a: any) => (
+                  <tr key={a.idAca} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3">{a.idAca}</td>
                     <td className="px-4 py-3 font-semibold">{a.libelle}</td>
                     <td className="px-4 py-3 text-center">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold ${a.courante ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>
@@ -321,11 +273,7 @@ export const AcademicConfigPage: React.FC = () => {
             <>
               <div>
                 <label className={labelCls}>{t('academic.cycleName', 'Nom du Cycle')} *</label>
-                <input type="text" placeholder="ex: Cycle Master" value={cycleForm.libelle} onChange={(e) => setCycleForm({ ...cycleForm, libelle: e.target.value })} className={inputCls} />
-              </div>
-              <div>
-                <label className={labelCls}>{t('academic.classCount', 'Nombre de Classes')}</label>
-                <input type="number" value={cycleForm.classes} onChange={(e) => setCycleForm({ ...cycleForm, classes: Number(e.target.value) })} className={inputCls} />
+                <input type="text" placeholder="ex: Primaire" value={cycleForm.libelle} onChange={(e) => setCycleForm({ ...cycleForm, libelle: e.target.value })} className={inputCls} />
               </div>
             </>
           )}
@@ -333,26 +281,24 @@ export const AcademicConfigPage: React.FC = () => {
           {activeTab === 'classes' && (
             <>
               <div>
-                <label className={labelCls}>{t('academic.cycle', 'Cycle')}</label>
-                <select value={classForm.cycle} onChange={(e) => setClassForm({ ...classForm, cycle: e.target.value })} className={`${inputCls} bg-white`}>
-                  <option value="Maternel / Nursery">Maternel / Nursery</option>
-                  <option value="Primaire / Primary">Primaire / Primary</option>
+                <label className={labelCls}>{t('academic.cycle', 'Cycle')} *</label>
+                <select value={classForm.idCycle} onChange={(e) => setClassForm({ ...classForm, idCycle: e.target.value })} className={`${inputCls} bg-white`}>
+                  <option value="">-- Sélectionner --</option>
+                  {cyclesList.map((c: any) => (
+                    <option key={c.idCycle} value={c.idCycle}>{c.libelle}</option>
+                  ))}
                 </select>
               </div>
               <div>
                 <label className={labelCls}>{t('academic.className', 'Libellé de la Classe')} *</label>
-                <input type="text" placeholder="ex: CE3 / Class 7" value={classForm.libelle} onChange={(e) => setClassForm({ ...classForm, libelle: e.target.value })} className={inputCls} />
+                <input type="text" placeholder="ex: CM2" value={classForm.libelle} onChange={(e) => setClassForm({ ...classForm, libelle: e.target.value })} className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>{t('academic.section', 'Section')}</label>
+                <label className={labelCls}>{t('academic.section', 'Section')} *</label>
                 <select value={classForm.section} onChange={(e) => setClassForm({ ...classForm, section: e.target.value as any })} className={`${inputCls} bg-white`}>
                   <option value="FRANCOPHONE">🇫🇷 Francophone</option>
                   <option value="ANGLOPHONE">🇬🇧 Anglophone</option>
                 </select>
-              </div>
-              <div>
-                <label className={labelCls}>{t('academic.roomCount', 'Nombre de Salles')}</label>
-                <input type="number" value={classForm.salles} onChange={(e) => setClassForm({ ...classForm, salles: Number(e.target.value) })} className={inputCls} />
               </div>
             </>
           )}
@@ -361,11 +307,16 @@ export const AcademicConfigPage: React.FC = () => {
             <>
               <div>
                 <label className={labelCls}>{t('academic.linkedClass', 'Classe de Rattachement')} *</label>
-                <input type="text" placeholder="ex: SIL / Class 1" value={salleForm.classe} onChange={(e) => setSalleForm({ ...salleForm, classe: e.target.value })} className={inputCls} />
+                <select value={salleForm.idClasse} onChange={(e) => setSalleForm({ ...salleForm, idClasse: e.target.value })} className={`${inputCls} bg-white`}>
+                  <option value="">-- Sélectionner --</option>
+                  {classesList.map((c: any) => (
+                    <option key={c.idClasse} value={c.idClasse}>{c.libelle}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className={labelCls}>{t('academic.roomLabel', 'Libellé de la Salle')} *</label>
-                <input type="text" placeholder="ex: SIL C" value={salleForm.libelle} onChange={(e) => setSalleForm({ ...salleForm, libelle: e.target.value })} className={inputCls} />
+                <input type="text" placeholder="ex: CM2 A" value={salleForm.libelle} onChange={(e) => setSalleForm({ ...salleForm, libelle: e.target.value })} className={inputCls} />
               </div>
               <div>
                 <label className={labelCls}>{t('academic.surface', 'Surface (m²)')}</label>

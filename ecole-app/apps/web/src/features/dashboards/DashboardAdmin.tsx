@@ -4,10 +4,12 @@ import { Button } from '../../shared/components/ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FilePlus, GraduationCap, Home } from 'lucide-react';
+import { useDashboardStats } from './hooks/useDashboardStats';
 
 export const DashboardAdmin: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { stats, isLoading } = useDashboardStats('ADMIN');
 
   return (
     <div className="space-y-8">
@@ -24,9 +26,9 @@ export const DashboardAdmin: React.FC = () => {
 
         {/* 3 KPIs */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <KPICard value="12" label={t('dashboards.inscriptionsDay')} icon={<FilePlus className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="442" label={t('dashboards.activeStudents')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
-          <KPICard value="18" label={t('dashboards.availableRooms')} icon={<Home className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value={isLoading ? '...' : String(stats?.totalClasses || 0)} label={t('dashboards.availableRooms', 'Classes Actives')} icon={<Home className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value={isLoading ? '...' : String(stats?.totalStudents || 0)} label={t('dashboards.activeStudents')} icon={<GraduationCap className="w-5 h-5 text-digi-purple" />} />
+          <KPICard value={isLoading ? '...' : `${stats?.totalPayments || 0} XAF`} label={t('dashboards.payments', 'Recettes globales')} icon={<FilePlus className="w-5 h-5 text-digi-purple" />} />
         </div>
       </div>
   );
