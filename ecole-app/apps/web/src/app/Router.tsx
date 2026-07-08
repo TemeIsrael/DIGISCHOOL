@@ -183,8 +183,7 @@ export const Router: React.FC = () => {
             {/* ── Stats — Founder(3), Director(4) ── */}
             <Route path="/stats" element={<RequireAdminType allowedTypes={[3,4]}><StatsPage /></RequireAdminType>} />
 
-            {/* Password change — all admins */}
-            <Route path="/change-password" element={<ChangePasswordPage />} />
+            {/* Password change — all admins route removed; merged into profile page */}
           </Route>
 
           {/* ═══ Shared Authenticated Routes (All roles) ═══ */}
@@ -192,6 +191,7 @@ export const Router: React.FC = () => {
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="/notifications/:id" element={<NotificationDetailPage />} />
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/change-password" element={<Navigate to="/profile" replace />} />
           </Route>
 
           {/* ═══ Teacher Routes (Sidebar Layout) ═══ */}
@@ -212,7 +212,7 @@ export const Router: React.FC = () => {
             <Route path="/teacher/discipline"      element={<TeacherDisciplinePage />} />
             <Route path="/teacher/messages"        element={<MessageListPage />} />
             <Route path="/teacher/homeworks"       element={<TeacherHomeworkPage />} />
-            <Route path="/teacher/change-password" element={<ChangePasswordPage />} />
+            <Route path="/teacher/change-password" element={<Navigate to="/profile" replace />} />
           </Route>
 
           {/* ═══ Parent Routes (Sidebar Layout) ═══ */}
@@ -232,7 +232,7 @@ export const Router: React.FC = () => {
             <Route path="/parent/messages"         element={<MessageListPage />} />
             <Route path="/parent/homeworks"        element={<ParentHomeworkPage />} />
             <Route path="/parent/library"          element={<ParentLibraryPage />} />
-            <Route path="/parent/change-password"  element={<ChangePasswordPage />} />
+            <Route path="/parent/change-password"  element={<Navigate to="/profile" replace />} />
           </Route>
 
           {/* ═══ Global Error Boundaries ═══ */}

@@ -1,0 +1,65 @@
+--- apps/web/src/shared/components/layout/Navbar.tsx
++++ apps/web/src/shared/components/layout/Navbar.tsx
+@@ -5,14 +5,36 @@ import { useAuthStore } from '../../../features/auth/store';
+ import { useTranslation } from 'react-i18next';
+ import { Avatar } from '../ui/Avatar';
+ 
+-export const Navbar: React.FC = () => {
+-  // Mock notifications with read flag
+-  const [notifications, setNotifications] = useState([
+-    { id: 1, title: 'Nouveau document disponible: Emploi du temps', time: 'Il y a 2 heures', read: false },
+-    { id: 2, title: 'Rappel: Réunion parents-professeurs demain à 16h.', time: 'Hier', read: false },
+-  ]);
++  // Notifications chargées depuis l'API
++  const [notifications, setNotifications] = useState<{id: number; title: string; time: string; read: boolean}[]>([]);
+   const unreadCount = notifications.filter((n) => !n.read).length;
+ 
++  useEffect(() => {
++    const fetchNotifications = async () => {
++      try {
++        const token = useAuthStore.getState().accessToken;
++        if (!token) return;
++        const API_URL = import.meta.env.VITE_API_URL?.trim() || 'https://digischool-h347.onrender.com/api/v1';
++        const res = await fetch(`${API_URL}/messages`, {
++          headers: { 'Authorization': `Bearer ${token}` }
++        });
++        if (res.ok) {
++          const json = await res.json();
++          const msgs = json.data || [];
++          setNotifications(msgs.map((m: any) => ({
++            id: m.idMsg || m.id,
++            title: m.contenu || m.titre || '',
++            time: m.createdAt ? new Date(m.createdAt).toLocaleDateString('fr-FR') : '',
++            read: m.lu || false
++          })));
++        }
++      } catch {
++        // Silently fail — no notifications
++      }
++    };
++    fetchNotifications();
++  }, []);
++
+   const { user, logout } = useAuthStore();
+   const { t, i18n } = useTranslation();
+   const [mobileOpen, setMobileOpen] = useState(false);
+@@ -147,8 +169,9 @@ export const Navbar: React.FC = () => {
+               {showNotifications && (
+                 <div className="absolute right-0 mt-2 w-80 md:w-80 sm:w-full bg-white border border-slate-100 rounded-xl shadow-lg z-50">
+                   <div className="p-3 border-b border-slate-100 flex justify-between items-center">
+-                    <span className="font-bold text-slate-800">{t('dashboards.notifications', 'Notifications')}</span>
+-                    <span className="text-xs text-digi-purple cursor-pointer hover:underline" onClick={handleMarkAllRead}>{t('common.markAllRead', 'Tout marquer comme lu')}</span>
++                    <span className="text-sm font-semibold text-slate-600">
++              {t('topbar.welcome')} <span className="font-bold text-slate-800">{user?.login?.toUpperCase()}</span>
++            </span>        <span className="text-xs text-digi-purple cursor-pointer hover:underline" onClick={handleMarkAllRead}>{t('common.markAllRead', 'Tout marquer comme lu')}</span>
+                   </div>
+                   <div className="max-h-64 overflow-y-auto">
+                     {notifications.map((n) => (
+@@ -185,6 +208,7 @@ export const Navbar: React.FC = () => {
+           >
+             <Avatar
+               name={user?.nom ? `${user.nom} ${user.prenom || ''}` : user?.login}
++              src={(user as any)?.photoUrl || (user as any)?.photoURL}
+               size="sm"
+             />
+           </button>

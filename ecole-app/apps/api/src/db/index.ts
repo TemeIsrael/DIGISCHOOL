@@ -7,9 +7,10 @@ export const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD
   dialect: 'mysql',
   logging: env.NODE_ENV === 'development' ? console.log : false,
   dialectOptions: {
-    ssl: process.env.DB_SSL === "true"
-      ? { rejectUnauthorized: false }
-      : false
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
   },
   pool: {
     max: 10,

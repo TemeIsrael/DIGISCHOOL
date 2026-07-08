@@ -1,0 +1,104 @@
+--- apps/web/src/features/notifications/pages/NotificationsPage.tsx
++++ apps/web/src/features/notifications/pages/NotificationsPage.tsx
+@@ -1,29 +1,88 @@
+-import React from 'react';
++import React, { useState, useEffect } from 'react';
+ import { NavLink } from 'react-router-dom';
+ import { useTranslation } from 'react-i18next';
+ import { Card } from '../../../shared/components/ui/Card';
++import { Bell, Loader2 } from 'lucide-react';
++import { api } from '../../../shared/lib/api';
+ 
+-// Mock notification data
+-const mockNotifications = [
+-  { id: 1, message: 'Nouveau document disponible: Emploi du temps', time: 'Il y a 2 heures' },
+-  { id: 2, message: 'Rappel: Réunion parents-professeurs demain à 16h.', time: 'Hier' },
+-];
++interface Notification {
++  id: number;
++  message: string;
++  type?: string;
++  read?: boolean;
++  createdAt: string;
++}
+ 
+ export const NotificationsPage: React.FC = () => {
+-  const { t } = useTranslation();
++  const { t, i18n } = useTranslation();
++  const isEn = i18n.language?.startsWith('en');
++  const [notifications, setNotifications] = useState<Notification[]>([]);
++  const [loading, setLoading] = useState(true);
++
++  useEffect(() => {
++    const fetchNotifications = async () => {
++      try {
++        setLoading(true);
++        const res = await api.get('/messages');
++        const messages = res.data?.data || [];
++        // Map messages to notification format
++        setNotifications(messages.map((m: any) => ({
++          id: m.idMsg || m.id,
++          message: m.contenu || m.message || m.titre || '',
++          type: m.type,
++          read: m.lu || false,
++          createdAt: m.createdAt || new Date().toISOString()
++        })));
++      } catch {
++        // If no messages API, show empty
++        setNotifications([]);
++      } finally {
++        setLoading(false);
++      }
++    };
++    fetchNotifications();
++  }, []);
++
++  const timeAgo = (dateStr: string) => {
++    const diff = Date.now() - new Date(dateStr).getTime();
++    const hours = Math.floor(diff / (1000 * 60 * 60));
++    const days = Math.floor(hours / 24);
++    if (days > 0) return isEn ? `${days} day(s) ago` : `Il y a ${days} jour(s)`;
++    if (hours > 0) return isEn ? `${hours} hour(s) ago` : `Il y a ${hours} heure(s)`;
++    return isEn ? 'Just now' : 'À l\'instant';
++  };
++
++  if (loading) {
++    return (
++      <div className="flex items-center justify-center h-64">
++        <Loader2 className="w-8 h-8 animate-spin text-digi-purple" />
++      </div>
++    );
++  }
+ 
+   return (
+     <div className="p-4 max-w-3xl mx-auto">
+       <h1 className="text-2xl font-bold text-slate-800 mb-4">
+         {t('dashboards.notifications', 'Notifications')}
+       </h1>
+-      <Card className="space-y-4 p-4">
+-          {mockNotifications.map((n) => (
+-            <NavLink key={n.id} to={`/notifications/${n.id}`} className="block p-3 border-b border-slate-100 last:border-b-0 hover:bg-slate-50">
+-              <p className="text-sm text-slate-700">{n.message}</p>
+-              <p className="text-xs text-slate-400 mt-1">{n.time}</p>
++      <Card className="space-y-0 p-0 overflow-hidden">
++        {notifications.length === 0 ? (
++          <div className="p-8 text-center text-slate-400">
++            <Bell className="w-8 h-8 mx-auto mb-3 opacity-30" />
++            <p className="font-semibold">{isEn ? 'No notifications' : 'Aucune notification'}</p>
++          </div>
++        ) : (
++          notifications.map((n) => (
++            <NavLink 
++              key={n.id} 
++              to={`/notifications/${n.id}`} 
++              className={`block p-4 border-b border-slate-100 last:border-b-0 hover:bg-slate-50 transition-colors ${!n.read ? 'bg-digi-purple/5' : ''}`}
++            >
++              <p className={`text-sm ${!n.read ? 'font-bold text-slate-800' : 'text-slate-700'}`}>{n.message}</p>
++              <p className="text-xs text-slate-400 mt-1">{timeAgo(n.createdAt)}</p>
+             </NavLink>
+-          ))}
++          ))
++        )}
+       </Card>
+     </div>
+   );

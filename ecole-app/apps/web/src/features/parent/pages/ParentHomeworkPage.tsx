@@ -1,33 +1,62 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
-import { FileText, Download, Filter } from 'lucide-react';
-import { exportPDF } from '../../../shared/utils/export';
+import { FileText, Download, Filter, Loader2 } from 'lucide-react';
+import { api } from '../../../shared/lib/api';
 
 interface Homework {
-  id: string;
-  matiere: string;
-  titre: string;
-  date: string;
-  pdfUrl?: string;
+  id: number;
+  title: string;
+  description?: string;
+  deadline?: string;
+  fileUrl?: string;
+  coursName?: string;
+  createdAt: string;
 }
 
 export const ParentHomeworkPage: React.FC = () => {
   const { i18n } = useTranslation();
   const isEn = i18n.language?.startsWith('en');
 
-  // Mock data - in a real app this would come from an API based on the selected child
-  const [homeworks] = useState<Homework[]>([
-    { id: '1', matiere: 'Mathématiques', titre: 'Exercices sur les fractions', date: '2026-06-20', pdfUrl: '#' },
-    { id: '2', matiere: 'Français', titre: 'Lecture et compréhension', date: '2026-06-21', pdfUrl: '#' },
-    { id: '3', matiere: 'Sciences & Technologie', titre: 'Schéma du système solaire', date: '2026-06-25', pdfUrl: '#' }
-  ]);
+  const [homeworks, setHomeworks] = useState<Homework[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchHomeworks = async () => {
+      try {
+        setLoading(true);
+        // Try the homeworks API; if it doesn't exist yet, gracefully show empty
+        const res = await api.get('/homeworks');
+        setHomeworks(res.data?.data || []);
+      } catch (err: any) {
+        // If 404, the endpoint doesn't exist yet — show empty list
+        if (err.response?.status === 404) {
+          setHomeworks([]);
+        } else {
+          setError(err.response?.data?.error?.message || 'Erreur lors du chargement des devoirs');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchHomeworks();
+  }, []);
 
   const handleDownload = (hw: Homework) => {
-    // If there's an actual PDF URL, we'd open it. Here we use the generic exportPDF to simulate downloading a document.
-    exportPDF([{ ...hw }], `devoir_${hw.matiere}_${hw.date}.pdf`);
+    if (hw.fileUrl) {
+      window.open(hw.fileUrl, '_blank');
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-digi-purple" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -37,6 +66,12 @@ export const ParentHomeworkPage: React.FC = () => {
           <p className="text-sm text-slate-400 font-semibold">{isEn ? 'View assignments for your child' : 'Consultez les devoirs de votre enfant'}</p>
         </div>
       </div>
+
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm font-semibold">
+          {error}
+        </div>
+      )}
 
       <Card className="border border-slate-100 shadow-sm">
         <div className="flex items-center justify-between mb-6">
@@ -60,19 +95,22 @@ export const ParentHomeworkPage: React.FC = () => {
                     <FileText className="w-5 h-5 text-digi-purple" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h4 className="font-bold text-slate-800 truncate" title={hw.titre}>{hw.titre}</h4>
-                    <p className="text-sm font-semibold text-digi-purple truncate">{hw.matiere}</p>
+                    <h4 className="font-bold text-slate-800 truncate" title={hw.title}>{hw.title}</h4>
+                    {hw.coursName && <p className="text-sm font-semibold text-digi-purple truncate">{hw.coursName}</p>}
+                    {hw.description && <p className="text-xs text-slate-500 mt-1 line-clamp-2">{hw.description}</p>}
                   </div>
                 </div>
                 
                 <div className="mt-auto pt-4 border-t border-slate-50 flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-500 uppercase">
-                    {isEn ? 'Due:' : 'Pour le:'} {hw.date}
+                    {isEn ? 'Due:' : 'Pour le:'} {hw.deadline ? new Date(hw.deadline).toLocaleDateString('fr-FR') : '—'}
                   </span>
-                  <Button variant="primary" size="sm" className="gap-2" onClick={() => handleDownload(hw)}>
-                    <Download className="w-4 h-4" />
-                    PDF
-                  </Button>
+                  {hw.fileUrl && (
+                    <Button variant="primary" size="sm" className="gap-2" onClick={() => handleDownload(hw)}>
+                      <Download className="w-4 h-4" />
+                      PDF
+                    </Button>
+                  )}
                 </div>
               </div>
             ))

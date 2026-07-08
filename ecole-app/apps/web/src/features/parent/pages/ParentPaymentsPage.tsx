@@ -1,67 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
 import { KPICard } from '../../../shared/components/ui/KPICard';
 import { Modal } from '../../../shared/components/ui/Modal';
 import { exportPDF } from '../../../shared/utils/export';
-import { CreditCard, CheckCircle2, Clock, AlertCircle, Download, Plus } from 'lucide-react';
+import { CreditCard, CheckCircle2, Clock, AlertCircle, Download, Plus, Loader2 } from 'lucide-react';
+import { api } from '../../../shared/lib/api';
+import { useAuthStore } from '../../auth/store';
 
 type Payment = {
-  id: number;
-  date: string;
-  trimestre: string;
+  idPaie: number;
+  matricule: string;
   montant: number;
-  mode: string;
-  statut: 'complete' | 'partial' | 'pending';
-  recu: string;
+  trancheCouverte: number;
+  idMode: number;
+  actif: boolean;
+  date?: string;
+  justificatifUrl?: string;
+  createdAt: string;
 };
-
-const mockPayments: Payment[] = [
-  { id: 1, date: '15/09/2025', trimestre: 'Trimestre 1', montant: 65000, mode: 'Espèces',     statut: 'complete', recu: 'REC-2025-001' },
-  { id: 2, date: '10/01/2026', trimestre: 'Trimestre 2', montant: 65000, mode: 'Mobile Money', statut: 'complete', recu: 'REC-2026-002' },
-  { id: 3, date: '—',          trimestre: 'Trimestre 3', montant: 0,     mode: '—',             statut: 'pending',  recu: '—' },
-];
-
-const TOTAL_SCOLARITE = 195000; // 3 × 65 000 XAF
 
 const formatCFA = (n: number) => `${n.toLocaleString('fr-FR')} XAF`;
 
 export const ParentPaymentsPage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const isEn = i18n.language?.startsWith('en');
-  const [payments] = useState<Payment[]>(mockPayments);
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const totalPaid = payments.filter(p => p.statut === 'complete').reduce((s, p) => s + p.montant, 0);
-  const remaining = TOTAL_SCOLARITE - totalPaid;
-  const rate = Math.round((totalPaid / TOTAL_SCOLARITE) * 100);
+  useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        setLoading(true);
+        const res = await api.get('/payments');
+        setPayments(res.data?.data || []);
+      } catch (err: any) {
+        setError(err.response?.data?.error?.message || 'Erreur lors du chargement des paiements');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPayments();
+  }, []);
 
-  const statusBadge = (statut: Payment['statut']) => {
-    switch (statut) {
-      case 'complete':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700">
-            <CheckCircle2 className="w-3 h-3" />
-            {isEn ? 'Paid' : 'Payé'}
-          </span>
-        );
-      case 'partial':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-amber-50 text-amber-700">
-            <Clock className="w-3 h-3" />
-            {isEn ? 'Partial' : 'Partiel'}
-          </span>
-        );
-      case 'pending':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-red-50 text-red-700">
-            <AlertCircle className="w-3 h-3" />
-            {isEn ? 'Pending' : 'En attente'}
-          </span>
-        );
+  const activePayments = payments.filter(p => p.actif);
+  const totalPaid = activePayments.reduce((s, p) => s + (p.montant || 0), 0);
+  // TOTAL_SCOLARITE sera calculé dynamiquement quand l'API scolarite sera disponible
+  const TOTAL_SCOLARITE = totalPaid > 0 ? Math.max(totalPaid, 195000) : 195000;
+  const remaining = TOTAL_SCOLARITE - totalPaid;
+  const rate = TOTAL_SCOLARITE > 0 ? Math.round((totalPaid / TOTAL_SCOLARITE) * 100) : 0;
+
+  const statusBadge = (p: Payment) => {
+    if (!p.actif) {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-slate-100 text-slate-500">
+          <AlertCircle className="w-3 h-3" />
+          {isEn ? 'Cancelled' : 'Annulé'}
+        </span>
+      );
     }
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-50 text-emerald-700">
+        <CheckCircle2 className="w-3 h-3" />
+        {isEn ? 'Paid' : 'Payé'}
+      </span>
+    );
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-digi-purple" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 text-center">
+        <p className="text-red-500 font-semibold">{error}</p>
+        <Button className="mt-4" onClick={() => window.location.reload()}>
+          {isEn ? 'Retry' : 'Réessayer'}
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -69,7 +95,7 @@ export const ParentPaymentsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-slate-800">{t('payments.title', 'Gestion des Paiements')}</h1>
           <p className="text-sm text-slate-400 font-semibold">
-            {isEn ? "Your child's tuition fee history — DUPONT Jean · CM1 A" : "Historique des frais de scolarité — DUPONT Jean · CM1 A"}
+            {isEn ? "Your child's tuition fee history" : "Historique des frais de scolarité de votre enfant"}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -137,32 +163,35 @@ export const ParentPaymentsPage: React.FC = () => {
           <table className="min-w-full divide-y divide-slate-100 text-sm">
             <thead className="bg-slate-50 font-bold text-slate-700">
               <tr>
-                <th className="px-4 py-3 text-left">{isEn ? 'Trimester' : 'Trimestre'}</th>
+                <th className="px-4 py-3 text-left">N°</th>
                 <th className="px-4 py-3 text-left">{t('common.date', 'Date')}</th>
                 <th className="px-4 py-3 text-right">{t('payments.amount', 'Montant')}</th>
-                <th className="px-4 py-3 text-left">{isEn ? 'Method' : 'Mode'}</th>
-                <th className="px-4 py-3 text-left">{isEn ? 'Receipt' : 'Reçu'}</th>
+                <th className="px-4 py-3 text-left">{isEn ? 'Installment' : 'Tranche'}</th>
                 <th className="px-4 py-3 text-center">{t('common.status', 'Statut')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-              {payments.map((p) => (
-                <tr key={p.id} className="hover:bg-slate-50 transition-colors">
-                  <td className="px-4 py-3 font-semibold">
-                    {isEn ? p.trimestre.replace('Trimestre', 'Trimester') : p.trimestre}
+              {payments.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
+                    {isEn ? 'No payments found' : 'Aucun paiement trouvé'}
                   </td>
-                  <td className="px-4 py-3">{p.date}</td>
-                  <td className="px-4 py-3 text-right font-bold">
-                    {p.montant > 0 ? formatCFA(p.montant) : '—'}
-                  </td>
-                  <td className="px-4 py-3">
-                    {p.mode === 'Espèces' && isEn ? 'Cash' :
-                     p.mode === 'Virement' && isEn ? 'Bank Transfer' : p.mode}
-                  </td>
-                  <td className="px-4 py-3 font-mono text-xs text-slate-400">{p.recu}</td>
-                  <td className="px-4 py-3 text-center">{statusBadge(p.statut)}</td>
                 </tr>
-              ))}
+              ) : (
+                payments.map((p) => (
+                  <tr key={p.idPaie} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-4 py-3 font-semibold">{p.idPaie}</td>
+                    <td className="px-4 py-3">{new Date(p.createdAt).toLocaleDateString('fr-FR')}</td>
+                    <td className="px-4 py-3 text-right font-bold">
+                      {p.montant > 0 ? formatCFA(p.montant) : formatCFA(p.montant)}
+                    </td>
+                    <td className="px-4 py-3">
+                      {isEn ? `Installment ${p.trancheCouverte}` : `Tranche ${p.trancheCouverte}`}
+                    </td>
+                    <td className="px-4 py-3 text-center">{statusBadge(p)}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -186,10 +215,6 @@ export const ParentPaymentsPage: React.FC = () => {
             <div className="flex justify-between">
               <span className="text-slate-500">Mobile Money :</span>
               <span className="font-bold text-slate-800">+237 6XX XXX XXX</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500">{isEn ? 'Reference:' : 'Référence :'}</span>
-              <span className="font-mono text-xs font-bold text-slate-800">DIGI-CM1A-DUPONT</span>
             </div>
           </div>
           <Button variant="primary" className="w-full" onClick={() => setIsModalOpen(false)}>

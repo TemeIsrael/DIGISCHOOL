@@ -29,6 +29,7 @@ import { Residents } from './Residents';
 import { VilleNaissance } from './VilleNaissance';
 import { Specialite } from './Specialite';
 import { RefreshTokens } from './RefreshTokens';
+import { HomeWork } from './HomeWork';
 
 // Associations Setup
 
@@ -207,5 +208,6 @@ export {
   Residents,
   VilleNaissance,
   Specialite,
-  RefreshTokens
+  RefreshTokens,
+  HomeWork
 };

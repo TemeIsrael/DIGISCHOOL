@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../../shared/components/ui/Card';
 import { Button } from '../../../shared/components/ui/Button';
@@ -6,108 +6,118 @@ import { KPICard } from '../../../shared/components/ui/KPICard';
 import { Modal } from '../../../shared/components/ui/Modal';
 import { FilterDropdown } from '../../../shared/components/tables/FilterDropdown';
 import { ScheduleGrid } from '../../../shared/components/business/ScheduleGrid';
-import { Clock, Download, FilePlus, Calendar } from 'lucide-react';
+import { Clock, Download, FilePlus, Calendar, Loader2 } from 'lucide-react';
 import { usePermissions } from '../../auth/hooks/usePermissions';
-
-/* ─── Data ─────────────────────────────────────────────────────── */
-const mockScheduleFrancophone = [
-  { jour: 'Lundi',    heureDebut: '07:30', heureFin: '08:15', cours: 'Français',             salle: 'CM1 A' },
-  { jour: 'Lundi',    heureDebut: '08:15', heureFin: '09:00', cours: 'Mathématiques',         salle: 'CM1 A' },
-  { jour: 'Lundi',    heureDebut: '09:00', heureFin: '09:45', cours: 'Sciences & Technologie',salle: 'CM1 A' },
-  { jour: 'Lundi',    heureDebut: '10:00', heureFin: '10:45', cours: 'Anglais',               salle: 'CE2 A' },
-  { jour: 'Lundi',    heureDebut: '10:45', heureFin: '11:30', cours: 'Histoire',              salle: 'CE2 A' },
-  { jour: 'Mardi',    heureDebut: '07:30', heureFin: '08:15', cours: 'Mathématiques',         salle: 'CM2 A' },
-  { jour: 'Mardi',    heureDebut: '08:15', heureFin: '09:00', cours: 'Français',             salle: 'CM2 A' },
-  { jour: 'Mardi',    heureDebut: '09:00', heureFin: '09:45', cours: 'Éducation Civique',    salle: 'CM2 A' },
-  { jour: 'Mardi',    heureDebut: '10:00', heureFin: '10:45', cours: 'Géographie',           salle: 'CP A'  },
-  { jour: 'Mercredi', heureDebut: '07:30', heureFin: '08:15', cours: 'Français',             salle: 'CE1 A' },
-  { jour: 'Mercredi', heureDebut: '08:15', heureFin: '09:00', cours: 'Mathématiques',         salle: 'CE1 A' },
-  { jour: 'Mercredi', heureDebut: '09:00', heureFin: '09:45', cours: 'Dessin',               salle: 'CE1 A' },
-  { jour: 'Jeudi',    heureDebut: '07:30', heureFin: '08:15', cours: 'Français',             salle: 'CM1 A' },
-  { jour: 'Jeudi',    heureDebut: '08:15', heureFin: '09:00', cours: 'Mathématiques',         salle: 'CM1 A' },
-  { jour: 'Jeudi',    heureDebut: '10:00', heureFin: '10:45', cours: 'Éducation Physique',   salle: 'CM1 A' },
-  { jour: 'Vendredi', heureDebut: '07:30', heureFin: '08:15', cours: 'Mathématiques',         salle: 'CE2 A' },
-  { jour: 'Vendredi', heureDebut: '08:15', heureFin: '09:00', cours: 'Français',             salle: 'CE2 A' },
-  { jour: 'Vendredi', heureDebut: '09:00', heureFin: '09:45', cours: 'Travail Manuel',       salle: 'CE2 A' },
-  { jour: 'Vendredi', heureDebut: '10:00', heureFin: '10:45', cours: 'Chant & Musique',      salle: 'SIL A' },
-];
-
-const mockScheduleAnglophone = [
-  { jour: 'Monday',    heureDebut: '07:30', heureFin: '08:15', cours: 'English Language',  salle: 'Class 6' },
-  { jour: 'Monday',    heureDebut: '08:15', heureFin: '09:00', cours: 'Mathematics',       salle: 'Class 6' },
-  { jour: 'Monday',    heureDebut: '09:00', heureFin: '09:45', cours: 'Science & Tech',    salle: 'Class 6' },
-  { jour: 'Monday',    heureDebut: '10:00', heureFin: '10:45', cours: 'French',            salle: 'Class 5' },
-  { jour: 'Monday',    heureDebut: '10:45', heureFin: '11:30', cours: 'History',           salle: 'Class 5' },
-  { jour: 'Tuesday',   heureDebut: '07:30', heureFin: '08:15', cours: 'Mathematics',       salle: 'Class 6' },
-  { jour: 'Tuesday',   heureDebut: '08:15', heureFin: '09:00', cours: 'English Language',  salle: 'Class 6' },
-  { jour: 'Tuesday',   heureDebut: '09:00', heureFin: '09:45', cours: 'Civics',            salle: 'Class 6' },
-  { jour: 'Tuesday',   heureDebut: '10:00', heureFin: '10:45', cours: 'Geography',         salle: 'Class 4' },
-  { jour: 'Wednesday', heureDebut: '07:30', heureFin: '08:15', cours: 'English Language',  salle: 'Class 3' },
-  { jour: 'Wednesday', heureDebut: '08:15', heureFin: '09:00', cours: 'Mathematics',       salle: 'Class 3' },
-  { jour: 'Wednesday', heureDebut: '09:00', heureFin: '09:45', cours: 'Arts & Craft',      salle: 'Class 3' },
-  { jour: 'Thursday',  heureDebut: '07:30', heureFin: '08:15', cours: 'English Language',  salle: 'Class 5' },
-  { jour: 'Thursday',  heureDebut: '08:15', heureFin: '09:00', cours: 'Mathematics',       salle: 'Class 5' },
-  { jour: 'Thursday',  heureDebut: '10:00', heureFin: '10:45', cours: 'Physical Education',salle: 'Class 5' },
-  { jour: 'Friday',    heureDebut: '07:30', heureFin: '08:15', cours: 'Mathematics',       salle: 'Class 4' },
-  { jour: 'Friday',    heureDebut: '08:15', heureFin: '09:00', cours: 'English Language',  salle: 'Class 4' },
-  { jour: 'Friday',    heureDebut: '09:00', heureFin: '09:45', cours: 'Handwork',          salle: 'Class 4' },
-  { jour: 'Friday',    heureDebut: '10:00', heureFin: '10:45', cours: 'Music & Singing',   salle: 'Class 1' },
-];
-
-const classesFrancophones = ['SIL A', 'CP A', 'CE1 A', 'CE2 A', 'CM1 A', 'CM2 A'];
-const classesAnglophones  = ['Class 1', 'Class 2', 'Class 3', 'Class 4', 'Class 5', 'Class 6'];
-const DAYS_FR = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'] as const;
-const DAYS_EN = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] as const;
-
-function exportToCSV(data: typeof mockScheduleFrancophone, filename: string) {
-  const header = 'Day,Start,End,Subject,Room';
-  const rows   = data.map((r) => `${r.jour},${r.heureDebut},${r.heureFin},${r.cours},${r.salle}`);
-  const csv    = [header, ...rows].join('\n');
-  const blob   = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url    = URL.createObjectURL(blob);
-  const a      = document.createElement('a');
-  a.href = url; a.download = filename; a.style.display = 'none';
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a); URL.revokeObjectURL(url);
-}
+import { api } from '../../../shared/lib/api';
 
 /* ─── Component ─────────────────────────────────────────────────── */
 export const SchedulePage: React.FC = () => {
   const { t } = useTranslation();
   const { canAddPersonnelOrStudentsOrSchedules } = usePermissions();
 
-
   const [selectedSection, setSelectedSection] = useState('Francophone');
   const [selectedClasse,  setSelectedClasse]  = useState('');
   const [isAddModalOpen,  setAddModalOpen]    = useState(false);
+  
   const [newSlot, setNewSlot] = useState({ jour: '', heureDebut: '', heureFin: '', cours: '', salle: '' });
+  
+  const [scheduleData, setScheduleData] = useState<any[]>([]);
+  const [classesList, setClassesList] = useState<any[]>([]);
+  const [coursesList, setCoursesList] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [scheduleFrancophone, setScheduleFrancophone] = useState(mockScheduleFrancophone);
-  const [scheduleAnglophone,  setScheduleAnglophone]  = useState(mockScheduleAnglophone);
+  const fetchSchedules = async () => {
+    try {
+      setLoading(true);
+      // Fetch schedules, classes, courses
+      const [schRes, clsRes, crsRes] = await Promise.all([
+        api.get('/academic/schedules'),
+        api.get('/academic/classes'),
+        api.get('/academic/courses')
+      ]);
+      const schedules = schRes.data?.data || [];
+      const classes = clsRes.data?.data || [];
+      const courses = crsRes.data?.data || [];
 
-  const isSectionEn   = selectedSection === 'Anglophone';
-  const scheduleData  = isSectionEn ? scheduleAnglophone : scheduleFrancophone;
-  const classeOptions = isSectionEn ? classesAnglophones : classesFrancophones;
-  const dayOptions    = isSectionEn ? DAYS_EN            : DAYS_FR;
+      setClassesList(classes);
+      setCoursesList(courses);
 
-  const handleSectionChange = (section: string) => {
-    setSelectedSection(section);
-    setSelectedClasse('');
+      // Map references
+      const mapped = schedules.map((s: any) => {
+        const cls = classes.find((c: any) => c.idClasse === s.idClasse);
+        const crs = courses.find((c: any) => c.idCours === s.idCours);
+        return {
+          id: s.idEdt,
+          jour: s.jour || 'Lundi',
+          heureDebut: s.heureDebut,
+          heureFin: s.heureFin,
+          cours: crs ? crs.libelle : `Cours #${s.idCours}`,
+          salle: cls ? cls.libelle : `Classe #${s.idClasse}`,
+          section: cls ? cls.section : 'Francophone'
+        };
+      });
+      setScheduleData(mapped);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const filtered = selectedClasse
-    ? scheduleData.filter((s) => s.salle === selectedClasse)
-    : scheduleData;
+  useEffect(() => {
+    fetchSchedules();
+  }, []);
 
-  const handleAddSlot = () => {
+  const isSectionEn   = selectedSection === 'Anglophone';
+  const classeOptions = classesList.filter(c => (isSectionEn ? c.section === 'Anglophone' : c.section === 'Francophone')).map(c => c.libelle);
+  const dayOptions    = isSectionEn ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] : ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+
+  const filtered = scheduleData.filter((s) => {
+    const matchSection = s.section === selectedSection;
+    const matchClasse = !selectedClasse || s.salle === selectedClasse;
+    return matchSection && matchClasse;
+  });
+
+  const handleAddSlot = async () => {
     if (!newSlot.jour || !newSlot.cours || !newSlot.salle) return;
-    if (isSectionEn) {
-      setScheduleAnglophone((prev) => [...prev, { ...newSlot }]);
-    } else {
-      setScheduleFrancophone((prev) => [...prev, { ...newSlot }]);
+    
+    // Find IDs
+    const cls = classesList.find(c => c.libelle === newSlot.salle);
+    const crs = coursesList.find(c => c.libelle === newSlot.cours);
+
+    let idCours = crs?.idCours;
+    let idClasse = cls?.idClasse;
+
+    if (!idClasse) {
+      alert("Classe introuvable, veuillez créer la classe d'abord.");
+      return;
     }
-    setAddModalOpen(false);
-    setNewSlot({ jour: '', heureDebut: '', heureFin: '', cours: '', salle: '' });
+    if (!idCours) {
+      // Create course if not exists
+      try {
+        const res = await api.post('/academic/courses', { libelle: newSlot.cours, idClasse });
+        idCours = res.data?.data?.idCours;
+      } catch (err) {
+        console.error(err);
+        return;
+      }
+    }
+
+    try {
+      await api.post('/academic/schedules', {
+        idClasse,
+        idCours,
+        jour: newSlot.jour,
+        heureDebut: newSlot.heureDebut,
+        heureFin: newSlot.heureFin
+      });
+      fetchSchedules();
+      setAddModalOpen(false);
+      setNewSlot({ jour: '', heureDebut: '', heureFin: '', cours: '', salle: '' });
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'ajout");
+    }
   };
 
   const inputCls = 'w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none bg-white transition-all';
@@ -122,10 +132,6 @@ export const SchedulePage: React.FC = () => {
           <p className="text-sm text-slate-400 font-semibold">{t('schedules.subtitle', 'Planification hebdomadaire des cours')}</p>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
-          <Button variant="outline" className="gap-2" onClick={() => exportToCSV(filtered, 'timetable.csv')}>
-            <Download className="w-4 h-4" />
-            {t('grades.export', 'Exporter CSV')}
-          </Button>
           {canAddPersonnelOrStudentsOrSchedules && (
             <Button onClick={() => setAddModalOpen(true)} className="gap-2">
               <FilePlus className="w-4 h-4" />
@@ -148,12 +154,19 @@ export const SchedulePage: React.FC = () => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>{t('schedules.startTime', 'Heure Début')}</label>
-              <input type="text" placeholder="07:30" className={inputCls} value={newSlot.heureDebut} onChange={(e) => setNewSlot({ ...newSlot, heureDebut: e.target.value })} />
+              <input type="time" className={inputCls} value={newSlot.heureDebut} onChange={(e) => setNewSlot({ ...newSlot, heureDebut: e.target.value })} />
             </div>
             <div>
               <label className={labelCls}>{t('schedules.endTime', 'Heure Fin')}</label>
-              <input type="text" placeholder="08:15" className={inputCls} value={newSlot.heureFin} onChange={(e) => setNewSlot({ ...newSlot, heureFin: e.target.value })} />
+              <input type="time" className={inputCls} value={newSlot.heureFin} onChange={(e) => setNewSlot({ ...newSlot, heureFin: e.target.value })} />
             </div>
+          </div>
+          <div>
+            <label className={labelCls}>{t('schedules.room', 'Classe / Salle')}</label>
+            <select className={inputCls} value={newSlot.salle} onChange={(e) => setNewSlot({ ...newSlot, salle: e.target.value })}>
+              <option value="">{t('schedules.selectRoom', '-- Choisir la Classe --')}</option>
+              {classeOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
           </div>
           <div>
             <label className={labelCls}>{t('schedules.subject', 'Cours / Matière')}</label>
@@ -164,13 +177,6 @@ export const SchedulePage: React.FC = () => {
               value={newSlot.cours}
               onChange={(e) => setNewSlot({ ...newSlot, cours: e.target.value })}
             />
-          </div>
-          <div>
-            <label className={labelCls}>{t('schedules.room', 'Classe / Salle')}</label>
-            <select className={inputCls} value={newSlot.salle} onChange={(e) => setNewSlot({ ...newSlot, salle: e.target.value })}>
-              <option value="">{t('schedules.selectRoom', '-- Choisir la Classe --')}</option>
-              {classeOptions.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="ghost" onClick={() => setAddModalOpen(false)}>{t('common.cancel', 'Annuler')}</Button>
@@ -198,7 +204,7 @@ export const SchedulePage: React.FC = () => {
               { value: 'Francophone', label: '🇫🇷 Francophone' },
               { value: 'Anglophone',  label: '🇬🇧 Anglophone' },
             ]}
-            onChange={handleSectionChange}
+            onChange={(v) => { setSelectedSection(v); setSelectedClasse(''); }}
           />
           <FilterDropdown
             label={t('grades.class', 'Classe')}
@@ -216,7 +222,12 @@ export const SchedulePage: React.FC = () => {
       </Card>
 
       {/* Schedule Grid */}
-      <Card className="shadow-sm border border-slate-100">
+      <Card className="shadow-sm border border-slate-100 min-h-[300px] flex flex-col relative">
+        {loading ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm z-10 rounded-xl">
+             <Loader2 className="w-8 h-8 animate-spin text-digi-purple" />
+          </div>
+        ) : null}
         <ScheduleGrid entries={filtered} isEn={isSectionEn} />
       </Card>
     </div>

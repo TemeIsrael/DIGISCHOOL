@@ -122,7 +122,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
         {/* Mobile: welcome */}
         <div className="md:hidden">
           <span className="text-sm font-semibold text-slate-600">
-            {t('topbar.welcome')} <span className="font-bold text-slate-800">{user?.login}</span>
+            {t('topbar.welcome')} <span className="font-bold text-slate-800">{user?.login?.toUpperCase()}</span>
           </span>
         </div>
       </div>

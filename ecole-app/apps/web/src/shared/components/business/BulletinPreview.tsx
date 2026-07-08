@@ -23,6 +23,7 @@ export interface BulletinPreviewProps {
   matieres?: BulletinMatiereEntry[];
   onDownload?: () => void;
   mention?: string;
+  trimestre?: string;
 }
 
 export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
@@ -35,7 +36,10 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
   rang,
   effectif,
   matieres,
-  onDownload
+  onDownload,
+  mention: _mention,
+  salle: _salle,
+  teacherName: _teacherName
 }) => {
   const { t, i18n } = useTranslation();
   const isEn = i18n.language?.startsWith('en');
@@ -49,9 +53,9 @@ export const BulletinPreview: React.FC<BulletinPreviewProps> = ({
     return 'Insuffisant';
   };
 
-  const mention = props.mention ?? getMention(moyenne);
-  const salle = props.salle ?? '';
-  const teacher = props.teacherName ?? '';
+  const mention = _mention ?? getMention(moyenne);
+  const salle = _salle ?? '';
+  const teacher = _teacherName ?? '';
 
   // Determine Rank suffix
   const getRankSuffix = (r: number) => {
