@@ -205,7 +205,8 @@ router.post('/change-password', authenticate, validateBody(changePasswordSchema)
 
   try {
     let user: any = null;
-    if (userContext.role === 'ADMIN') {
+    const adminRoles = ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'];
+    if (adminRoles.includes(userContext.role)) {
       user = await Admin.findByPk(userContext.id);
     } else {
       user = await Personne.findByPk(userContext.id);
@@ -236,7 +237,8 @@ router.put('/language', authenticate, async (req, res, next) => {
   }
 
   try {
-    if (userContext.role === 'ADMIN') {
+    const adminRoles = ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'];
+    if (adminRoles.includes(userContext.role)) {
       await Admin.update({ langue }, { where: { ID: userContext.id } });
     } else {
       await Personne.update({ langue }, { where: { idPers: userContext.id } });
