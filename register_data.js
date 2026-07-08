@@ -1,5 +1,5 @@
 async function run() {
-  const baseURL = 'http://localhost:4001/api/v1';
+  const baseURL = 'https://digischool-h347.onrender.com/api/v1';
 
   async function apiFetch(path, options = {}) {
     const res = await fetch(`${baseURL}${path}`, {

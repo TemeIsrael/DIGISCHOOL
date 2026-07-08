@@ -6,7 +6,6 @@ export class Livres extends Model {
   public idSpecialite!: number;
   public titre!: string;
   public auteur!: string;
-  public fichierUrl!: string;
 }
 
 Livres.init(
@@ -25,16 +24,15 @@ Livres.init(
       allowNull: false,
     },
     auteur: {
+      field: 'auteurs',
       type: DataTypes.STRING(255),
-      allowNull: false,
-    },
-    fichierUrl: {
-      type: DataTypes.STRING(255),
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
     sequelize,
-    tableName: 'Livres',
+    tableName: 'livre',
+    createdAt: 'created_at',
+    updatedAt: false,
   }
 );

@@ -112,7 +112,7 @@ console.log("ROLE:", role);
     await RefreshTokens.create({
       token: refreshToken,
       userId,
-      userType: role === 'ADMIN' ? 'admin' : 'personne',
+      userType: ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'].includes(role) ? 'admin' : 'personne',
       expiresAt
     });
 
