@@ -239,7 +239,7 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
             />
             <div className="hidden md:block min-w-0 text-left">
               <p className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
-                {user?.nom ? `${user.prenom || ''} ${user.nom}` : user?.login}
+                {user?.nom ? `${user.prenom || ''} ${user.nom.toUpperCase()}` : user?.login?.toUpperCase()}
               </p>
             </div>
           </button>

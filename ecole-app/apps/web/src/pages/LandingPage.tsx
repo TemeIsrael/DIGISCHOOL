@@ -66,22 +66,14 @@ export const LandingPage: React.FC = () => {
     { value: '24/7', label: t('landingFeatures.availability'), icon: <Clock className="w-5 h-5" /> },
   ];
 
-  // Demo accounts for each role
-  const demoAccounts = [
-    { role: 'ADMIN', username: 'admin', password: 'admin123' },
-    { role: 'ADMIN_INSCRIPTIONS', username: 'insc', password: 'insc123' },
-    { role: 'ADMIN_SCOLARITE', username: 'scol', password: 'scol123' },
-    { role: 'TEACHER', username: 'teacher', password: 'teach123' },
-    { role: 'PARENT', username: 'parent', password: 'parent123' },
-    { role: 'STUDENT', username: 'student', password: 'stud123' },
-  ];
+
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col">
       <PublicNavbar />
 
       {/* ═══ Hero Section ═══ */}
-      <section className="relative min-h-[560px] bg-slate-950 flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-[560px] bg-slate-950 flex flex-col lg:flex-row items-center justify-center overflow-hidden">
         {/* Gradient overlay — no external image dependency */}
         <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-dark via-slate-900 to-slate-950" />
         {/* Decorative shapes */}
@@ -96,32 +88,46 @@ export const LandingPage: React.FC = () => {
           }}
         />
 
-        <div className="relative z-10 max-w-4xl text-center px-6 space-y-8 py-20">
-          {/* Pill badge */}
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-4 py-1.5 text-xs font-bold text-white/80 animate-fade-in">
-            <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-            {t('landingFeatures.opPlatform')}
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 py-20 px-6">
+          <div className="flex-1 text-center lg:text-left space-y-8">
+            {/* Pill badge */}
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-4 py-1.5 text-xs font-bold text-white/80 animate-fade-in">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+              {t('landingFeatures.opPlatform')}
+            </div>
+
+            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight animate-fade-in">
+              {t('landing.hero')}
+            </h1>
+            <p className="text-lg md:text-xl text-slate-300 max-w-2xl font-medium leading-relaxed animate-fade-in mx-auto lg:mx-0">
+              {t('landing.heroSub')}
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4 animate-fade-in">
+              <Button
+                variant="primary"
+                size="lg"
+                onClick={() => navigate('/login')}
+                className="gap-2 shadow-xl shadow-digi-purple/20 px-8"
+              >
+                {t('landing.signIn')}
+              </Button>
+            </div>
           </div>
 
-          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight animate-fade-in">
-            {t('landing.hero')}
-          </h1>
-          <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto font-medium leading-relaxed animate-fade-in">
-            {t('landing.heroSub')}
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 animate-fade-in">
-            <Button
-              variant="primary"
-              size="lg"
-              onClick={() => navigate('/login')}
-              className="gap-2 shadow-xl shadow-digi-purple/20 px-8"
-            >
-              {t('landing.signIn')}
-            </Button>
+          {/* Hero Images - Maternelle & Primaire */}
+          <div className="flex-1 flex gap-4 w-full justify-center lg:justify-end mt-12 lg:mt-0 animate-fade-in hidden md:flex">
+            <div className="flex flex-col gap-4 mt-8">
+              <img src="/assets/preschool.jpg" alt="Maternelle" className="w-48 md:w-64 h-64 md:h-80 object-cover rounded-2xl shadow-2xl border-4 border-white/10 transform -rotate-3 hover:rotate-0 transition-transform duration-300" />
+            </div>
+            <div className="flex flex-col gap-4">
+              <img src="/assets/primary.jpg" alt="Primaire" className="w-48 md:w-64 h-64 md:h-80 object-cover rounded-2xl shadow-2xl border-4 border-white/10 transform rotate-3 hover:rotate-0 transition-transform duration-300" />
+            </div>
           </div>
         </div>
       </section>
+
+
 
       {/* ═══ Stats Bar ═══ */}
       <section className="relative -mt-12 z-20 px-6 md:px-8">

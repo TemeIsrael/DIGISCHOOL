@@ -44,7 +44,7 @@ export const ProfilePage: React.FC = () => {
 
   const [name, setName] = useState(user?.nom || '');
   const [email, setEmail] = useState((user as any)?.email || '');
-  const [username, setUsername] = useState(user?.login || '');
+  const [username, setUsername] = useState(user?.login?.toUpperCase() || '');
   // Initialiser la photo depuis le store (photo déjà enregistrée)
   const [photo, setPhoto] = useState<string | null>((user as any)?.photoUrl || (user as any)?.photoURL || null);
   const [saved, setSaved] = useState(false);
@@ -173,7 +173,7 @@ export const ProfilePage: React.FC = () => {
                 <Input
                   label={t('profile.username', "Nom d'utilisateur")}
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value.toUpperCase())}
                   leftIcon={<User className="w-4 h-4" />}
                 />
                 <Input

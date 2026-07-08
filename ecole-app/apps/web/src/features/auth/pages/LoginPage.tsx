@@ -137,6 +137,27 @@ export const LoginPage: React.FC = () => {
             </button>
           </div>
         </Card>
+
+        {/* ═══ Demo Accounts ═══ */}
+        <div className="mt-8 bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl p-4">
+          <h3 className="text-sm font-bold text-slate-800 text-center mb-4">Comptes de Démonstration</h3>
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            {[
+              { role: 'ADMIN', username: 'admin', password: 'admin123' },
+              { role: 'INSCRIPTIONS', username: 'insc', password: 'insc123' },
+              { role: 'SCOLARITE', username: 'scol', password: 'scol123' },
+              { role: 'TEACHER', username: 'teacher', password: 'teach123' },
+              { role: 'PARENT', username: 'parent', password: 'parent123' },
+              { role: 'STUDENT', username: 'student', password: 'stud123' },
+            ].map((account, i) => (
+              <div key={i} className="bg-white border border-slate-100 rounded-lg p-2 text-center shadow-sm">
+                <div className="font-bold text-digi-purple mb-1 truncate">{account.role}</div>
+                <div className="text-slate-600">U: <span className="font-semibold">{account.username}</span></div>
+                <div className="text-slate-600">P: <span className="font-semibold">{account.password}</span></div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
