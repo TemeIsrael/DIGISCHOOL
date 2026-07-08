@@ -23,24 +23,24 @@ const loginFormSchema = z.object({
 });
 
 type LoginFormInput = z.infer<typeof loginFormSchema>;
+type RoleValue = LoginFormInput['role'];
+
+// Comptes démo fonctionnels (vrais comptes en base)
+const demoAccounts: { label: string; role: RoleValue; login: string; password: string }[] = [
+  { label: 'ROOT',         role: 'ADMIN_ROOT',        login: 'admin_root', password: 'admin123' },
+  { label: 'INSCRIPTIONS', role: 'ADMIN_INSCRIPTIONS', login: 'admin_insc', password: 'admin123' },
+  { label: 'SCOLARITE',    role: 'ADMIN_SCOLARITE',    login: 'admin_scol', password: 'admin123' },
+  { label: 'FONDATEUR',    role: 'FONDATEUR',          login: 'admin_fond', password: 'admin123' },
+  { label: 'DIRECTEUR',    role: 'DIRECTEUR',          login: 'admin_dir',  password: 'admin123' },
+  { label: 'ENSEIGNANT',   role: 'TEACHER',            login: 'teacher1',   password: 'admin123' },
+  { label: 'PARENT',       role: 'PARENT',             login: 'parent1',    password: 'admin123' },
+];
 
 const slides = [
-  {
-    src: '/images/ecole1.jpg',
-    caption: 'Un espace d\'apprentissage bienveillant'
-  },
-  {
-    src: '/images/ecole2.jpg',
-    caption: 'Des élèves épanouis, avenir radieux'
-  },
-  {
-    src: '/images/ecole3.jpg',
-    caption: 'La salle de classe, lieu de tous les possibles'
-  },
-  {
-    src: '/images/ecole4.jpg',
-    caption: 'Encadrement de qualité, réussite garantie'
-  },
+  { src: '/images/ecole1.jpg', caption: 'Un espace d\'apprentissage bienveillant' },
+  { src: '/images/ecole2.jpg', caption: 'Des élèves épanouis, avenir radieux' },
+  { src: '/images/ecole3.jpg', caption: 'La salle de classe, lieu de tous les possibles' },
+  { src: '/images/ecole4.jpg', caption: 'Encadrement de qualité, réussite garantie' },
 ];
 
 export const LoginPage: React.FC = () => {
@@ -60,11 +60,18 @@ export const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm<LoginFormInput>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { role: 'ADMIN_ROOT' }
   });
+
+  const fillDemo = (acc: typeof demoAccounts[0]) => {
+    setValue('login', acc.login);
+    setValue('password', acc.password);
+    setValue('role', acc.role);
+  };
 
   const onSubmit = async (data: LoginFormInput) => {
     try {
@@ -100,7 +107,6 @@ export const LoginPage: React.FC = () => {
               opacity: idx === current ? 1 : 0,
             }}
           >
-            {/* Gradient overlay sombre en bas */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           </div>
         ))}
@@ -110,8 +116,6 @@ export const LoginPage: React.FC = () => {
           <p className="text-white text-2xl font-bold leading-snug drop-shadow-lg">
             {slides[current].caption}
           </p>
-
-          {/* Indicateurs de slide */}
           <div className="flex gap-2 mt-4">
             {slides.map((_, idx) => (
               <button
@@ -125,7 +129,7 @@ export const LoginPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Titre appli en haut à gauche */}
+        {/* Titre appli en haut */}
         <div className="absolute top-8 left-8 z-10">
           <h1 className="text-white text-3xl font-extrabold tracking-tight drop-shadow-lg">
             {t('app.name')}
@@ -134,14 +138,14 @@ export const LoginPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ═══ DROITE : Formulaire de connexion ═══ */}
+      {/* ═══ DROITE : Formulaire ═══ */}
       <div className="w-full lg:w-[520px] bg-digi-bg flex flex-col justify-center p-8 sm:p-12 relative overflow-y-auto">
         <div className="absolute top-5 right-5">
           <LanguageSwitcher />
         </div>
 
         <div className="w-full max-w-md mx-auto">
-          {/* Titre mobile only */}
+          {/* Titre mobile */}
           <div className="text-center mb-8 lg:hidden">
             <h1 className="font-serif text-4xl font-extrabold text-digi-purple tracking-tight">{t('app.name')}</h1>
             <p className="text-sm font-semibold text-slate-500 mt-2">{t('app.slogan')}</p>
@@ -196,7 +200,7 @@ export const LoginPage: React.FC = () => {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-4 text-center">
               <button
                 onClick={() => navigate('/forgot-password')}
                 className="text-xs font-semibold text-slate-400 hover:text-digi-purple transition-colors"
@@ -206,23 +210,26 @@ export const LoginPage: React.FC = () => {
             </div>
           </Card>
 
-          {/* ═══ Comptes démo ═══ */}
+          {/* ═══ Comptes démo cliquables ═══ */}
           <div className="mt-6 bg-white/60 backdrop-blur-sm border border-slate-200 rounded-xl p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-slate-700 text-center mb-3">Comptes de Démonstration</h3>
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              {[
-                { role: 'ADMIN',         username: 'admin',   password: 'admin123'  },
-                { role: 'INSCRIPTIONS',  username: 'insc',    password: 'insc123'   },
-                { role: 'SCOLARITE',     username: 'scol',    password: 'scol123'   },
-                { role: 'TEACHER',       username: 'teacher', password: 'teach123'  },
-                { role: 'PARENT',        username: 'parent',  password: 'parent123' },
-                { role: 'DIRECTEUR',     username: 'dir',     password: 'dir123'    },
-              ].map((acc, i) => (
-                <div key={i} className="bg-white border border-slate-100 rounded-lg p-2 text-center shadow-sm">
-                  <div className="font-bold text-digi-purple truncate text-[10px] mb-0.5">{acc.role}</div>
-                  <div className="text-slate-600 text-[10px]">U: <span className="font-semibold uppercase">{acc.username}</span></div>
-                  <div className="text-slate-600 text-[10px]">P: <span className="font-semibold">{acc.password}</span></div>
-                </div>
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider text-center mb-3">
+              Comptes de Démonstration — cliquez pour remplir
+            </h3>
+            <div className="grid grid-cols-2 gap-2">
+              {demoAccounts.map((acc) => (
+                <button
+                  key={acc.login}
+                  type="button"
+                  onClick={() => fillDemo(acc)}
+                  className="text-left bg-white hover:bg-digi-purple/5 border border-slate-100 hover:border-digi-purple/30 rounded-xl p-3 shadow-sm transition-all group"
+                >
+                  <div className="font-bold text-digi-purple text-xs mb-1 group-hover:text-digi-purple-dark">{acc.label}</div>
+                  <div className="text-slate-500 text-[11px]">
+                    <span className="font-semibold text-slate-700">{acc.login}</span>
+                    {' · '}
+                    <span className="font-mono">{acc.password}</span>
+                  </div>
+                </button>
               ))}
             </div>
           </div>
