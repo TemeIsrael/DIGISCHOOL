@@ -6,6 +6,7 @@ export class Livres extends Model {
   public idSpecialite!: number;
   public titre!: string;
   public auteur!: string;
+  public fichierUrl!: string;
 }
 
 Livres.init(
@@ -25,6 +26,11 @@ Livres.init(
     },
     auteur: {
       field: 'auteurs',
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    fichierUrl: {
+      field: 'fichier_url',
       type: DataTypes.STRING(255),
       allowNull: true,
     },
