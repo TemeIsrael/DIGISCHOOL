@@ -67,6 +67,11 @@ Eleve.init(
       allowNull: true,
       defaultValue: false,
     },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     sequelize,
