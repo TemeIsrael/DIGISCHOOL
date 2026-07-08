@@ -202,7 +202,7 @@ router.get('/pre-registrations', requireRole(['ADMIN']), async (req, res, next) 
 });
 
 // ═══ FULL REGISTRATION (ADMIN only — direct inscription) ═══
-router.post('/register', requireRole(['ADMIN']), validateBody(registerStudentSchema), async (req, res, next) => {
+router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS']), validateBody(registerStudentSchema), async (req, res, next) => {
   const data = req.body;
   const ip = req.ip || 'unknown';
   const t = await sequelize.transaction();
