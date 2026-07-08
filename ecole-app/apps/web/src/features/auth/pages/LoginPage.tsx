@@ -24,23 +24,36 @@ const loginFormSchema = z.object({
 
 type LoginFormInput = z.infer<typeof loginFormSchema>;
 
-const backgroundImages = [
-  '/images/ecole1.jpg',
-  '/images/ecole2.jpg',
-  '/images/ecole3.jpg'
+const slides = [
+  {
+    src: '/images/ecole1.jpg',
+    caption: 'Un espace d\'apprentissage bienveillant'
+  },
+  {
+    src: '/images/ecole2.jpg',
+    caption: 'Des élèves épanouis, avenir radieux'
+  },
+  {
+    src: '/images/ecole3.jpg',
+    caption: 'La salle de classe, lieu de tous les possibles'
+  },
+  {
+    src: '/images/ecole4.jpg',
+    caption: 'Encadrement de qualité, réussite garantie'
+  },
 ];
 
 export const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [bgIndex, setBgIndex] = useState(0);
+  const [current, setCurrent] = useState(0);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { login, isLoggingIn } = useAuth();
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setBgIndex((prev) => (prev + 1) % backgroundImages.length);
-    }, 5000);
+      setCurrent(prev => (prev + 1) % slides.length);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
@@ -50,9 +63,7 @@ export const LoginPage: React.FC = () => {
     formState: { errors }
   } = useForm<LoginFormInput>({
     resolver: zodResolver(loginFormSchema),
-    defaultValues: {
-      role: 'ADMIN_ROOT'
-    }
+    defaultValues: { role: 'ADMIN_ROOT' }
   });
 
   const onSubmit = async (data: LoginFormInput) => {
@@ -68,48 +79,76 @@ export const LoginPage: React.FC = () => {
           response.user.typePersonne
         )
       );
-    } catch (e) {
-      // Error is handled by useAuth
+    } catch (_) {
+      // handled by useAuth
     }
   };
 
   return (
-    <div className="min-h-screen flex text-slate-800 relative">
-      {/* Left side: Animated Background Images */}
-      <div className="hidden lg:block lg:flex-1 relative overflow-hidden">
-        {backgroundImages.map((src, index) => (
+    <div className="min-h-screen flex text-slate-800">
+
+      {/* ═══ GAUCHE : Slider plein écran ═══ */}
+      <div className="hidden lg:flex lg:flex-1 flex-col relative overflow-hidden">
+        {slides.map((slide, idx) => (
           <div
-            key={src}
-            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${
-              index === bgIndex ? 'opacity-100' : 'opacity-0'
-            }`}
-            style={{ backgroundImage: `url(${src})` }}
-          />
+            key={idx}
+            className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
+            style={{
+              backgroundImage: `url(${slide.src})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              opacity: idx === current ? 1 : 0,
+            }}
+          >
+            {/* Gradient overlay sombre en bas */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+          </div>
         ))}
-        <div className="absolute inset-0 bg-gradient-to-r from-digi-purple/80 to-digi-purple/40 mix-blend-multiply" />
-        <div className="absolute inset-0 flex flex-col justify-center p-16 text-white z-10">
-          <h1 className="text-5xl font-extrabold mb-6">L'Éducation au Coeur de l'Avenir</h1>
-          <p className="text-xl max-w-lg font-medium opacity-90">
-            Une plateforme complète pour la gestion du primaire et de la maternelle. Connectez-vous pour accéder à votre espace numérique.
+
+        {/* Texte en bas */}
+        <div className="absolute bottom-0 left-0 right-0 p-10 z-10">
+          <p className="text-white text-2xl font-bold leading-snug drop-shadow-lg">
+            {slides[current].caption}
           </p>
+
+          {/* Indicateurs de slide */}
+          <div className="flex gap-2 mt-4">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrent(idx)}
+                className={`h-1.5 rounded-full transition-all duration-500 ${
+                  idx === current ? 'bg-white w-8' : 'bg-white/40 w-4'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Titre appli en haut à gauche */}
+        <div className="absolute top-8 left-8 z-10">
+          <h1 className="text-white text-3xl font-extrabold tracking-tight drop-shadow-lg">
+            {t('app.name')}
+          </h1>
+          <p className="text-white/80 text-sm font-semibold mt-1">{t('app.slogan')}</p>
         </div>
       </div>
 
-      {/* Right side: Login Form */}
-      <div className="w-full lg:w-[550px] bg-digi-bg flex flex-col justify-center p-8 sm:p-12 relative">
-        <div className="absolute top-6 right-6">
+      {/* ═══ DROITE : Formulaire de connexion ═══ */}
+      <div className="w-full lg:w-[520px] bg-digi-bg flex flex-col justify-center p-8 sm:p-12 relative overflow-y-auto">
+        <div className="absolute top-5 right-5">
           <LanguageSwitcher />
         </div>
 
         <div className="w-full max-w-md mx-auto">
-          <div className="text-center mb-8">
+          {/* Titre mobile only */}
+          <div className="text-center mb-8 lg:hidden">
             <h1 className="font-serif text-4xl font-extrabold text-digi-purple tracking-tight">{t('app.name')}</h1>
             <p className="text-sm font-semibold text-slate-500 mt-2">{t('app.slogan')}</p>
           </div>
 
           <Card className="shadow-xl border border-slate-100 overflow-hidden relative p-8">
             <div className="absolute top-0 left-0 w-full h-1.5 bg-digi-purple" />
-
             <h2 className="text-xl font-bold text-slate-800 tracking-tight text-center mb-6">{t('auth.loginTitle')}</h2>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -121,14 +160,14 @@ export const LoginPage: React.FC = () => {
               />
 
               <Input
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? 'text' : 'password'}
                 label={t('auth.password')}
                 placeholder={t('auth.passwordPlaceholder')}
                 error={errors.password?.message ? t(errors.password.message) : undefined}
                 rightIcon={
                   <button
                     type="button"
-                    onClick={() => setShowPassword(prev => !prev)}
+                    onClick={() => setShowPassword(p => !p)}
                     className="focus:outline-none text-slate-400 hover:text-slate-600"
                   >
                     {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -146,7 +185,7 @@ export const LoginPage: React.FC = () => {
                   { value: 'FONDATEUR',          label: t('auth.roles.FONDATEUR') },
                   { value: 'DIRECTEUR',          label: t('auth.roles.DIRECTEUR') },
                   { value: 'TEACHER',            label: t('auth.roles.TEACHER') },
-                  { value: 'PARENT',             label: t('auth.roles.PARENT') }
+                  { value: 'PARENT',             label: t('auth.roles.PARENT') },
                 ]}
                 error={errors.role?.message ? t(errors.role.message) : undefined}
                 {...register('role')}
@@ -167,22 +206,22 @@ export const LoginPage: React.FC = () => {
             </div>
           </Card>
 
-          {/* ═══ Demo Accounts ═══ */}
-          <div className="mt-8 bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl p-4 shadow-sm">
-            <h3 className="text-sm font-bold text-slate-800 text-center mb-4">Comptes de Démonstration</h3>
-            <div className="grid grid-cols-2 gap-3 text-xs">
+          {/* ═══ Comptes démo ═══ */}
+          <div className="mt-6 bg-white/60 backdrop-blur-sm border border-slate-200 rounded-xl p-4 shadow-sm">
+            <h3 className="text-sm font-bold text-slate-700 text-center mb-3">Comptes de Démonstration</h3>
+            <div className="grid grid-cols-3 gap-2 text-xs">
               {[
-                { role: 'ADMIN', username: 'admin', password: 'admin123' },
-                { role: 'INSCRIPTIONS', username: 'insc', password: 'insc123' },
-                { role: 'SCOLARITE', username: 'scol', password: 'scol123' },
-                { role: 'TEACHER', username: 'teacher', password: 'teach123' },
-                { role: 'PARENT', username: 'parent', password: 'parent123' },
-                { role: 'STUDENT', username: 'student', password: 'stud123' },
-              ].map((account, i) => (
+                { role: 'ADMIN',         username: 'admin',   password: 'admin123'  },
+                { role: 'INSCRIPTIONS',  username: 'insc',    password: 'insc123'   },
+                { role: 'SCOLARITE',     username: 'scol',    password: 'scol123'   },
+                { role: 'TEACHER',       username: 'teacher', password: 'teach123'  },
+                { role: 'PARENT',        username: 'parent',  password: 'parent123' },
+                { role: 'DIRECTEUR',     username: 'dir',     password: 'dir123'    },
+              ].map((acc, i) => (
                 <div key={i} className="bg-white border border-slate-100 rounded-lg p-2 text-center shadow-sm">
-                  <div className="font-bold text-digi-purple mb-1 truncate">{account.role}</div>
-                  <div className="text-slate-600">U: <span className="font-semibold uppercase">{account.username}</span></div>
-                  <div className="text-slate-600">P: <span className="font-semibold">{account.password}</span></div>
+                  <div className="font-bold text-digi-purple truncate text-[10px] mb-0.5">{acc.role}</div>
+                  <div className="text-slate-600 text-[10px]">U: <span className="font-semibold uppercase">{acc.username}</span></div>
+                  <div className="text-slate-600 text-[10px]">P: <span className="font-semibold">{acc.password}</span></div>
                 </div>
               ))}
             </div>
