@@ -9,11 +9,9 @@ const startServer = async () => {
     await sequelize.authenticate();
     logger.info('Database connection established successfully.');
 
-    if (env.NODE_ENV === 'development') {
-      logger.info('Skipping database schema sync to preserve remote data...');
-      // await sequelize.sync({ alter: true });
-      logger.info('Database models sync skipped.');
-    }
+    logger.info('Synchronizing database schema (alter: true)...');
+    await sequelize.sync({ alter: true });
+    logger.info('Database models synced.');
 
     const server = app.listen(env.PORT, '0.0.0.0', () => {
       logger.info(`🚀 [Server]: DIGISCHOOL API listening on port ${env.PORT}`);
