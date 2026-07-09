@@ -20,23 +20,24 @@ interface SidebarLink {
 const allLinks: SidebarLink[] = [
   // ─── Admin links ─────────────────────────────────────────────────────
   { to: '/dashboard',  labelKey: 'sidebar.dashboard',  icon: <LayoutDashboard className="w-5 h-5" />, roles: ['ADMIN'] },
-  // Students & Personnel – Secrétariat(1) + Directeur(4) + ROOT(0)
-  { to: '/students',   labelKey: 'sidebar.students',   icon: <GraduationCap className="w-5 h-5" />, adminTypes: [0, 1, 4], roles: ['ADMIN'] },
+  // Students – Secrétariat(1) + Directeur(4)
+  { to: '/students',   labelKey: 'sidebar.students',   icon: <GraduationCap className="w-5 h-5" />, adminTypes: [1, 4], roles: ['ADMIN'] },
+  // Personnel – Admin Root(0) + Secrétariat(1) + Directeur(4)
   { to: '/personnel',  labelKey: 'sidebar.personnel',  icon: <Users className="w-5 h-5" />,         adminTypes: [0, 1, 4], roles: ['ADMIN'] },
-  // Payments – Secrétariat(1) + Fondateur(3) + Directeur(4) + ROOT(0)
-  { to: '/payments',   labelKey: 'sidebar.payments',   icon: <CreditCard className="w-5 h-5" />,    adminTypes: [0, 1, 3, 4], roles: ['ADMIN'] },
-  // Pédagogie – Scolarité(2) + Directeur(4) + ROOT(0)
-  { to: '/academic',   labelKey: 'sidebar.academic',   icon: <Settings className="w-5 h-5" />,      adminTypes: [0, 2, 4], roles: ['ADMIN'] },
-  { to: '/schedules',  labelKey: 'sidebar.schedules',  icon: <Clock className="w-5 h-5" />,         adminTypes: [0, 2, 4], roles: ['ADMIN'] },
-  { to: '/grades',     labelKey: 'sidebar.grades',     icon: <ClipboardList className="w-5 h-5" />, adminTypes: [0, 2, 4], roles: ['ADMIN'] },
-  { to: '/bulletins',  labelKey: 'sidebar.bulletins',  icon: <FileText className="w-5 h-5" />,      adminTypes: [0, 2, 4], roles: ['ADMIN'] },
-  { to: '/discipline', labelKey: 'sidebar.discipline', icon: <ShieldCheck className="w-5 h-5" />,   adminTypes: [0, 2, 4], roles: ['ADMIN'] },
-  // Bibliothèque – Secrétariat(1) + Scolarité(2) + ROOT(0)
-  { to: '/library',    labelKey: 'sidebar.library',    icon: <BookOpen className="w-5 h-5" />,      adminTypes: [0, 1, 2], roles: ['ADMIN'] },
+  // Payments – Secrétariat(1) + Fondateur(3) + Directeur(4)
+  { to: '/payments',   labelKey: 'sidebar.payments',   icon: <CreditCard className="w-5 h-5" />,    adminTypes: [1, 3, 4], roles: ['ADMIN'] },
+  // Pédagogie (salles, cycles) – Scolarité(2) + Directeur(4)
+  { to: '/academic',   labelKey: 'sidebar.academic',   icon: <Settings className="w-5 h-5" />,      adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/schedules',  labelKey: 'sidebar.schedules',  icon: <Clock className="w-5 h-5" />,         adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/grades',     labelKey: 'sidebar.grades',     icon: <ClipboardList className="w-5 h-5" />, adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/bulletins',  labelKey: 'sidebar.bulletins',  icon: <FileText className="w-5 h-5" />,      adminTypes: [2, 4], roles: ['ADMIN'] },
+  { to: '/discipline', labelKey: 'sidebar.discipline', icon: <ShieldCheck className="w-5 h-5" />,   adminTypes: [2, 4], roles: ['ADMIN'] },
+  // Bibliothèque – Secrétariat(1) + Scolarité(2)
+  { to: '/library',    labelKey: 'sidebar.library',    icon: <BookOpen className="w-5 h-5" />,      adminTypes: [1, 2], roles: ['ADMIN'] },
   // Directeur & Fondateur voir les livres publics aussi
   { to: '/livres',     labelKey: 'sidebar.library',    icon: <BookOpen className="w-5 h-5" />,      adminTypes: [3, 4],    roles: ['ADMIN'] },
-  // Stats – Fondateur(3) + Directeur(4) + ROOT(0)
-  { to: '/stats',         labelKey: 'sidebar.stats',          icon: <BarChart3 className="w-5 h-5" />,     adminTypes: [0, 3, 4], roles: ['ADMIN'] },
+  // Stats – Fondateur(3) + Directeur(4)
+  { to: '/stats',         labelKey: 'sidebar.stats',          icon: <BarChart3 className="w-5 h-5" />,     adminTypes: [3, 4], roles: ['ADMIN'] },
   // Messages & Notifications – tous les admins
   { to: '/messages',      labelKey: 'sidebar.messages',       icon: <MessageSquare className="w-5 h-5" />, roles: ['ADMIN'] },
   { to: '/notifications', labelKey: 'sidebar.notifications',  icon: <Bell className="w-5 h-5" />,          roles: ['ADMIN'] },
@@ -80,8 +81,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false, onToggle })
 
     if (link.roles) {
       if (isAdminUser && link.roles.includes('ADMIN')) {
-        // ROOT (typeAdmin=0) and ADMIN_ROOT see all admin links
-        if (user?.typeAdmin === 0) return true;
+        // ADMIN_ROOT (typeAdmin=0) sees only links where 0 is in adminTypes
+        // No universal bypass – each link must explicitly include type 0
 
         // Other admin sub-types filtered by adminTypes
         if (link.adminTypes) {

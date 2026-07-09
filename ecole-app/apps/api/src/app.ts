@@ -49,6 +49,7 @@ app.use(
 app.set('trust proxy', 1); // Trust first proxy (Render)
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use('/uploads', express.static(env.UPLOAD_DIR));
 app.use(requestId);
 
 if (env.NODE_ENV !== 'test') {
