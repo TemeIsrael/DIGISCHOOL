@@ -79,17 +79,17 @@ export const LandingPage: React.FC = () => {
           backgroundImage: 'url(/images/acceuil.jpeg)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
+          backgroundRepeat: 'no-repeat'
         }}
       >
-        {/* Dark overlay for text readability */}
-        <div className="absolute inset-0 bg-slate-950/70" />
-        {/* Gradient overlay for styling */}
-        <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-dark/80 via-transparent to-slate-950/90" />
+        {/* Lighter overlay for text readability, less blue */}
+        <div className="absolute inset-0 bg-slate-900/40" />
+        {/* Subtle gradient to keep some branding without being too intense */}
+        <div className="absolute inset-0 bg-gradient-to-br from-digi-purple/20 via-transparent to-slate-900/50" />
         
-        {/* Decorative shapes */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-digi-purple/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-digi-purple-light/20 rounded-full blur-3xl" />
+        {/* Decorative shapes - reduced opacity */}
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-digi-purple/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-digi-purple-light/10 rounded-full blur-3xl" />
         {/* Grid pattern overlay */}
         <div
           className="absolute inset-0 opacity-[0.05]"
