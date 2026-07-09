@@ -209,8 +209,9 @@ export const LibraryManagePage: React.FC = () => {
             <input type="text" className={inputCls} value={newBook.auteur} onChange={(e) => setNewBook({ ...newBook, auteur: e.target.value })} placeholder="ex: EDICEF" />
           </div>
           <div>
-            <label className={labelCls}>URL du Fichier (Optionnel)</label>
-            <input type="url" className={inputCls} value={newBook.fichierUrl} onChange={(e) => setNewBook({ ...newBook, fichierUrl: e.target.value })} placeholder="https://..." />
+            <label className={labelCls}>{t('library.bookUrl', 'Lien du fichier PDF (Google Drive, OneDrive, etc.)')} (Optionnel)</label>
+            <p className="text-xs text-slate-500 mb-1">Collez ici le lien de téléchargement ou de lecture du PDF du livre.</p>
+            <input type="url" className={inputCls} value={newBook.fichierUrl} onChange={(e) => setNewBook({ ...newBook, fichierUrl: e.target.value })} placeholder="https://drive.google.com/..." />
           </div>
           <div className="flex justify-end gap-2 pt-2">
             <Button variant="ghost" onClick={() => setAddModalOpen(false)}>{t('common.cancel', 'Annuler')}</Button>

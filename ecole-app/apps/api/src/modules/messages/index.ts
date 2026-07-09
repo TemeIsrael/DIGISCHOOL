@@ -18,11 +18,16 @@ const sendMessageSchema = z.object({
 
 router.use(authenticate);
 
+import { sendEmail } from '../../lib/brevo';
+import { Personne } from '../../db/models';
+
 // 1. CREATE MESSAGE (Rule: Message type 1 → champ valider=false jusqu'à validation Directeur)
 router.post('/', requireRole(Object.values(ROLES)), validateBody(sendMessageSchema), async (req, res, next) => {
   const { idParent, objet, contenu, type } = req.body;
   try {
-    const parent = await Parents.findByPk(idParent);
+    const parent = await Parents.findByPk(idParent, {
+      include: [{ model: Personne, as: 'personne' }]
+    });
     if (!parent) {
       res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Parent introuvable' } });
       return;
@@ -40,10 +45,18 @@ router.post('/', requireRole(Object.values(ROLES)), validateBody(sendMessageSche
       lu: false
     });
 
+    // Send email to parent if validated
+    if (valider) {
+      const email = (parent as any).personne?.email;
+      if (email) {
+        await sendEmail(email, objet, contenu).catch(e => console.error('Failed to send email:', e));
+      }
+    }
+
     res.status(201).json({
       success: true,
       message: valider
-        ? 'Message envoyé avec succès'
+        ? 'Message envoyé avec succès et notification email expédiée'
         : 'Message de type 1 enregistré en attente de validation par le Directeur',
       data: message
     });

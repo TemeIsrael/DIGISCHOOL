@@ -49,17 +49,26 @@ export const ProfilePage: React.FC = () => {
   const [photo, setPhoto] = useState<string | null>((user as any)?.photoUrl || (user as any)?.photoURL || null);
   const [saved, setSaved] = useState(false);
 
-  const handleSaveInfo = (e: React.FormEvent) => {
+  const handleSaveInfo = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Persister dans le store (affiché partout : Topbar, Avatar, etc.)
-    updateUser({ nom: name, email, login: username, photoUrl: photo } as any);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-    toast({
-      type: 'success',
-      title: 'Profil mis à jour',
-      description: 'Vos informations ont été enregistrées avec succès.'
-    });
+    try {
+      await api.put('/auth/profile', { nom: name, email, login: username, photoUrl: photo });
+      // Persister dans le store (affiché partout : Topbar, Avatar, etc.)
+      updateUser({ nom: name, email, login: username, photoUrl: photo } as any);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      toast({
+        type: 'success',
+        title: 'Profil mis à jour',
+        description: 'Vos informations ont été enregistrées avec succès.'
+      });
+    } catch (err) {
+      toast({
+        type: 'danger',
+        title: 'Erreur',
+        description: 'Impossible de sauvegarder le profil.'
+      });
+    }
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {

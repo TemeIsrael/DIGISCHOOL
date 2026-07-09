@@ -249,4 +249,33 @@ router.put('/language', authenticate, async (req, res, next) => {
   }
 });
 
+// UPDATE PROFILE
+router.put('/profile', authenticate, async (req, res, next) => {
+  const { nom, email, login, photoUrl } = req.body;
+  const userContext = req.user!;
+  
+  try {
+    const adminRoles = ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'];
+    if (adminRoles.includes(userContext.role)) {
+      await Admin.update(
+        { login: login || userContext.login },
+        { where: { ID: userContext.id } }
+      );
+    } else {
+      await Personne.update(
+        { 
+          nom: nom,
+          email: email,
+          login: login || userContext.login,
+          photoURL: photoUrl 
+        }, 
+        { where: { idPers: userContext.id } }
+      );
+    }
+    res.json({ success: true, message: 'Profil mis à jour avec succès' });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;

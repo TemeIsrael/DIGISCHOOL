@@ -2,8 +2,8 @@ import { z } from 'zod';
 import dotenv from 'dotenv';
 
 import path from 'path';
-// Load from apps/api/.env (2 levels above src/config/)
-dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
+// Load from apps/api/.env (one level above src/)
+dotenv.config({ path: path.resolve(__dirname, '../../../../.env') });
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),

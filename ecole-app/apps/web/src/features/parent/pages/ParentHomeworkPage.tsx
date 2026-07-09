@@ -78,10 +78,6 @@ export const ParentHomeworkPage: React.FC = () => {
           <h2 className="text-sm font-bold uppercase tracking-wider text-slate-700">
             {isEn ? 'Upcoming Assignments' : 'Devoirs à venir'}
           </h2>
-          <Button variant="outline" className="gap-2">
-            <Filter className="w-4 h-4" />
-            {isEn ? 'Filter' : 'Filtrer'}
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
