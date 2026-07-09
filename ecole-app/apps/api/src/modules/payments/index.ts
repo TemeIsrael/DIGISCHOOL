@@ -23,7 +23,7 @@ const createPaymentSchema = z.object({
 router.use(authenticate);
 
 // 1. CREATE PAYMENT (Rule: Total paiements ≤ inscription + pension du cycle)
-router.post('/', requireRole(['ADMIN']), validateBody(createPaymentSchema), async (req, res, next) => {
+router.post('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), validateBody(createPaymentSchema), async (req, res, next) => {
   const { matricule, idAca, idMode, montant, trancheCouverte, justificatifUrl } = req.body;
   const user = req.user!;
   const ip = req.ip || 'unknown';
@@ -152,7 +152,7 @@ router.post('/', requireRole(['ADMIN']), validateBody(createPaymentSchema), asyn
 });
 
 // 2. GET ALL PAYMENTS
-router.get('/', requireRole(['ADMIN', 'PARENT']), async (req, res, next) => {
+router.get('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT', 'PARENT']), async (req, res, next) => {
   const user = req.user!;
   try {
     let list;
@@ -175,7 +175,7 @@ router.get('/', requireRole(['ADMIN', 'PARENT']), async (req, res, next) => {
 });
 
 // 3. IMMUTABILITY ENFORCEMENT - UPDATE IS FORBIDDEN
-router.put('/:id', requireRole(['ADMIN']), (req, res) => {
+router.put('/:id', requireRole(['ADMIN', 'ADMIN_ROOT', 'ROOT', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_SCOLARITE']), (req, res) => {
   res.status(403).json({
     error: {
       code: 'IMMUTABLE_RECORD',
@@ -185,7 +185,7 @@ router.put('/:id', requireRole(['ADMIN']), (req, res) => {
 });
 
 // 4. CANCEL PAYMENT (Counter-entry / Ligne inverse trace)
-router.post('/:id/cancel', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/:id/cancel', requireRole(['ADMIN', 'ADMIN_ROOT', 'ROOT', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_SCOLARITE']), async (req, res, next) => {
   const { id } = req.params;
   const user = req.user!;
   const ip = req.ip || 'unknown';
@@ -225,7 +225,7 @@ router.post('/:id/cancel', requireRole(['ADMIN']), async (req, res, next) => {
 });
 
 // 5. DOWNLOAD RECEIPT PDF
-router.get('/:id/receipt', requireRole(['ADMIN', 'PARENT']), async (req, res, next) => {
+router.get('/:id/receipt', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT', 'PARENT']), async (req, res, next) => {
   const { id } = req.params;
   try {
     const payment = await Paiement.findByPk(id, {

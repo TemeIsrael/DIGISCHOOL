@@ -10,6 +10,9 @@ export interface UserSession {
   typePersonne?: number;
   nom?: string;
   prenom?: string;
+  email?: string;
+  photoUrl?: string;
+  langue?: string;
 }
 
 export interface LoginResponse {

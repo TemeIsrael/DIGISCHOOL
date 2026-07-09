@@ -10,11 +10,11 @@ export const StudentAssignPage: React.FC = () => {
 
   return (
     <div className="max-w-md mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">Assigner une salle &mdash; {matricule}</h1>
+      <h1 className="text-2xl font-bold text-slate-800">Assigner une classe &mdash; {matricule}</h1>
       <Card className="shadow-sm border border-slate-100">
         <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); navigate('/students'); }}>
           <Select
-            label="Salle de classe"
+            label="Classe"
             options={[
               { value: '1', label: 'SIL A' },
               { value: '2', label: 'SIL B' },

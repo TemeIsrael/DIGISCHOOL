@@ -20,7 +20,7 @@ const createPersonneSchema = z.object({
 router.use(authenticate);
 
 // CREATE
-router.post('/', requireRole(['ADMIN']), validateBody(createPersonneSchema), async (req, res, next) => {
+router.post('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), validateBody(createPersonneSchema), async (req, res, next) => {
   const { login, password, typePersonne, nom, prenom } = req.body;
   try {
     const existing = await Personne.findOne({ where: { login } });
@@ -55,7 +55,7 @@ router.post('/', requireRole(['ADMIN']), validateBody(createPersonneSchema), asy
 });
 
 // GET ALL
-router.get('/', requireRole(['ADMIN']), async (req, res, next) => {
+router.get('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const list = await Personne.findAll({
       where: { isDelete: false },
@@ -70,7 +70,7 @@ router.get('/', requireRole(['ADMIN']), async (req, res, next) => {
 import { Parents } from '../../db/models';
 
 // GET ALL PARENTS
-router.get('/parents', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
+router.get('/parents', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT', 'TEACHER']), async (req, res, next) => {
   try {
     const list = await Parents.findAll({
       include: [{ model: Personne, as: 'personne', attributes: ['nom', 'prenom', 'login'] }]
@@ -82,7 +82,7 @@ router.get('/parents', requireRole(['ADMIN', 'TEACHER']), async (req, res, next)
 });
 
 // SEND CREDENTIALS
-router.post('/:id/send-credentials', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/:id/send-credentials', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   const { id } = req.params;
   try {
     const personne = await Personne.findOne({ where: { idPers: id, isDelete: false } });

@@ -109,7 +109,8 @@
     "discipline": "Discipline",
     "library": "Library",
     "stats": "Statistics",
-    "audit": "Audit & Logs"
+    "audit": "Audit & Logs",
+    "notifications": "Notifications"
   },
   "students": {
     "title": "Student Management",

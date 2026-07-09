@@ -43,10 +43,10 @@ export const ProfilePage: React.FC = () => {
   const { toast } = useToast();
 
   const [name, setName] = useState(user?.nom || '');
-  const [email, setEmail] = useState((user as any)?.email || '');
+  const [email, setEmail] = useState(user?.email || '');
   const [username, setUsername] = useState(user?.login?.toUpperCase() || '');
   // Initialiser la photo depuis le store (photo déjà enregistrée)
-  const [photo, setPhoto] = useState<string | null>((user as any)?.photoUrl || (user as any)?.photoURL || null);
+  const [photo, setPhoto] = useState<string | null>(user?.photoUrl || null);
   const [saved, setSaved] = useState(false);
 
   const handleSaveInfo = async (e: React.FormEvent) => {
@@ -54,7 +54,7 @@ export const ProfilePage: React.FC = () => {
     try {
       await api.put('/auth/profile', { nom: name, email, login: username, photoUrl: photo });
       // Persister dans le store (affiché partout : Topbar, Avatar, etc.)
-      updateUser({ nom: name, email, login: username, photoUrl: photo } as any);
+      updateUser({ nom: name, email, login: username, photoUrl: photo ?? undefined });
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
       toast({

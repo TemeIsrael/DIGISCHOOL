@@ -17,7 +17,7 @@ router.get('/cycles', async (req, res, next) => {
   }
 });
 
-router.post('/cycles', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/cycles', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const item = await Cycle.create(req.body);
     res.status(201).json({ success: true, data: item });
@@ -38,7 +38,7 @@ router.get('/classes', async (req, res, next) => {
   }
 });
 
-router.post('/classes', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/classes', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const item = await Classe.create(req.body);
     res.status(201).json({ success: true, data: item });
@@ -57,7 +57,7 @@ router.get('/salles', async (req, res, next) => {
   }
 });
 
-router.post('/salles', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/salles', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const item = await Salle.create(req.body);
     res.status(201).json({ success: true, data: item });
@@ -76,7 +76,7 @@ router.get('/years', async (req, res, next) => {
   }
 });
 
-router.post('/years', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/years', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const item = await AnneeAcademique.create(req.body);
     res.status(201).json({ success: true, data: item });
@@ -95,7 +95,7 @@ router.get('/courses', async (req, res, next) => {
   }
 });
 
-router.post('/courses', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/courses', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const item = await Cours.create(req.body);
     res.status(201).json({ success: true, data: item });
@@ -114,7 +114,7 @@ router.get('/schedules', async (req, res, next) => {
   }
 });
 
-router.post('/schedules', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/schedules', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const item = await EmploiDuTemps.create(req.body);
     res.status(201).json({ success: true, data: item });

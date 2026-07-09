@@ -19,7 +19,7 @@ const createRapportSchema = z.object({
 router.use(authenticate);
 
 // 1. CREATE DISCIPLINE INCIDENT REPORT (Rapport)
-router.post('/', requireRole(['ADMIN', 'TEACHER']), validateBody(createRapportSchema), async (req, res, next) => {
+router.post('/', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'ADMIN_INSCRIPTIONS', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT', 'TEACHER']), validateBody(createRapportSchema), async (req, res, next) => {
   const { matricule, idAca, idDiscipline, points, date } = req.body;
   const user = req.user!;
   const ip = req.ip || 'unknown';
@@ -56,7 +56,7 @@ router.post('/', requireRole(['ADMIN', 'TEACHER']), validateBody(createRapportSc
 });
 
 // 2. APPROVE DISCIPLINE REPORT
-router.post('/:id/approve', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/:id/approve', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   const { id } = req.params;
   const user = req.user!;
   const ip = req.ip || 'unknown';
@@ -84,7 +84,7 @@ router.post('/:id/approve', requireRole(['ADMIN']), async (req, res, next) => {
 });
 
 // 3. GET STUDENT DISCIPLINE REPORTS
-router.get('/student/:matricule', requireRole(['ADMIN', 'TEACHER', 'PARENT']), async (req, res, next) => {
+router.get('/student/:matricule', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'ADMIN_INSCRIPTIONS', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT', 'TEACHER', 'PARENT']), async (req, res, next) => {
   const { matricule } = req.params;
   try {
     const list = await Rapport.findAll({

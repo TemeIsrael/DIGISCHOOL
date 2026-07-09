@@ -10,6 +10,11 @@ export class Admin extends Model {
   declare isDelete: boolean;
   declare langue: string;
   declare signatureUrl: string | null;
+  
+  // Nouveaux champs pour le profil
+  declare nom: string | null;
+  declare email: string | null;
+  declare photoUrl: string | null;
 }
 
 Admin.init(
@@ -53,6 +58,18 @@ Admin.init(
       allowNull: true,
       defaultValue: null,
     },
+    nom: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    email: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    photoUrl: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+    }
   },
   {
     sequelize,

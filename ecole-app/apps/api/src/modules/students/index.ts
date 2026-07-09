@@ -334,7 +334,7 @@ router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS','ADMIN_SCOLAR
 });
 
 // CRUD - GET ALL
-router.get('/', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
+router.get('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'TEACHER']), async (req, res, next) => {
   try {
     const list = await Eleve.findAll({
       where: { isDelete: false, statut: 'INSCRIT' },
@@ -359,7 +359,7 @@ router.get('/', requireRole(['ADMIN', 'TEACHER']), async (req, res, next) => {
 });
 
 // CRUD - GET BY MATRICULE
-router.get('/:matricule', requireRole(['ADMIN', 'TEACHER', 'PARENT']), async (req, res, next) => {
+router.get('/:matricule', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'TEACHER', 'PARENT']), async (req, res, next) => {
   const { matricule } = req.params;
   try {
     const eleve = await Eleve.findOne({
@@ -382,7 +382,7 @@ router.get('/:matricule', requireRole(['ADMIN', 'TEACHER', 'PARENT']), async (re
 });
 
 // CRUD - UPDATE
-router.put('/:matricule', requireRole(['ADMIN']), async (req, res, next) => {
+router.put('/:matricule', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), async (req, res, next) => {
   const { matricule } = req.params;
   try {
     const eleve = await Eleve.findOne({ where: { matricule, isDelete: false } });
@@ -398,7 +398,7 @@ router.put('/:matricule', requireRole(['ADMIN']), async (req, res, next) => {
 });
 
 // CRUD - DELETE
-router.delete('/:matricule', requireRole(['ADMIN']), async (req, res, next) => {
+router.delete('/:matricule', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), async (req, res, next) => {
   const { matricule } = req.params;
   try {
     const eleve = await Eleve.findOne({ where: { matricule, isDelete: false } });
@@ -414,7 +414,7 @@ router.delete('/:matricule', requireRole(['ADMIN']), async (req, res, next) => {
 });
 
 // ASSIGN ROOM (Frequente update/new)
-router.post('/assign-room', requireRole(['ADMIN']), async (req, res, next) => {
+router.post('/assign-room', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), async (req, res, next) => {
   const { matricule, idSalle, idAcademi } = req.body;
   try {
     const freq = await Frequente.create({

@@ -11,13 +11,14 @@ const createBookSchema = z.object({
   idSpecialite: z.number(),
   titre: z.string().min(2),
   auteur: z.string().min(2),
-  fichierUrl: z.string()
+  fichierUrl: z.string(),
+  specialty: z.string().optional()
 });
 
 router.use(authenticate);
 
 // 1. ADD BOOK
-router.post('/', requireRole(['ADMIN']), validateBody(createBookSchema), async (req, res, next) => {
+router.post('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), validateBody(createBookSchema), async (req, res, next) => {
   try {
     const book = await Livres.create(req.body);
     res.status(201).json({ success: true, data: book });
@@ -52,7 +53,7 @@ router.get('/:id/download', async (req, res, next) => {
 });
 
 // 4. DELETE BOOK
-router.delete('/:id', requireRole(['ADMIN']), async (req, res, next) => {
+router.delete('/:id', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), async (req, res, next) => {
   const { id } = req.params;
   try {
     const book = await Livres.findByPk(id);

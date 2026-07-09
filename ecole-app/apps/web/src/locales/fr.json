@@ -109,7 +109,8 @@
     "discipline": "Discipline",
     "library": "Bibliothèque",
     "stats": "Statistiques",
-    "audit": "Audit & Logs"
+    "audit": "Audit & Logs",
+    "notifications": "Notifications"
   },
   "students": {
     "title": "Gestion des Élèves",

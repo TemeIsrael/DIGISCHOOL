@@ -145,7 +145,7 @@ export const StudentNewPage: React.FC = () => {
 
               <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mt-6">{t('students.assign', 'Affectation')}</h3>
               <div className="grid grid-cols-3 gap-4">
-                <ClassSelector label="Classe (Salle)" required {...register('idSalle')} />
+                <ClassSelector label="Classe" required {...register('idSalle')} />
                 <Input label="Année Académique" placeholder="Ex. 2025-2026" required {...register('idAcademi')} />
                 <Input label="Quartier (Résidence)" placeholder="Ex. Bastos" required {...register('idQuartier')} />
               </div>

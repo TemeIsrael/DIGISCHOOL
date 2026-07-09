@@ -21,45 +21,54 @@ export function exportCSV(data: Record<string, unknown>[], filename = 'data.csv'
   URL.revokeObjectURL(url);
 }
 
-/**
- * Export data as a PDF file using jsPDF and html2pdf.js.
- * Generates a cover page with the title and then the content.
- */
-import html2pdf from 'html2pdf.js';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
 export function exportPDF(data: Record<string, unknown>[], filename = 'Export') {
-  if (!data.length) return;
-  const doc = new jsPDF();
-  // Cover page
-  doc.setFontSize(22);
-  doc.text(filename, doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
-  doc.addPage();
-  // Table
-  const headers = Object.keys(data[0]);
-  const rows = data.map((row) => headers.map((h) => String(row[h] ?? '')));
-  autoTable(doc, {
-    head: [headers],
-    body: rows,
-    startY: 20,
-    theme: 'grid',
-    headStyles: { fillColor: [240, 240, 240], textColor: 0 },
-  });
-  doc.save(`${filename}.pdf`);
+  try {
+    if (!data.length) {
+      console.warn('No data to export');
+      return;
+    }
+    const doc = new jsPDF();
+    // Cover page
+    doc.setFontSize(22);
+    doc.text(filename, doc.internal.pageSize.getWidth() / 2, 30, { align: 'center' });
+    doc.addPage();
+    // Table
+    const headers = Object.keys(data[0]);
+    const rows = data.map((row) => headers.map((h) => String(row[h] ?? '')));
+    autoTable(doc, {
+      head: [headers],
+      body: rows,
+      startY: 20,
+      theme: 'grid',
+      headStyles: { fillColor: [240, 240, 240], textColor: 0 },
+    });
+    doc.save(`${filename}.pdf`);
+  } catch (error) {
+    console.error('Error exporting PDF:', error);
+    alert('Erreur lors de l\'export PDF');
+  }
 }
 
 /**
  * Generate a PDF from HTML content using html2pdf.js.
  * This utility is used for the book export with cover image.
  */
-export function exportHTMLToPDF(htmlElement: HTMLElement, filename = 'document.pdf') {
-  // @ts-ignore - html2pdf is loaded via script
-  html2pdf().from(htmlElement).set({
-    margin: 10,
-    filename,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-  }).save();
+export async function exportHTMLToPDF(htmlElement: HTMLElement, filename = 'document.pdf') {
+  try {
+    // Dynamic import to avoid SSR / build issues with html2pdf.js
+    const html2pdf = (await import('html2pdf.js')).default;
+    html2pdf().from(htmlElement).set({
+      margin: 10,
+      filename,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    }).save();
+  } catch (error) {
+    console.error('Error with html2pdf:', error);
+    alert('Erreur lors de l\'export HTML to PDF');
+  }
 }

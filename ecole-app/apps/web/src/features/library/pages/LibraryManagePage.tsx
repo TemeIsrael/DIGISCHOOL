@@ -20,6 +20,86 @@ type BookItem = {
   category?: string;
 };
 
+const inputCls = 'w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all';
+const labelCls = 'block text-xs font-bold text-slate-600 uppercase mb-1';
+
+const AddBookForm: React.FC<{ onSuccess: () => void; onCancel: () => void; allCategories: string[] }> = ({ onSuccess, onCancel, allCategories }) => {
+  const { t } = useTranslation();
+  const { toast } = useToast();
+  const [newBook, setNewBook] = useState({ titre: '', auteur: '', fichierUrl: '', specialty: 'Général' });
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleAddBook = async () => {
+    if (!newBook.titre || !newBook.auteur) {
+      toast({ type: 'danger', title: t('common.error', 'Erreur'), description: t('library.fillRequired', 'Veuillez remplir tous les champs obligatoires.') });
+      return;
+    }
+    try {
+      setIsSubmitting(true);
+      let fichierUrl = newBook.fichierUrl || '#';
+      if (pdfFile) {
+        fichierUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(pdfFile);
+        });
+      }
+      await api.post('/library', {
+        titre: newBook.titre,
+        auteur: newBook.auteur,
+        fichierUrl,
+        specialty: newBook.specialty,
+        idSpecialite: 1
+      });
+      toast({ type: 'success', title: t('library.bookAdded', 'Livre ajouté'), description: t('library.bookAddedDesc', 'Le livre a été inséré dans le catalogue.') });
+      onSuccess();
+    } catch (err: any) {
+      toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Erreur lors de l\'ajout.' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className={labelCls}>{t('library.bookTitle', 'Titre')} *</label>
+        <input type="text" className={inputCls} value={newBook.titre} onChange={(e) => setNewBook({ ...newBook, titre: e.target.value })} placeholder="ex: Leçon de géographie CM1" />
+      </div>
+      <div>
+        <label className={labelCls}>{t('library.bookAuthor', 'Auteur')} *</label>
+        <input type="text" className={inputCls} value={newBook.auteur} onChange={(e) => setNewBook({ ...newBook, auteur: e.target.value })} placeholder="ex: EDICEF" />
+      </div>
+      <div>
+        <label className={labelCls}>Spécialité *</label>
+        <input type="text" className={inputCls} value={newBook.specialty} onChange={(e) => setNewBook({ ...newBook, specialty: e.target.value })} placeholder="ex: Français, Mathématiques..." />
+      </div>
+      <div>
+        <label className={labelCls}>{t('library.bookFile', 'Fichier PDF')} (Optionnel)</label>
+        <p className="text-xs text-slate-500 mb-1">Sélectionnez le fichier PDF du livre à téléverser.</p>
+        <input
+          type="file"
+          accept=".pdf,application/pdf"
+          className={`${inputCls} file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-digi-purple/10 file:text-digi-purple hover:file:bg-digi-purple/20 cursor-pointer`}
+          onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+        />
+        {pdfFile && <p className="text-xs text-emerald-600 mt-1 font-semibold">✓ {pdfFile.name} ({(pdfFile.size / 1024).toFixed(0)} Ko)</p>}
+      </div>
+      <div>
+        <label className={labelCls}>{t('library.bookUrl', 'Ou lien externe')} (Optionnel)</label>
+        <input type="url" className={inputCls} value={newBook.fichierUrl} onChange={(e) => setNewBook({ ...newBook, fichierUrl: e.target.value })} placeholder="https://drive.google.com/..." />
+      </div>
+      <div className="flex justify-end gap-2 pt-2">
+        <Button variant="ghost" onClick={onCancel}>{t('common.cancel', 'Annuler')}</Button>
+        <Button onClick={handleAddBook} disabled={!newBook.titre || !newBook.auteur || isSubmitting}>
+          {isSubmitting ? 'Ajout...' : t('library.addBook', 'Ajouter')}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 export const LibraryManagePage: React.FC = () => {
   const { t, i18n } = useTranslation();
   const { toast } = useToast();
@@ -34,13 +114,6 @@ export const LibraryManagePage: React.FC = () => {
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [isManageModalOpen, setManageModalOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<BookItem | null>(null);
-
-  const [newBook, setNewBook] = useState({
-    titre: '',
-    auteur: '',
-    fichierUrl: ''
-  });
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const fetchBooks = async () => {
     try {
@@ -71,35 +144,9 @@ export const LibraryManagePage: React.FC = () => {
     return matchSearch && matchCat;
   });
 
-  const handleAddBook = async () => {
-    if (!newBook.titre || !newBook.auteur) {
-      toast({ type: 'danger', title: t('common.error', 'Erreur'), description: t('library.fillRequired', 'Veuillez remplir tous les champs obligatoires.') });
-      return;
-    }
-    try {
-      let fichierUrl = newBook.fichierUrl || '#';
-      // If a PDF file is selected, convert to data URL for storage
-      if (pdfFile) {
-        fichierUrl = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(pdfFile);
-        });
-      }
-      await api.post('/library', {
-        titre: newBook.titre,
-        auteur: newBook.auteur,
-        fichierUrl,
-        idSpecialite: 1 // Default specialty to pass validation
-      });
-      toast({ type: 'success', title: t('library.bookAdded', 'Livre ajouté'), description: t('library.bookAddedDesc', 'Le livre a été inséré dans le catalogue.') });
-      setAddModalOpen(false);
-      setNewBook({ titre: '', auteur: '', fichierUrl: '' });
-      setPdfFile(null);
-      fetchBooks();
-    } catch (err: any) {
-      toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Erreur lors de l\'ajout.' });
-    }
+  const handleBookAdded = () => {
+    setAddModalOpen(false);
+    fetchBooks();
   };
 
   const handleOpenManage = (book: BookItem) => {
@@ -118,9 +165,6 @@ export const LibraryManagePage: React.FC = () => {
       toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Erreur lors de la suppression.' });
     }
   };
-
-  const inputCls = 'w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all';
-  const labelCls = 'block text-xs font-bold text-slate-600 uppercase mb-1';
 
   return (
     <div className="space-y-8">
@@ -210,35 +254,7 @@ export const LibraryManagePage: React.FC = () => {
 
       {/* Add Book Modal */}
       <Modal isOpen={isAddModalOpen} onClose={() => setAddModalOpen(false)} title={t('library.addBook', 'Ajouter un Livre')}>
-        <div className="space-y-4">
-          <div>
-            <label className={labelCls}>{t('library.bookTitle', 'Titre')} *</label>
-            <input type="text" className={inputCls} value={newBook.titre} onChange={(e) => setNewBook({ ...newBook, titre: e.target.value })} placeholder="ex: Leçon de géographie CM1" />
-          </div>
-          <div>
-            <label className={labelCls}>{t('library.bookAuthor', 'Auteur')} *</label>
-            <input type="text" className={inputCls} value={newBook.auteur} onChange={(e) => setNewBook({ ...newBook, auteur: e.target.value })} placeholder="ex: EDICEF" />
-          </div>
-          <div>
-            <label className={labelCls}>{t('library.bookFile', 'Fichier PDF')} (Optionnel)</label>
-            <p className="text-xs text-slate-500 mb-1">Sélectionnez le fichier PDF du livre à téléverser.</p>
-            <input
-              type="file"
-              accept=".pdf,application/pdf"
-              className={`${inputCls} file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-digi-purple/10 file:text-digi-purple hover:file:bg-digi-purple/20 cursor-pointer`}
-              onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
-            />
-            {pdfFile && <p className="text-xs text-emerald-600 mt-1 font-semibold">✓ {pdfFile.name} ({(pdfFile.size / 1024).toFixed(0)} Ko)</p>}
-          </div>
-          <div>
-            <label className={labelCls}>{t('library.bookUrl', 'Ou lien externe')} (Optionnel)</label>
-            <input type="url" className={inputCls} value={newBook.fichierUrl} onChange={(e) => setNewBook({ ...newBook, fichierUrl: e.target.value })} placeholder="https://drive.google.com/..." />
-          </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <Button variant="ghost" onClick={() => setAddModalOpen(false)}>{t('common.cancel', 'Annuler')}</Button>
-            <Button onClick={handleAddBook} disabled={!newBook.titre || !newBook.auteur}>{t('library.addBook', 'Ajouter')}</Button>
-          </div>
-        </div>
+        <AddBookForm onSuccess={handleBookAdded} onCancel={() => setAddModalOpen(false)} allCategories={allCategories as string[]} />
       </Modal>
 
       {/* Manage Book Modal */}

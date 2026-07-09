@@ -8,7 +8,7 @@ const router = Router();
 router.use(authenticate);
 
 // 1. ROOT / ADMIN DASHBOARD STATS
-router.get('/dashboard', requireRole(['ADMIN']), async (req, res, next) => {
+router.get('/dashboard', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const totalStudents = await Eleve.count({ where: { isDelete: false } });
     const totalTeachers = await Personne.count({ where: { typePersonne: 1, isDelete: false } });
@@ -76,7 +76,7 @@ router.get('/parent', requireRole(['PARENT', 'ADMIN']), async (req, res, next) =
 });
 
 // 4. FINANCE ANALYTICS
-router.get('/finance', requireRole(['ADMIN']), async (req, res, next) => {
+router.get('/finance', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const totalPayments = await Paiement.sum('montant', { where: { actif: true } }) || 0;
     const paymentsCount = await Paiement.count({ where: { actif: true } });
@@ -95,7 +95,7 @@ router.get('/finance', requireRole(['ADMIN']), async (req, res, next) => {
 });
 
 // 5. PEDAGOGY ANALYTICS
-router.get('/pedagogy', requireRole(['ADMIN']), async (req, res, next) => {
+router.get('/pedagogy', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const totalGrades = await Evaluation.count();
     const averageGradeResult = await Evaluation.findOne({

@@ -31,19 +31,21 @@ export const Modal: React.FC<ModalProps> = ({
     fullscreen: 'max-w-full mx-4 max-h-[95vh]',
   };
 
-  // Close on Escape
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    },
-    [onClose]
-  );
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   // Focus trap + Escape + Scroll lock
   useEffect(() => {
     if (isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
-      document.addEventListener('keydown', handleKeyDown);
+      
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onCloseRef.current();
+      };
+      
+      document.addEventListener('keydown', onKeyDown);
       document.body.style.overflow = 'hidden';
 
       // Focus the dialog after it is rendered
@@ -52,12 +54,12 @@ export const Modal: React.FC<ModalProps> = ({
       });
 
       return () => {
-        document.removeEventListener('keydown', handleKeyDown);
+        document.removeEventListener('keydown', onKeyDown);
         document.body.style.overflow = '';
         previousFocusRef.current?.focus();
       };
     }
-  }, [isOpen, handleKeyDown]);
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

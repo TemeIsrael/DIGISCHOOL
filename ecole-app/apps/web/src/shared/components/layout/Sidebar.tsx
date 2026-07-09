@@ -6,7 +6,7 @@ import { Avatar } from '../ui/Avatar';
 import {
   LayoutDashboard, Users, GraduationCap, CreditCard, MessageSquare,
   ShieldCheck, BookOpen, BarChart3, Settings, Clock,
-  ClipboardList, FileText, ChevronLeft, ChevronRight
+  ClipboardList, FileText, ChevronLeft, ChevronRight, Bell
 } from 'lucide-react';
 
 interface SidebarLink {
@@ -18,39 +18,49 @@ interface SidebarLink {
 }
 
 const allLinks: SidebarLink[] = [
-  // Admin links
-  { to: '/dashboard', labelKey: 'sidebar.dashboard', icon: <LayoutDashboard className="w-5 h-5" />, roles: ['ADMIN'] },
-  { to: '/students',  labelKey: 'sidebar.students',  icon: <GraduationCap className="w-5 h-5" />, adminTypes: [1, 4], roles: ['ADMIN'] },
-  { to: '/personnel', labelKey: 'sidebar.personnel', icon: <Users className="w-5 h-5" />,         adminTypes: [1, 4], roles: ['ADMIN'] },
-  { to: '/academic',  labelKey: 'sidebar.academic',  icon: <Settings className="w-5 h-5" />,      adminTypes: [2, 4], roles: ['ADMIN'] },
-  { to: '/schedules', labelKey: 'sidebar.schedules', icon: <Clock className="w-5 h-5" />,         adminTypes: [2, 4], roles: ['ADMIN'] },
-  { to: '/grades',    labelKey: 'sidebar.grades',    icon: <ClipboardList className="w-5 h-5" />, adminTypes: [2, 4], roles: ['ADMIN'] },
-  { to: '/bulletins', labelKey: 'sidebar.bulletins', icon: <FileText className="w-5 h-5" />,      adminTypes: [2, 4], roles: ['ADMIN'] },
-  { to: '/payments',  labelKey: 'sidebar.payments',  icon: <CreditCard className="w-5 h-5" />,    adminTypes: [1, 3, 4], roles: ['ADMIN'] },
-  { to: '/messages',  labelKey: 'sidebar.messages',  icon: <MessageSquare className="w-5 h-5" />, adminTypes: [1, 4], roles: ['ADMIN'] },
-  { to: '/discipline',labelKey: 'sidebar.discipline',icon: <ShieldCheck className="w-5 h-5" />,   adminTypes: [2, 4], roles: ['ADMIN'] },
-  { to: '/library',   labelKey: 'sidebar.library', icon: <BookOpen className="w-5 h-5" />, adminTypes: [1, 2], roles: ['ADMIN'] },
-  { to: '/livres', labelKey: 'sidebar.library', icon: <BookOpen className="w-5 h-5" />, adminTypes: [4], roles: ['ADMIN'] },
-  { to: '/stats',     labelKey: 'sidebar.stats',     icon: <BarChart3 className="w-5 h-5" />,     adminTypes: [3, 4], roles: ['ADMIN'] },
+  // ─── Admin links ─────────────────────────────────────────────────────
+  { to: '/dashboard',  labelKey: 'sidebar.dashboard',  icon: <LayoutDashboard className="w-5 h-5" />, roles: ['ADMIN'] },
+  // Students & Personnel – Secrétariat(1) + Directeur(4) + ROOT(0)
+  { to: '/students',   labelKey: 'sidebar.students',   icon: <GraduationCap className="w-5 h-5" />, adminTypes: [0, 1, 4], roles: ['ADMIN'] },
+  { to: '/personnel',  labelKey: 'sidebar.personnel',  icon: <Users className="w-5 h-5" />,         adminTypes: [0, 1, 4], roles: ['ADMIN'] },
+  // Payments – Secrétariat(1) + Fondateur(3) + Directeur(4) + ROOT(0)
+  { to: '/payments',   labelKey: 'sidebar.payments',   icon: <CreditCard className="w-5 h-5" />,    adminTypes: [0, 1, 3, 4], roles: ['ADMIN'] },
+  // Pédagogie – Scolarité(2) + Directeur(4) + ROOT(0)
+  { to: '/academic',   labelKey: 'sidebar.academic',   icon: <Settings className="w-5 h-5" />,      adminTypes: [0, 2, 4], roles: ['ADMIN'] },
+  { to: '/schedules',  labelKey: 'sidebar.schedules',  icon: <Clock className="w-5 h-5" />,         adminTypes: [0, 2, 4], roles: ['ADMIN'] },
+  { to: '/grades',     labelKey: 'sidebar.grades',     icon: <ClipboardList className="w-5 h-5" />, adminTypes: [0, 2, 4], roles: ['ADMIN'] },
+  { to: '/bulletins',  labelKey: 'sidebar.bulletins',  icon: <FileText className="w-5 h-5" />,      adminTypes: [0, 2, 4], roles: ['ADMIN'] },
+  { to: '/discipline', labelKey: 'sidebar.discipline', icon: <ShieldCheck className="w-5 h-5" />,   adminTypes: [0, 2, 4], roles: ['ADMIN'] },
+  // Bibliothèque – Secrétariat(1) + Scolarité(2) + ROOT(0)
+  { to: '/library',    labelKey: 'sidebar.library',    icon: <BookOpen className="w-5 h-5" />,      adminTypes: [0, 1, 2], roles: ['ADMIN'] },
+  // Directeur & Fondateur voir les livres publics aussi
+  { to: '/livres',     labelKey: 'sidebar.library',    icon: <BookOpen className="w-5 h-5" />,      adminTypes: [3, 4],    roles: ['ADMIN'] },
+  // Stats – Fondateur(3) + Directeur(4) + ROOT(0)
+  { to: '/stats',         labelKey: 'sidebar.stats',          icon: <BarChart3 className="w-5 h-5" />,     adminTypes: [0, 3, 4], roles: ['ADMIN'] },
+  // Messages & Notifications – tous les admins
+  { to: '/messages',      labelKey: 'sidebar.messages',       icon: <MessageSquare className="w-5 h-5" />, roles: ['ADMIN'] },
+  { to: '/notifications', labelKey: 'sidebar.notifications',  icon: <Bell className="w-5 h-5" />,          roles: ['ADMIN'] },
 
-  // Teacher links
-  { to: '/teacher/dashboard', labelKey: 'navbar.teacher_space', icon: <LayoutDashboard className="w-5 h-5" />, roles: ['TEACHER'] },
-  { to: '/teacher/students', labelKey: 'sidebar.students', icon: <GraduationCap className="w-5 h-5" />, roles: ['TEACHER'] },
-  { to: '/teacher/grades', labelKey: 'sidebar.grades', icon: <ClipboardList className="w-5 h-5" />, roles: ['TEACHER'] },
-  { to: '/teacher/bulletins', labelKey: 'sidebar.bulletins', icon: <FileText className="w-5 h-5" />, roles: ['TEACHER'] },
-  { to: '/teacher/schedules', labelKey: 'sidebar.schedules', icon: <Clock className="w-5 h-5" />, roles: ['TEACHER'] },
-  { to: '/teacher/discipline', labelKey: 'sidebar.discipline', icon: <ShieldCheck className="w-5 h-5" />, roles: ['TEACHER'] },
-  { to: '/teacher/homeworks', labelKey: 'navbar.homeworks', icon: <BookOpen className="w-5 h-5" />, roles: ['TEACHER'] },
-  { to: '/teacher/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" />, roles: ['TEACHER'] },
+  // ─── Teacher links ───────────────────────────────────────────────────
+  { to: '/teacher/dashboard',  labelKey: 'navbar.teacher_space', icon: <LayoutDashboard className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/students',   labelKey: 'sidebar.students',     icon: <GraduationCap className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/grades',     labelKey: 'sidebar.grades',       icon: <ClipboardList className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/teacher/bulletins',  labelKey: 'sidebar.bulletins',    icon: <FileText className="w-5 h-5" />,      roles: ['TEACHER'] },
+  { to: '/teacher/schedules',  labelKey: 'sidebar.schedules',    icon: <Clock className="w-5 h-5" />,         roles: ['TEACHER'] },
+  { to: '/teacher/discipline', labelKey: 'sidebar.discipline',   icon: <ShieldCheck className="w-5 h-5" />,   roles: ['TEACHER'] },
+  { to: '/teacher/homeworks',  labelKey: 'navbar.homeworks',     icon: <BookOpen className="w-5 h-5" />,      roles: ['TEACHER'] },
+  { to: '/teacher/messages',   labelKey: 'sidebar.messages',     icon: <MessageSquare className="w-5 h-5" />, roles: ['TEACHER'] },
+  { to: '/notifications',      labelKey: 'sidebar.notifications', icon: <Bell className="w-5 h-5" />,         roles: ['TEACHER'] },
 
-  // Parent links
-  { to: '/parent/dashboard', labelKey: 'navbar.parent_space', icon: <LayoutDashboard className="w-5 h-5" />, roles: ['PARENT'] },
-  { to: '/parent/schedule', labelKey: 'sidebar.schedules', icon: <Clock className="w-5 h-5" />, roles: ['PARENT'] },
-  { to: '/parent/bulletins', labelKey: 'sidebar.bulletins', icon: <FileText className="w-5 h-5" />, roles: ['PARENT'] },
-  { to: '/parent/payments', labelKey: 'sidebar.payments', icon: <CreditCard className="w-5 h-5" />, roles: ['PARENT'] },
-  { to: '/parent/homeworks', labelKey: 'navbar.homeworks', icon: <BookOpen className="w-5 h-5" />, roles: ['PARENT'] },
-  { to: '/parent/library', labelKey: 'sidebar.library', icon: <BookOpen className="w-5 h-5" />, roles: ['PARENT'] },
-  { to: '/parent/messages', labelKey: 'sidebar.messages', icon: <MessageSquare className="w-5 h-5" />, roles: ['PARENT'] },
+  // ─── Parent links ────────────────────────────────────────────────────
+  { to: '/parent/dashboard',  labelKey: 'navbar.parent_space',  icon: <LayoutDashboard className="w-5 h-5" />, roles: ['PARENT'] },
+  { to: '/parent/schedule',   labelKey: 'sidebar.schedules',    icon: <Clock className="w-5 h-5" />,          roles: ['PARENT'] },
+  { to: '/parent/bulletins',  labelKey: 'sidebar.bulletins',    icon: <FileText className="w-5 h-5" />,       roles: ['PARENT'] },
+  { to: '/parent/payments',   labelKey: 'sidebar.payments',     icon: <CreditCard className="w-5 h-5" />,     roles: ['PARENT'] },
+  { to: '/parent/homeworks',  labelKey: 'navbar.homeworks',     icon: <BookOpen className="w-5 h-5" />,       roles: ['PARENT'] },
+  { to: '/parent/library',    labelKey: 'sidebar.library',      icon: <BookOpen className="w-5 h-5" />,       roles: ['PARENT'] },
+  { to: '/parent/messages',   labelKey: 'sidebar.messages',     icon: <MessageSquare className="w-5 h-5" />,  roles: ['PARENT'] },
+  { to: '/notifications',     labelKey: 'sidebar.notifications', icon: <Bell className="w-5 h-5" />,          roles: ['PARENT'] },
 ];
 
 
@@ -70,18 +80,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false, onToggle })
 
     if (link.roles) {
       if (isAdminUser && link.roles.includes('ADMIN')) {
-        // C'est un lien admin, et l'utilisateur est un admin.
-        // On vérifie les permissions spécifiques (adminTypes)
+        // ROOT (typeAdmin=0) and ADMIN_ROOT see all admin links
+        if (user?.typeAdmin === 0) return true;
+
+        // Other admin sub-types filtered by adminTypes
         if (link.adminTypes) {
-           if (user?.typeAdmin === 0) {
-             // Le super admin ne voit que les liens génériques (ex. tableau de bord)
-             return link.to === '/dashboard';
-           }
-           return link.adminTypes.includes(user?.typeAdmin ?? -1);
+          return link.adminTypes.includes(user?.typeAdmin ?? -1);
         }
-        return true;
+        return true; // Links without adminTypes restriction visible to all admins
       }
-      
+
       // Pour les autres rôles (TEACHER, PARENT)
       if (!link.roles.includes(user?.role || '')) {
         return false;

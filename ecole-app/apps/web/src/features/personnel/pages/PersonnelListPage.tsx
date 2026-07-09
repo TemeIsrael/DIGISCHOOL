@@ -24,13 +24,8 @@ const getTypeNumber = (typeString: string) => {
   return 1; // Default to teacher
 };
 
-const PersonnelListPage: React.FC = () => {
-  const { canAddPersonnelOrStudentsOrSchedules } = usePermissions();
-  const { personnel, isLoading, createPersonnel } = usePersonnel();
+const AddPersonnelForm: React.FC<{ onSuccess: () => void; onCancel: () => void; createPersonnel: any }> = ({ onSuccess, onCancel, createPersonnel }) => {
   const { toast } = useToast();
-  const { user } = useAuthStore();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEntry, setNewEntry] = useState({
     nom: '',
     prenom: '',
@@ -41,6 +36,106 @@ const PersonnelListPage: React.FC = () => {
     actif: true,
     photoUrl: '',
   });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await createPersonnel({
+        nom: newEntry.nom,
+        prenom: newEntry.prenom,
+        login: newEntry.login,
+        password: newEntry.password || 'password123',
+        typePersonne: getTypeNumber(newEntry.type)
+      });
+      toast({ type: 'success', title: 'Succès', description: 'Le personnel a été ajouté avec succès.' });
+      onSuccess();
+    } catch (err: any) {
+      toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Erreur lors de la création' });
+    }
+  };
+
+  return (
+    <form className="space-y-5" onSubmit={handleSubmit}>
+      <div className="flex items-center gap-4 border-b border-slate-100 pb-5">
+        <div className="relative group shrink-0">
+          <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center relative">
+            {newEntry.photoUrl ? (
+              <img src={newEntry.photoUrl} alt="Preview" className="w-full h-full object-cover" />
+            ) : (
+              <Users className="w-6 h-6 text-slate-300" />
+            )}
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+              <span className="text-[10px] text-white font-bold uppercase tracking-wider">Modifier</span>
+            </div>
+            <input
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              onChange={e => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    setNewEntry(prev => ({ ...prev, photoUrl: reader.result as string }));
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+          </div>
+        </div>
+        <div>
+          <p className="text-sm font-bold text-slate-800">Photo de profil</p>
+          <p className="text-xs text-slate-500">Cliquez sur l'avatar pour ajouter une image</p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Nom</label>
+          <input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Ex: NDJE" value={newEntry.nom} onChange={e => setNewEntry({ ...newEntry, nom: e.target.value })} required />
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Prénom</label>
+          <input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Ex: Carine" value={newEntry.prenom} onChange={e => setNewEntry({ ...newEntry, prenom: e.target.value })} required />
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Type</label>
+          <select className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" value={newEntry.type} onChange={e => setNewEntry({ ...newEntry, type: e.target.value })}>
+            <option value="Maître">Maître de Classe</option>
+            <option value="Spécialiste">Spécialiste</option>
+            <option value="Administratif">Administratif</option>
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Classe / Matière</label>
+          <input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Ex: CM1 A ou Anglais" value={newEntry.cours} onChange={e => setNewEntry({ ...newEntry, cours: e.target.value })} />
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Identifiant</label>
+          <input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Ex: login.c" value={newEntry.login} onChange={e => setNewEntry({ ...newEntry, login: e.target.value })} required />
+        </div>
+        <div>
+          <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Mot de passe</label>
+          <input type="password" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Min 6 caractères" value={newEntry.password} onChange={e => setNewEntry({ ...newEntry, password: e.target.value })} required minLength={6} />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-2 pt-4 border-t border-slate-100">
+        <Button type="button" variant="ghost" onClick={onCancel}>Annuler</Button>
+        <Button type="submit" variant="primary">Enregistrer</Button>
+      </div>
+    </form>
+  );
+};
+
+const PersonnelListPage: React.FC = () => {
+  const { canAddPersonnelOrStudentsOrSchedules } = usePermissions();
+  const { personnel, isLoading, createPersonnel } = usePersonnel();
+  const { toast } = useToast();
+  const { user } = useAuthStore();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('Tous');
   const [filterActif, setFilterActif] = useState('Tous');
@@ -64,22 +159,9 @@ const PersonnelListPage: React.FC = () => {
     return matchType && matchActif && matchSearch;
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await createPersonnel({
-        nom: newEntry.nom,
-        prenom: newEntry.prenom,
-        login: newEntry.login,
-        password: newEntry.password || 'password123', // Basic default if empty
-        typePersonne: getTypeNumber(newEntry.type)
-      });
-      toast({ type: 'success', title: 'Succès', description: 'Le personnel a été ajouté avec succès.' });
-      setIsModalOpen(false);
-      setNewEntry({ nom: '', prenom: '', type: 'Maître', cours: '', login: '', password: '', actif: true, photoUrl: '' });
-    } catch (err: any) {
-      toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Erreur lors de la création' });
-    }
+  const handleSuccess = () => {
+    setIsModalOpen(false);
+    // Ideally we should refetch personnel list here if the hook supports it
   };
 
   return (
@@ -146,77 +228,7 @@ const PersonnelListPage: React.FC = () => {
         title="Ajouter un nouveau personnel"
         size="md"
       >
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <div className="flex items-center gap-4 border-b border-slate-100 pb-5">
-            <div className="relative group shrink-0">
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center relative">
-                {newEntry.photoUrl ? (
-                  <img src={newEntry.photoUrl} alt="Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <Users className="w-6 h-6 text-slate-300" />
-                )}
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                  <span className="text-[10px] text-white font-bold uppercase tracking-wider">Modifier</span>
-                </div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                  onChange={e => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setNewEntry(prev => ({ ...prev, photoUrl: reader.result as string }));
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
-                />
-              </div>
-            </div>
-            <div>
-              <p className="text-sm font-bold text-slate-800">Photo de profil</p>
-              <p className="text-xs text-slate-500">Cliquez sur l'avatar pour ajouter une image</p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Nom</label>
-              <input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Ex: NDJE" value={newEntry.nom} onChange={e => setNewEntry({ ...newEntry, nom: e.target.value })} required />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Prénom</label>
-              <input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Ex: Carine" value={newEntry.prenom} onChange={e => setNewEntry({ ...newEntry, prenom: e.target.value })} required />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Type</label>
-              <select className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" value={newEntry.type} onChange={e => setNewEntry({ ...newEntry, type: e.target.value })}>
-                <option value="Maître">Maître de Classe</option>
-                <option value="Spécialiste">Spécialiste</option>
-                <option value="Administratif">Administratif</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Classe / Matière</label>
-              <input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Ex: CM1 A ou Anglais" value={newEntry.cours} onChange={e => setNewEntry({ ...newEntry, cours: e.target.value })} />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Identifiant</label>
-              <input className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Ex: login.c" value={newEntry.login} onChange={e => setNewEntry({ ...newEntry, login: e.target.value })} required />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1">Mot de passe</label>
-              <input type="password" className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all" placeholder="Min 6 caractères" value={newEntry.password} onChange={e => setNewEntry({ ...newEntry, password: e.target.value })} required minLength={6} />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2 pt-4 border-t border-slate-100">
-            <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>Annuler</Button>
-            <Button type="submit" variant="primary">Enregistrer</Button>
-          </div>
-        </form>
+        <AddPersonnelForm onSuccess={handleSuccess} onCancel={() => setIsModalOpen(false)} createPersonnel={createPersonnel} />
       </Modal>
 
       {/* Table */}

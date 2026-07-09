@@ -189,13 +189,36 @@ router.post('/logout', async (req, res, next) => {
 });
 
 // ME
-router.get('/me', authenticate, async (req, res) => {
-  res.json({
-    success: true,
-    data: {
-      user: req.user
+router.get('/me', authenticate, async (req, res, next) => {
+  const userContext = req.user!;
+  try {
+    let fullUser: any = null;
+    const adminRoles = ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'];
+    if (adminRoles.includes(userContext.role)) {
+      fullUser = await Admin.findByPk(userContext.id);
+    } else {
+      fullUser = await Personne.findByPk(userContext.id);
     }
-  });
+
+    if (!fullUser) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Utilisateur introuvable' } });
+      return;
+    }
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          ...req.user,
+          nom: fullUser.nom,
+          email: fullUser.email,
+          photoUrl: fullUser.photoUrl || fullUser.photoURL,
+        }
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // CHANGE PASSWORD
@@ -259,7 +282,12 @@ router.put('/profile', authenticate, async (req, res, next) => {
     const adminRoles = ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'];
     if (adminRoles.includes(userContext.role)) {
       await Admin.update(
-        { login: login || userContext.login },
+        { 
+          login: login || userContext.login,
+          nom: nom || null,
+          email: email || null,
+          photoUrl: photoUrl || null 
+        },
         { where: { ID: userContext.id } }
       );
     } else {
