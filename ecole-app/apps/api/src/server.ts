@@ -30,9 +30,12 @@ const startServer = async () => {
         // Modifier la colonne pour autoriser NULL avant de faire les UPDATE
         await sequelize.query("ALTER TABLE `Personne` MODIFY COLUMN `idAdmin` INT NULL");
         
-        // Maintenant on peut nettoyer en toute sécurité (0 ou orphelins -> NULL)
+        // Nettoyer les valeurs orphelines pour éviter l'erreur de contrainte ForeignKey sur Personne
         await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` = 0");
         await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` NOT IN (SELECT `ID` FROM `Admin`)");
+
+        // Nettoyer les orphelins dans Parents avant d'appliquer la clé étrangère
+        await sequelize.query("DELETE FROM `Parents` WHERE `idPers` NOT IN (SELECT `idPers` FROM `Personne`)");
 
         logger.info('Successfully modified Personne.idAdmin data type to match Admin.ID and cleaned invalid values');
       } catch (innerError) {
