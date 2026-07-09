@@ -73,53 +73,55 @@ export const LandingPage: React.FC = () => {
       <PublicNavbar />
 
       {/* ═══ Hero Section ═══ */}
-      <section className="relative min-h-[560px] bg-slate-950 flex flex-col lg:flex-row items-center justify-center overflow-hidden">
-        {/* Gradient overlay — no external image dependency */}
-        <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-dark via-slate-900 to-slate-950" />
+      <section
+        className="relative min-h-[560px] flex flex-col lg:flex-row items-center justify-center overflow-hidden"
+        style={{
+          backgroundImage: 'url(/images/acceuil.jpeg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
+        {/* Dark overlay for text readability */}
+        <div className="absolute inset-0 bg-slate-950/70" />
+        {/* Gradient overlay for styling */}
+        <div className="absolute inset-0 bg-gradient-to-br from-digi-purple-dark/80 via-transparent to-slate-950/90" />
+        
         {/* Decorative shapes */}
-        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-digi-purple/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-digi-purple-light/10 rounded-full blur-3xl" />
+        <div className="absolute top-1/4 -left-20 w-96 h-96 bg-digi-purple/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-digi-purple-light/20 rounded-full blur-3xl" />
         {/* Grid pattern overlay */}
         <div
-          className="absolute inset-0 opacity-[0.03]"
+          className="absolute inset-0 opacity-[0.05]"
           style={{
             backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px)',
             backgroundSize: '32px 32px'
           }}
         />
 
-        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-12 py-20 px-6">
-          <div className="flex-1 text-center lg:text-left space-y-8">
-            {/* Pill badge */}
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/10 rounded-full px-4 py-1.5 text-xs font-bold text-white/80 animate-fade-in">
-              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              {t('landingFeatures.opPlatform')}
-            </div>
-
-            <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight animate-fade-in">
-              {t('landing.hero')}
-            </h1>
-            <p className="text-lg md:text-xl text-slate-300 max-w-2xl font-medium leading-relaxed animate-fade-in mx-auto lg:mx-0">
-              {t('landing.heroSub')}
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4 animate-fade-in">
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={() => navigate('/login')}
-                className="gap-2 shadow-xl shadow-digi-purple/20 px-8"
-              >
-                {t('landing.signIn')}
-              </Button>
-            </div>
+        <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center text-center gap-8 py-20 px-6">
+          {/* Pill badge */}
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full px-5 py-2 text-sm font-bold text-white shadow-xl animate-fade-in">
+            <span className="w-2.5 h-2.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+            {t('landingFeatures.opPlatform')}
           </div>
 
-          {/* Hero Images - Stacked vertically */}
-          <div className="flex-1 flex flex-col gap-4 w-full items-center lg:items-end mt-12 lg:mt-0 animate-fade-in hidden md:flex">
-            <img src="/images/ecole2.jpg" alt="Excellence Académique" className="w-full max-w-md h-40 object-cover rounded-xl shadow-lg border border-slate-200" />
-            <img src="/images/ecole3.jpg" alt="Pédagogie" className="w-full max-w-md h-40 object-cover rounded-xl shadow-lg border border-slate-200" />
-            <img src="/images/primary.jpg" alt="Primaire" className="w-full max-w-md h-40 object-cover rounded-xl shadow-lg border border-slate-200" />
+          <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-tight tracking-tight animate-fade-in max-w-4xl drop-shadow-2xl">
+            {t('landing.hero')}
+          </h1>
+          <p className="text-lg md:text-xl text-slate-200 max-w-2xl font-medium leading-relaxed animate-fade-in drop-shadow-md">
+            {t('landing.heroSub')}
+          </p>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8 animate-fade-in">
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => navigate('/login')}
+              className="gap-2 shadow-2xl shadow-digi-purple/40 px-10 py-4 text-lg backdrop-blur-sm bg-digi-purple/90 hover:bg-digi-purple border border-white/10"
+            >
+              {t('landing.signIn')}
+            </Button>
           </div>
         </div>
       </section>
