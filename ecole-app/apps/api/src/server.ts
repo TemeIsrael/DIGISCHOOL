@@ -23,6 +23,9 @@ const startServer = async () => {
       logger.info('Successfully populated login column for Admin and Personne');
 
       try {
+        // Désactiver les contraintes de clés étrangères pour le nettoyage
+        await sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
+
         // Désactiver temporairement le mode strict pour éviter l'erreur "Out of range value"
         // lors de la conversion de chaînes vides en INT (qui deviendront 0)
         await sequelize.query("SET SESSION sql_mode = ''");
@@ -34,12 +37,17 @@ const startServer = async () => {
         await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` = 0");
         await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` NOT IN (SELECT `ID` FROM `Admin`)");
 
+        // Nettoyer les orphelins dans Messages avant de nettoyer Parents
+        await sequelize.query("DELETE FROM `Messages` WHERE `idParent` IN (SELECT `idParent` FROM `Parents` WHERE `idPers` NOT IN (SELECT `idPers` FROM `Personne`))");
+
         // Nettoyer les orphelins dans Parents avant d'appliquer la clé étrangère
         await sequelize.query("DELETE FROM `Parents` WHERE `idPers` NOT IN (SELECT `idPers` FROM `Personne`)");
 
         logger.info('Successfully modified Personne.idAdmin data type to match Admin.ID and cleaned invalid values');
       } catch (innerError) {
-        logger.info('Failed to modify Personne.idAdmin data type: ' + (innerError as Error).message);
+        logger.info('Failed to modify Personne.idAdmin data type or clean orphans: ' + (innerError as Error).message);
+      } finally {
+        await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
       }
     } catch (e) {
       logger.warn('Failed to fix empty logins', e);
