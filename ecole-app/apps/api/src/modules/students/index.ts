@@ -334,7 +334,7 @@ router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS','ADMIN_SCOLAR
 });
 
 // CRUD - GET ALL
-router.get('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'TEACHER']), async (req, res, next) => {
+router.get('/', requireRole(['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN','TEACHER']), async (req, res, next) => {
   try {
     const list = await Eleve.findAll({
       where: { isDelete: false, statut: 'INSCRIT' },
