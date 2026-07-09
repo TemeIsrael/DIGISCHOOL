@@ -42,6 +42,15 @@ const startServer = async () => {
 
         // Nettoyer les orphelins dans Parents avant d'appliquer la clé étrangère
         await sequelize.query("DELETE FROM `Parents` WHERE `idPers` NOT IN (SELECT `idPers` FROM `Personne`)");
+        
+        // Nettoyer les orphelins dans Frequente (idSalle et matricule)
+        await sequelize.query("DELETE FROM `Frequente` WHERE `idSalle` NOT IN (SELECT `idSalle` FROM `Salle`)");
+        await sequelize.query("DELETE FROM `Frequente` WHERE `matricule` NOT IN (SELECT `matricule` FROM `Eleve`)");
+        
+        // Nettoyer les orphelins dans les autres tables dépendantes de matricule
+        await sequelize.query("DELETE FROM `Evaluation` WHERE `matricule` NOT IN (SELECT `matricule` FROM `Eleve`)");
+        await sequelize.query("DELETE FROM `Paiement` WHERE `matricule` NOT IN (SELECT `matricule` FROM `Eleve`)");
+        await sequelize.query("DELETE FROM `Rapport` WHERE `matricule` NOT IN (SELECT `matricule` FROM `Eleve`)");
 
         logger.info('Successfully modified Personne.idAdmin data type to match Admin.ID and cleaned invalid values');
       } catch (innerError) {
