@@ -74,10 +74,10 @@ export const LandingPage: React.FC = () => {
 
       {/* ═══ Hero Section ═══ */}
       <section
-        className="relative min-h-[560px] flex flex-col lg:flex-row items-center justify-center overflow-hidden"
+        className="relative min-h-[560px] flex flex-col lg:flex-row items-center justify-center overflow-hidden bg-slate-950"
         style={{
           backgroundImage: 'url(/images/acceuil.jpeg)',
-          backgroundSize: 'cover',
+          backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
         }}
