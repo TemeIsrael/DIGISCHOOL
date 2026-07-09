@@ -11,9 +11,17 @@ const startServer = async () => {
 
     logger.info('Fixing duplicate empty logins in Admin table before sync...');
     try {
-      await sequelize.query("UPDATE Admin SET login = CONCAT('admin_', ID) WHERE login = '' OR login IS NULL");
+      try {
+        await sequelize.query("ALTER TABLE `Admin` ADD COLUMN `login` VARCHAR(100)");
+        logger.info('Successfully added login column manually');
+      } catch (innerError) {
+        // Log this to know if it failed or if the column already existed
+        logger.info('ALTER TABLE skipped or failed (column might already exist): ' + (innerError as Error).message);
+      }
+      await sequelize.query("UPDATE `Admin` SET `login` = CONCAT('admin_', `ID`) WHERE `login` = '' OR `login` IS NULL");
+      logger.info('Successfully populated login column');
     } catch (e) {
-      logger.warn('Failed to fix empty logins (table might not exist yet)', e);
+      logger.warn('Failed to fix empty logins', e);
     }
 
     logger.info('Synchronizing database schema (alter: true)...');
