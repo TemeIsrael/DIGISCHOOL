@@ -55,12 +55,53 @@ const startServer = async () => {
 
     logger.info('Synchronizing database schema (alter: true)...');
     try {
-      // Désactiver les clés étrangères pendant le sync pour éviter les erreurs de contrainte
+      // Désactiver les clés étrangères pendant le sync
       await sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
 
-      // Corriger le type de la colonne matricule dans les tables existantes
-      // (historiquement INT, doit être VARCHAR(50) pour correspondre à Eleve.matricule)
-      const tablesToFixMatricule = ['Parents', 'Frequente', 'Evaluation', 'Paiement', 'Rapport'];
+      // Étape 1 : Supprimer TOUTES les clés étrangères existantes sur la colonne 'matricule'
+      // (les anciennes FK manuelles empêchent le changement de type de colonne)
+      const tablesToFixMatricule = ['Parents', 'Frequente', 'Evaluation', 'Paiement', 'Rapport', 'Eleve'];
+      for (const table of tablesToFixMatricule) {
+        try {
+          const [fks] = await sequelize.query(`
+            SELECT CONSTRAINT_NAME
+            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND TABLE_NAME = '${table}'
+              AND COLUMN_NAME = 'matricule'
+              AND REFERENCED_TABLE_NAME IS NOT NULL
+          `);
+          for (const fk of fks as any[]) {
+            try {
+              await sequelize.query(`ALTER TABLE \`${table}\` DROP FOREIGN KEY \`${fk.CONSTRAINT_NAME}\``);
+              logger.info(`Dropped FK ${fk.CONSTRAINT_NAME} from ${table}`);
+            } catch (e) {
+              logger.info(`Could not drop FK ${fk.CONSTRAINT_NAME} from ${table}: ${(e as Error).message}`);
+            }
+          }
+          // Aussi supprimer les FK qui RÉFÉRENCENT cette table.matricule
+          const [refFks] = await sequelize.query(`
+            SELECT TABLE_NAME as TBL, CONSTRAINT_NAME
+            FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+            WHERE TABLE_SCHEMA = DATABASE()
+              AND REFERENCED_TABLE_NAME = '${table}'
+              AND REFERENCED_COLUMN_NAME = 'matricule'
+          `);
+          for (const fk of refFks as any[]) {
+            try {
+              await sequelize.query(`ALTER TABLE \`${(fk as any).TBL}\` DROP FOREIGN KEY \`${fk.CONSTRAINT_NAME}\``);
+              logger.info(`Dropped referencing FK ${fk.CONSTRAINT_NAME} from ${(fk as any).TBL}`);
+            } catch (e) {
+              logger.info(`Could not drop referencing FK ${fk.CONSTRAINT_NAME}: ${(e as Error).message}`);
+            }
+          }
+        } catch (e) {
+          logger.info(`Could not query FKs for ${table}: ${(e as Error).message}`);
+        }
+      }
+
+      // Étape 2 : Corriger le type de la colonne matricule dans les tables existantes
+      // (historiquement INT UNSIGNED, doit être VARCHAR(50) pour correspondre à Eleve.matricule)
       for (const table of tablesToFixMatricule) {
         try {
           await sequelize.query(`ALTER TABLE \`${table}\` MODIFY COLUMN \`matricule\` VARCHAR(50) NOT NULL`);
@@ -70,6 +111,7 @@ const startServer = async () => {
         }
       }
 
+      // Étape 3 : Synchroniser le schéma
       await sequelize.sync({ alter: true });
       logger.info('Database models synced.');
     } finally {
