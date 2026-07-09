@@ -19,7 +19,8 @@ export const seedDemoAccounts = async () => {
       { login: 'parent1', typePersonne: 2, nom: 'Parent', prenom: 'One' },
     ];
 
-    const defaultPassword = await hashPassword('password123');
+    const defaultPasswordStr = 'admin123';
+    const defaultPassword = await hashPassword(defaultPasswordStr);
 
     for (const acc of adminAccounts) {
       const [admin, created] = await Admin.findOrCreate({
@@ -34,7 +35,8 @@ export const seedDemoAccounts = async () => {
       });
       if (created) {
         logger.info(`Created demo admin account: ${acc.login}`);
-      } else if (admin.password !== defaultPassword) {
+      } else {
+        // Always enforce the demo password so tests work
         admin.password = defaultPassword;
         await admin.save();
         logger.info(`Reset password for demo admin account: ${acc.login}`);
@@ -56,7 +58,8 @@ export const seedDemoAccounts = async () => {
       });
       if (created) {
         logger.info(`Created demo personne account: ${acc.login}`);
-      } else if (person.password !== defaultPassword) {
+      } else {
+        // Always enforce the demo password so tests work
         person.password = defaultPassword;
         await person.save();
         logger.info(`Reset password for demo personne account: ${acc.login}`);
