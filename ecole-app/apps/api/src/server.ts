@@ -22,6 +22,11 @@ const startServer = async () => {
       logger.info('Successfully populated login column');
 
       try {
+        // Nettoyer les valeurs invalides ou vides qui empêchent la conversion en INT
+        await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` = '' OR `idAdmin` <= 0");
+        // Nettoyer les valeurs orphelines pour éviter l'erreur de contrainte ForeignKey
+        await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` NOT IN (SELECT `ID` FROM `Admin`)");
+        
         await sequelize.query("ALTER TABLE `Personne` MODIFY COLUMN `idAdmin` INT");
         logger.info('Successfully modified Personne.idAdmin data type to match Admin.ID');
       } catch (innerError) {
