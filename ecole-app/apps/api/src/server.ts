@@ -22,13 +22,18 @@ const startServer = async () => {
       logger.info('Successfully populated login column');
 
       try {
-        // Nettoyer les valeurs invalides ou vides qui empêchent la conversion en INT
-        await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` = '' OR `idAdmin` <= 0");
-        // Nettoyer les valeurs orphelines pour éviter l'erreur de contrainte ForeignKey
-        await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` NOT IN (SELECT `ID` FROM `Admin`)");
+        // Désactiver temporairement le mode strict pour éviter l'erreur "Out of range value"
+        // lors de la conversion de chaînes vides en INT (qui deviendront 0)
+        await sequelize.query("SET SESSION sql_mode = ''");
         
-        await sequelize.query("ALTER TABLE `Personne` MODIFY COLUMN `idAdmin` INT");
-        logger.info('Successfully modified Personne.idAdmin data type to match Admin.ID');
+        // Modifier la colonne pour autoriser NULL avant de faire les UPDATE
+        await sequelize.query("ALTER TABLE `Personne` MODIFY COLUMN `idAdmin` INT NULL");
+        
+        // Maintenant on peut nettoyer en toute sécurité (0 ou orphelins -> NULL)
+        await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` = 0");
+        await sequelize.query("UPDATE `Personne` SET `idAdmin` = NULL WHERE `idAdmin` NOT IN (SELECT `ID` FROM `Admin`)");
+
+        logger.info('Successfully modified Personne.idAdmin data type to match Admin.ID and cleaned invalid values');
       } catch (innerError) {
         logger.info('Failed to modify Personne.idAdmin data type: ' + (innerError as Error).message);
       }
