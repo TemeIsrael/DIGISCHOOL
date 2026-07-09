@@ -2,10 +2,10 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Mode extends Model {
-  public idMode!: number;
-  public idFondateur!: number;
-  public libelle!: string;
-  public actif!: boolean;
+  declare idMode: number;
+  declare idFondateur: number;
+  declare libelle: string;
+  declare actif: boolean;
 }
 
 Mode.init(

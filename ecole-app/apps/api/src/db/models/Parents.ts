@@ -2,9 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Parents extends Model {
-  public idParent!: number;
-  public idPers!: number;
-  public matricule!: number;
+  declare idParent: number;
+  declare idPers: number;
+  declare matricule: number;
 }
 
 Parents.init(

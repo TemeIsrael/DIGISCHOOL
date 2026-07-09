@@ -2,11 +2,11 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Tranches extends Model {
-  public idTranche!: number;
-  public idScolarite!: number;
-  public numero!: number;
-  public montant!: number;
-  public dateEcheance!: Date;
+  declare idTranche: number;
+  declare idScolarite: number;
+  declare numero: number;
+  declare montant: number;
+  declare dateEcheance: Date;
 }
 
 Tranches.init(

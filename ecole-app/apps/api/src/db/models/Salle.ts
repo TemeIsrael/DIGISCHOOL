@@ -2,11 +2,11 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Salle extends Model {
-  public idSalle!: number;
-  public idClasse!: number;
-  public libelle!: string;
-  public surface!: number;
-  public position!: string;
+  declare idSalle: number;
+  declare idClasse: number;
+  declare libelle: string;
+  declare surface: number;
+  declare position: string;
 }
 
 Salle.init(

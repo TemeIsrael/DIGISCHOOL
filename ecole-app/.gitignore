@@ -12,3 +12,4 @@ build/
 coverage/
 uploads/
 ecole-app/.env.combined
+.env.combined

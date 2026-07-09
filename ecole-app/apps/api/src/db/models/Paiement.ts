@@ -2,18 +2,18 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Paiement extends Model {
-  public idPaie!: number;
-  public matricule!: number;
-  public idAca!: number;
-  public idMode!: number;
-  public idPers!: number;
-  public montant!: number;
-  public date!: Date;
-  public trancheCouverte!: number;
-  public justificatifUrl!: string | null;
-  public actif!: boolean;
-  public anneeAcademique?: any;
-  public mode?: any;
+  declare idPaie: number;
+  declare matricule: number;
+  declare idAca: number;
+  declare idMode: number;
+  declare idPers: number;
+  declare montant: number;
+  declare date: Date;
+  declare trancheCouverte: number;
+  declare justificatifUrl: string | null;
+  declare actif: boolean;
+  declare anneeAcademique?: any;
+  declare mode?: any;
 }
 
 Paiement.init(

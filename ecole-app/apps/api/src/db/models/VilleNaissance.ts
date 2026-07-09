@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class VilleNaissance extends Model {
-  public idVille!: number;
-  public libelle!: string;
+  declare idVille: number;
+  declare libelle: string;
 }
 
 VilleNaissance.init(

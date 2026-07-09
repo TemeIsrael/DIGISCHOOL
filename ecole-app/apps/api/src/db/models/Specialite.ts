@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Specialite extends Model {
-  public idSpecialite!: number;
-  public libelle!: string;
+  declare idSpecialite: number;
+  declare libelle: string;
 }
 
 Specialite.init(

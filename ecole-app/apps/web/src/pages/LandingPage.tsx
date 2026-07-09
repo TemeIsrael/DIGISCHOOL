@@ -118,10 +118,11 @@ export const LandingPage: React.FC = () => {
           {/* Hero Images - Maternelle & Primaire */}
           <div className="flex-1 flex gap-4 w-full justify-center lg:justify-end mt-12 lg:mt-0 animate-fade-in hidden md:flex">
             <div className="flex flex-col gap-4 mt-8">
-              <img src="/assets/preschool.jpg" alt="Maternelle" className="w-48 md:w-64 h-64 md:h-80 object-cover rounded-2xl shadow-2xl border-4 border-white/10 transform -rotate-3 hover:rotate-0 transition-transform duration-300" />
+              <img src="/images/ecole2.jpg" alt="Maternelle" className="w-48 md:w-56 h-64 md:h-80 object-cover rounded-2xl shadow-2xl border-4 border-white/10 transform -rotate-3 hover:rotate-0 transition-transform duration-300" />
             </div>
             <div className="flex flex-col gap-4">
-              <img src="/assets/primary.jpg" alt="Primaire" className="w-48 md:w-64 h-64 md:h-80 object-cover rounded-2xl shadow-2xl border-4 border-white/10 transform rotate-3 hover:rotate-0 transition-transform duration-300" />
+              <img src="/assets/primary.jpg" alt="Primaire" className="w-48 md:w-56 h-40 md:h-56 object-cover rounded-2xl shadow-2xl border-4 border-white/10 transform rotate-3 hover:rotate-0 transition-transform duration-300" />
+              <img src="/images/ecole3.jpg" alt="Ecole" className="w-48 md:w-56 h-40 md:h-56 object-cover rounded-2xl shadow-2xl border-4 border-white/10 transform -rotate-2 hover:rotate-0 transition-transform duration-300" />
             </div>
           </div>
         </div>

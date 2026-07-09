@@ -2,10 +2,10 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Session extends Model {
-  public idSession!: number;
-  public idTrimestre!: number;
-  public libelle!: string;
-  public type!: string;
+  declare idSession: number;
+  declare idTrimestre: number;
+  declare libelle: string;
+  declare type: string;
 }
 
 Session.init(

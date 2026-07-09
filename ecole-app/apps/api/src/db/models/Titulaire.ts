@@ -2,9 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Titulaire extends Model {
-  public idTitulaire!: number;
-  public idPers!: number;
-  public idSalle!: number;
+  declare idTitulaire: number;
+  declare idPers: number;
+  declare idSalle: number;
 }
 
 Titulaire.init(

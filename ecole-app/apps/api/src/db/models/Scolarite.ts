@@ -2,11 +2,11 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Scolarite extends Model {
-  public idScolarite!: number;
-  public idCycle!: number;
-  public idFondateur!: number;
-  public montantInscription!: number;
-  public pension!: number;
+  declare idScolarite: number;
+  declare idCycle: number;
+  declare idFondateur: number;
+  declare montantInscription: number;
+  declare pension: number;
 }
 
 Scolarite.init(

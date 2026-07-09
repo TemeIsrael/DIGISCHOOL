@@ -2,12 +2,12 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Frequente extends Model {
-  public idFrequente!: number;
-  public idSalle!: number;
-  public idAcademi!: number;
-  public matricule!: number;
-  public salle?: any;
-  public eleve?: any;
+  declare idFrequente: number;
+  declare idSalle: number;
+  declare idAcademi: number;
+  declare matricule: number;
+  declare salle?: any;
+  declare eleve?: any;
 }
 
 Frequente.init(

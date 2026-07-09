@@ -2,9 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Discipline extends Model {
-  public ID!: number;
-  public libelle!: string;
-  public points!: number;
+  declare ID: number;
+  declare libelle: string;
+  declare points: number;
 }
 
 Discipline.init(

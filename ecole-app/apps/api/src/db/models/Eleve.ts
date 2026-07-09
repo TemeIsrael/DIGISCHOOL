@@ -2,18 +2,18 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Eleve extends Model {
-  public matricule!: string;
-  public nom!: string;
-  public prenom!: string;
-  public dateNaissance!: Date;
-  public lieuNaissance!: string;
-  public sexe!: number;
-  public idVilleNaissance!: number;
-  public langue!: string;
+  declare matricule: string;
+  declare nom: string;
+  declare prenom: string;
+  declare dateNaissance: Date;
+  declare lieuNaissance: string;
+  declare sexe: number;
+  declare idVilleNaissance: number;
+  declare langue: string;
 
-  public actif!: boolean;
-  public isDelete!: boolean;
-  public idAdmin!: number;
+  declare actif: boolean;
+  declare isDelete: boolean;
+  declare idAdmin: number;
 }
 
 Eleve.init(

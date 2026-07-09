@@ -2,13 +2,13 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Evaluation extends Model {
-  public idEval!: number;
-  public matricule!: number;
-  public idEpreuve!: number;
-  public idCours!: number;
-  public idSession!: number;
-  public note!: number;
-  public appreciation!: string;
+  declare idEval: number;
+  declare matricule: number;
+  declare idEpreuve: number;
+  declare idCours: number;
+  declare idSession: number;
+  declare note: number;
+  declare appreciation: string;
 }
 
 Evaluation.init(

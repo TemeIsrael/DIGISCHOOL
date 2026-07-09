@@ -2,12 +2,12 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Epreuve extends Model {
-  public idEpreuve!: number;
-  public idNature!: number;
-  public idPers!: number;
-  public fichierUrl!: string;
-  public dateCreation!: Date;
-  public natureEpreuve?: any;
+  declare idEpreuve: number;
+  declare idNature: number;
+  declare idPers: number;
+  declare fichierUrl: string;
+  declare dateCreation: Date;
+  declare natureEpreuve?: any;
 }
 
 Epreuve.init(

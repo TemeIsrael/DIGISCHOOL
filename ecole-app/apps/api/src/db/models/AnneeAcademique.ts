@@ -2,9 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class AnneeAcademique extends Model {
-  public idAnnee!: number;
-  public libelle!: string;
-  public courante!: boolean;
+  declare idAnnee: number;
+  declare libelle: string;
+  declare courante: boolean;
 }
 
 AnneeAcademique.init(

@@ -2,9 +2,9 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class NatureEpreuve extends Model {
-  public idNature!: number;
-  public libelle!: string;
-  public type!: string; // e.g. "Devoir", "Examen"
+  declare idNature: number;
+  declare libelle: string;
+  declare type: string; // e.g. "Devoir", "Examen"
 }
 
 NatureEpreuve.init(

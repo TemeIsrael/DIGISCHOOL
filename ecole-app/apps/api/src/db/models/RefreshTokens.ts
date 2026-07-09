@@ -2,11 +2,11 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class RefreshTokens extends Model {
-  public id!: number;
-  public token!: string;
-  public userId!: number;
-  public userType!: string; // 'admin' | 'personne'
-  public expiresAt!: Date;
+  declare id: number;
+  declare token: string;
+  declare userId: number;
+  declare userType: string; // 'admin' | 'personne'
+  declare expiresAt: Date;
 }
 
 RefreshTokens.init(

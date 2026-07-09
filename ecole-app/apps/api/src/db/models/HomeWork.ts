@@ -2,13 +2,13 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class HomeWork extends Model {
-  public id!: number;
-  public classe!: string;
-  public matiere!: string;
-  public titre!: string;
-  public date!: string; // store as string (YYYY-MM-DD)
-  public pdfUrl?: string;
-  public created_at!: Date;
+  declare id: number;
+  declare classe: string;
+  declare matiere: string;
+  declare titre: string;
+  declare date: string; // store as string (YYYY-MM-DD)
+  declare pdfUrl?: string;
+  declare created_at: Date;
 }
 
 HomeWork.init(

@@ -2,11 +2,11 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Cours extends Model {
-  public idCours!: number;
-  public idClasse!: number;
-  public libelle!: string;
-  public coefficient!: number;
-  public noteMax!: number;
+  declare idCours: number;
+  declare idClasse: number;
+  declare libelle: string;
+  declare coefficient: number;
+  declare noteMax: number;
 }
 
 Cours.init(

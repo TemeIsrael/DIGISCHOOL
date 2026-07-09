@@ -2,14 +2,14 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Rapport extends Model {
-  public idRap!: number;
-  public matricule!: number;
-  public idAca!: number;
-  public idPers!: number;
-  public idDiscipline!: number;
-  public points!: number;
-  public date!: Date;
-  public statut!: string; // e.g. "Draft", "Approved", "Rejected"
+  declare idRap: number;
+  declare matricule: number;
+  declare idAca: number;
+  declare idPers: number;
+  declare idDiscipline: number;
+  declare points: number;
+  declare date: Date;
+  declare statut: string; // e.g. "Draft", "Approved", "Rejected"
 }
 
 Rapport.init(

@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Cycle extends Model {
-  public idCycle!: number;
-  public libelle!: string;
+  declare idCycle: number;
+  declare libelle: string;
 }
 
 Cycle.init(

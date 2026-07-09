@@ -2,10 +2,10 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Trimestre extends Model {
-  public idTrimes!: number;
-  public idAca!: number;
-  public libelle!: string;
-  public ordre!: number;
+  declare idTrimes: number;
+  declare idAca: number;
+  declare libelle: string;
+  declare ordre: number;
 }
 
 Trimestre.init(

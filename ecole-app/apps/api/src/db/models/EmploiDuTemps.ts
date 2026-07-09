@@ -2,12 +2,12 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class EmploiDuTemps extends Model {
-  public idTemps!: number;
-  public idClasse!: number;
-  public idCours!: number;
-  public jour!: string;
-  public heureDebut!: string;
-  public heureFin!: string;
+  declare idTemps: number;
+  declare idClasse: number;
+  declare idCours: number;
+  declare jour: string;
+  declare heureDebut: string;
+  declare heureFin: string;
 }
 
 EmploiDuTemps.init(

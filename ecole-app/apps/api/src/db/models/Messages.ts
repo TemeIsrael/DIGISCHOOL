@@ -2,14 +2,14 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Messages extends Model {
-  public idMessages!: number;
-  public idParent!: number;
-  public objet!: string;
-  public contenu!: string;
-  public type!: number; // [0,1,2] (e.g. Info, Alert, Convocation)
-  public valider!: boolean;
-  public dateEnvoi!: Date;
-  public lu!: boolean;
+  declare idMessages: number;
+  declare idParent: number;
+  declare objet: string;
+  declare contenu: string;
+  declare type: number; // [0,1,2] (e.g. Info, Alert, Convocation)
+  declare valider: boolean;
+  declare dateEnvoi: Date;
+  declare lu: boolean;
 }
 
 Messages.init(

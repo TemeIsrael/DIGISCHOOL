@@ -2,10 +2,10 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Classe extends Model {
-  public idClasse!: number;
-  public idCycle!: number;
-  public libelle!: string;
-  public section!: 'FRANCOPHONE' | 'ANGLOPHONE';
+  declare idClasse: number;
+  declare idCycle: number;
+  declare libelle: string;
+  declare section: 'FRANCOPHONE' | 'ANGLOPHONE';
 }
 
 Classe.init(

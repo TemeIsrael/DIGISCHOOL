@@ -2,11 +2,11 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../index';
 
 export class Livres extends Model {
-  public idLivre!: number;
-  public idSpecialite!: number;
-  public titre!: string;
-  public auteur!: string;
-  public fichierUrl!: string;
+  declare idLivre: number;
+  declare idSpecialite: number;
+  declare titre: string;
+  declare auteur: string;
+  declare fichierUrl: string;
 }
 
 Livres.init(
