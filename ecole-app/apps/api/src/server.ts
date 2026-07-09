@@ -20,6 +20,13 @@ const startServer = async () => {
       }
       await sequelize.query("UPDATE `Admin` SET `login` = CONCAT('admin_', `ID`) WHERE `login` = '' OR `login` IS NULL");
       logger.info('Successfully populated login column');
+
+      try {
+        await sequelize.query("ALTER TABLE `Personne` MODIFY COLUMN `idAdmin` INT");
+        logger.info('Successfully modified Personne.idAdmin data type to match Admin.ID');
+      } catch (innerError) {
+        logger.info('Failed to modify Personne.idAdmin data type: ' + (innerError as Error).message);
+      }
     } catch (e) {
       logger.warn('Failed to fix empty logins', e);
     }
