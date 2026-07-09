@@ -251,8 +251,8 @@ router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS','ADMIN_ROOT']
     // 2. Create Frequente
     await Frequente.create(
       {
-        idSalle: (salle as any).idSalle,
-        idAcademi: (annee as any).idAnnee,
+        idSalle: (salle as any).get ? (salle as any).get('idSalle') : (salle as any).idSalle,
+        idAcademi: (annee as any).get ? (annee as any).get('idAnnee') : (annee as any).idAnnee,
         matricule: data.matricule
       },
       { transaction: t }
@@ -313,7 +313,7 @@ router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS','ADMIN_ROOT']
       await Residents.create(
         {
           idPers: parentId,
-          idQuartier: (quartier as any).idQuartier
+          idQuartier: (quartier as any).get ? (quartier as any).get('idQuartier') : (quartier as any).idQuartier
         },
         { transaction: t }
       );
