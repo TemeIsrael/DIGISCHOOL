@@ -52,6 +52,14 @@ const startServer = async () => {
         await sequelize.query("DELETE FROM `Paiement` WHERE `matricule` NOT IN (SELECT `matricule` FROM `Eleve`)");
         await sequelize.query("DELETE FROM `Rapport` WHERE `matricule` NOT IN (SELECT `matricule` FROM `Eleve`)");
 
+        // Nettoyer les orphelins dans les tables dépendantes de idPers
+        const tablesWithIdPers = ['Epreuve', 'Rapport', 'Paiement', 'Enseignant', 'Titulaire', 'Residents'];
+        for (const tbl of tablesWithIdPers) {
+          try {
+            await sequelize.query(`DELETE FROM \`${tbl}\` WHERE \`idPers\` NOT IN (SELECT \`idPers\` FROM \`Personne\`)`);
+          } catch(e) {}
+        }
+
         logger.info('Successfully modified Personne.idAdmin data type to match Admin.ID and cleaned invalid values');
       } catch (innerError) {
         logger.info('Failed to modify Personne.idAdmin data type or clean orphans: ' + (innerError as Error).message);
