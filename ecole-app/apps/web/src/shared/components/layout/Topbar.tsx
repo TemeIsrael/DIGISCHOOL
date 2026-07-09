@@ -193,23 +193,9 @@ export const Topbar: React.FC<TopbarProps> = ({ onMenuToggle, isMobileMenuOpen }
                 </span>
               </div>
               <div className="max-h-64 overflow-y-auto">
-                {user?.role === 'ADMIN_ROOT' ? (
-                  <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
-                    <p className="text-sm text-slate-700">Mise à jour système: <strong>Version 1.2 déployée</strong></p>
-                    <p className="text-xs text-slate-400 mt-1">Il y a 1 heure</p>
-                  </div>
-                ) : (
-                  <>
-                    <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
-                      <p className="text-sm text-slate-700">Nouveau document disponible: <strong>Emploi du temps</strong></p>
-                      <p className="text-xs text-slate-400 mt-1">Il y a 2 heures</p>
-                    </div>
-                    <div className="p-3 border-b border-slate-50 hover:bg-slate-50 cursor-pointer" onClick={() => { navigate('/notifications'); setShowNotifications(false); }}>
-                      <p className="text-sm text-slate-700">Rappel: Réunion parents-professeurs demain à 16h.</p>
-                      <p className="text-xs text-slate-400 mt-1">Hier</p>
-                    </div>
-                  </>
-                )}
+                <div className="p-4 text-center text-sm text-slate-500">
+                  {t('common.noNotifications', 'Aucune notification pour le moment.')}
+                </div>
               </div>
               <div className="p-2 text-center border-t border-slate-100">
                 <button

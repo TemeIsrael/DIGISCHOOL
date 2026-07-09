@@ -167,8 +167,8 @@ export const Router: React.FC = () => {
             {/* ── Payments — Secretary(1), Founder(3), Director(4) ── */}
             <Route path="/payments" element={<RequireAdminType allowedTypes={[1,3,4]}><PaymentListPage /></RequireAdminType>} />
 
-            {/* ── Messages — Secretary(1), Director(4) ── */}
-            <Route path="/messages" element={<RequireAdminType allowedTypes={[1,4]}><MessageListPage /></RequireAdminType>} />
+            {/* ── Messages — All Admin types ── */}
+            <Route path="/messages" element={<MessageListPage />} />
 
             {/* ── Academic — Registrar(2), Director(4) ── */}
             <Route path="/academic"   element={<RequireAdminType allowedTypes={[2,4]}><AcademicConfigPage /></RequireAdminType>} />

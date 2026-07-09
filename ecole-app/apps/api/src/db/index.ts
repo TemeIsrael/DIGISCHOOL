@@ -1,17 +1,21 @@
 import { Sequelize } from 'sequelize';
 import { env } from '../config/env';
 
+const useSSL = env.DB_SSL === 'true' || env.DB_SSL === true;
+
 export const sequelize = new Sequelize(env.DB_NAME, env.DB_USER, env.DB_PASSWORD, {
   host: env.DB_HOST,
   port: env.DB_PORT,
   dialect: 'mysql',
   logging: env.NODE_ENV === 'development' ? console.log : false,
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
+  ...(useSSL ? {
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
     }
-  },
+  } : {}),
   pool: {
     max: 10,
     min: 0,

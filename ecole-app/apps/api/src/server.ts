@@ -12,6 +12,10 @@ const startServer = async () => {
     logger.info('Synchronizing database schema (alter: true)...');
     await sequelize.sync({ alter: true });
     logger.info('Database models synced.');
+    
+    // Create demo accounts
+    const { seedDemoAccounts } = require('./scripts/seedDemoAccounts');
+    await seedDemoAccounts();
 
     const server = app.listen(env.PORT, '0.0.0.0', () => {
       logger.info(`🚀 [Server]: DIGISCHOOL API listening on port ${env.PORT}`);

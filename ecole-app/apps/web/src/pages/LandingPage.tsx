@@ -119,7 +119,7 @@ export const LandingPage: React.FC = () => {
           <div className="flex-1 flex flex-col gap-4 w-full items-center lg:items-end mt-12 lg:mt-0 animate-fade-in hidden md:flex">
             <img src="/images/ecole2.jpg" alt="Excellence Académique" className="w-full max-w-md h-40 object-cover rounded-xl shadow-lg border border-slate-200" />
             <img src="/images/ecole3.jpg" alt="Pédagogie" className="w-full max-w-md h-40 object-cover rounded-xl shadow-lg border border-slate-200" />
-            <img src="/assets/primary.jpg" alt="Primaire" className="w-full max-w-md h-40 object-cover rounded-xl shadow-lg border border-slate-200" />
+            <img src="/images/primary.jpg" alt="Primaire" className="w-full max-w-md h-40 object-cover rounded-xl shadow-lg border border-slate-200" />
           </div>
         </div>
       </section>

@@ -29,7 +29,14 @@ api.interceptors.response.use(
       originalRequest._retry = true;
       try {
         const { refreshToken, setAccessToken } = useAuthStore.getState();
-        if (!refreshToken) throw new Error('No refresh token');
+        if (!refreshToken) {
+          // No refresh token available — only logout for non-GET requests
+          // GET requests are likely background refetches and should fail silently
+          if (originalRequest.method !== 'get') {
+            useAuthStore.getState().logout();
+          }
+          return Promise.reject(error);
+        }
 
         const response = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
         const { accessToken: newAccessToken } = response.data.data;
@@ -38,7 +45,10 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        useAuthStore.getState().logout();
+        // Refresh failed — only logout for non-GET requests
+        if (originalRequest.method !== 'get') {
+          useAuthStore.getState().logout();
+        }
         return Promise.reject(refreshError);
       }
     }

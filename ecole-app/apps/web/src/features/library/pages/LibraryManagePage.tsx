@@ -40,6 +40,7 @@ export const LibraryManagePage: React.FC = () => {
     auteur: '',
     fichierUrl: ''
   });
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   const fetchBooks = async () => {
     try {
@@ -76,15 +77,25 @@ export const LibraryManagePage: React.FC = () => {
       return;
     }
     try {
+      let fichierUrl = newBook.fichierUrl || '#';
+      // If a PDF file is selected, convert to data URL for storage
+      if (pdfFile) {
+        fichierUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result as string);
+          reader.readAsDataURL(pdfFile);
+        });
+      }
       await api.post('/library', {
         titre: newBook.titre,
         auteur: newBook.auteur,
-        fichierUrl: newBook.fichierUrl || '#', // Placeholder if no file
+        fichierUrl,
         idSpecialite: 1 // Default specialty to pass validation
       });
       toast({ type: 'success', title: t('library.bookAdded', 'Livre ajouté'), description: t('library.bookAddedDesc', 'Le livre a été inséré dans le catalogue.') });
       setAddModalOpen(false);
       setNewBook({ titre: '', auteur: '', fichierUrl: '' });
+      setPdfFile(null);
       fetchBooks();
     } catch (err: any) {
       toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Erreur lors de l\'ajout.' });
@@ -209,8 +220,18 @@ export const LibraryManagePage: React.FC = () => {
             <input type="text" className={inputCls} value={newBook.auteur} onChange={(e) => setNewBook({ ...newBook, auteur: e.target.value })} placeholder="ex: EDICEF" />
           </div>
           <div>
-            <label className={labelCls}>{t('library.bookUrl', 'Lien du fichier PDF (Google Drive, OneDrive, etc.)')} (Optionnel)</label>
-            <p className="text-xs text-slate-500 mb-1">Collez ici le lien de téléchargement ou de lecture du PDF du livre.</p>
+            <label className={labelCls}>{t('library.bookFile', 'Fichier PDF')} (Optionnel)</label>
+            <p className="text-xs text-slate-500 mb-1">Sélectionnez le fichier PDF du livre à téléverser.</p>
+            <input
+              type="file"
+              accept=".pdf,application/pdf"
+              className={`${inputCls} file:mr-4 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-digi-purple/10 file:text-digi-purple hover:file:bg-digi-purple/20 cursor-pointer`}
+              onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+            />
+            {pdfFile && <p className="text-xs text-emerald-600 mt-1 font-semibold">✓ {pdfFile.name} ({(pdfFile.size / 1024).toFixed(0)} Ko)</p>}
+          </div>
+          <div>
+            <label className={labelCls}>{t('library.bookUrl', 'Ou lien externe')} (Optionnel)</label>
             <input type="url" className={inputCls} value={newBook.fichierUrl} onChange={(e) => setNewBook({ ...newBook, fichierUrl: e.target.value })} placeholder="https://drive.google.com/..." />
           </div>
           <div className="flex justify-end gap-2 pt-2">

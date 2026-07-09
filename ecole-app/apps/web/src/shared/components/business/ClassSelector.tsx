@@ -24,21 +24,21 @@ export const ClassSelector = forwardRef<HTMLSelectElement, ClassSelectorProps>((
   ...props
 }, ref) => {
   const { t } = useTranslation();
-  const [classes, setClasses] = useState<Classe[]>([]);
+  const [salles, setSalles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchClasses = async () => {
+    const fetchSalles = async () => {
       try {
-        const res = await api.get('/academic/classes');
-        setClasses(res.data?.data || []);
+        const res = await api.get('/academic/salles');
+        setSalles(res.data?.data || []);
       } catch (err) {
-        console.error('Error fetching classes:', err);
+        console.error('Error fetching salles:', err);
       } finally {
         setLoading(false);
       }
     };
-    fetchClasses();
+    fetchSalles();
   }, []);
 
   return (
@@ -55,13 +55,13 @@ export const ClassSelector = forwardRef<HTMLSelectElement, ClassSelectorProps>((
           error ? 'border-digi-danger text-digi-danger focus:ring-digi-danger/50 focus:border-digi-danger' : 'border-slate-200 text-slate-900'
         }`}
       >
-        <option value="">-- Sélectionnez une classe --</option>
+        <option value="">-- Sélectionnez une salle/classe --</option>
         {loading ? (
           <option value="" disabled>Chargement...</option>
         ) : (
-          classes.map((c) => (
-            <option key={c.idClasse} value={c.libelle}>
-              {c.libelle} ({c.section})
+          salles.map((s) => (
+            <option key={s.idSalle} value={s.libelle}>
+              {s.libelle}
             </option>
           ))
         )}
