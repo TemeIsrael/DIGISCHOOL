@@ -238,11 +238,12 @@ router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS','ADMIN_ROOT']
         nom: data.nom,
         prenom: data.prenom,
         dateNaissance: data.dateNaissance,
-        idVilleNaissance: (ville as any).idVille,
+        idVilleNaissance: (ville as any).get ? (ville as any).get('idVille') : (ville as any).idVille,
         lieuNaissance: data.idVilleNaissance,
         langue: data.langue,
         photo: data.photo || null,
-        statut: 'INSCRIT'
+        statut: 'INSCRIT',
+        idAdmin: req.user!.id
       },
       { transaction: t }
     );
