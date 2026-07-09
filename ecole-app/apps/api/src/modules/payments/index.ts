@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { Paiement, Scolarite, Frequente, Salle, Classe, AnneeAcademique, Mode, Eleve } from '../../db/models';
+import { Paiement, Scolarite, Frequente, Salle, Classe, AnneeAcademique, Mode, Eleve, Personne, Parents } from '../../db/models';
 import { authenticate } from '../../middlewares/auth';
 import { requireRole } from '../../middlewares/rbac';
 import { validateBody } from '../../middlewares/validate';
 import { generateReceiptPDF } from '../../lib/pdf/receipt';
 import { logAction } from '../../lib/audit';
 import { PassThrough } from 'stream';
+import { sendInternalMail } from '../../lib/mailer';
 
 const router = Router();
 
@@ -88,6 +89,61 @@ router.post('/', requireRole(['ADMIN']), validateBody(createPaymentSchema), asyn
     });
 
     logAction(user.id, 'CREATE_PAYMENT', `payment:${payment.idPaie}`, ip);
+
+    // ── Email notification au parent ──────────────────────────────────────────
+    try {
+      // Chercher l'élève pour récupérer son nom
+      const studentRecord = await Eleve.findByPk(matricule);
+      // Chercher le parent lié à cet élève (via table Parents)
+      const parentLink = await (Parents as any).findOne({ where: { matricule } });
+      if (parentLink) {
+        const parentPerson = await Personne.findByPk(parentLink.idPers);
+        if (parentPerson?.email) {
+          const nomEleve = studentRecord ? `${studentRecord.nom} ${studentRecord.prenom}` : matricule;
+          const htmlContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background: #3C3489; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center;">
+                <h2 style="margin: 0;">DIGISCHOOL — Confirmation de Paiement</h2>
+              </div>
+              <div style="background: #f8fafc; padding: 20px; border: 1px solid #e2e8f0; border-top: none;">
+                <p>Cher(e) parent/tuteur,</p>
+                <p>Nous vous confirmons la réception d'un versement de frais de scolarité pour <strong>${nomEleve}</strong>.</p>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                  <tr style="background: #EEEDFE;">
+                    <td style="padding: 10px; font-weight: bold; border: 1px solid #e2e8f0;">Matricule</td>
+                    <td style="padding: 10px; border: 1px solid #e2e8f0;">${matricule}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px; font-weight: bold; border: 1px solid #e2e8f0;">Montant versé</td>
+                    <td style="padding: 10px; border: 1px solid #e2e8f0; color: #16a34a; font-weight: bold;">${montant.toLocaleString('fr-FR')} XAF</td>
+                  </tr>
+                  <tr style="background: #EEEDFE;">
+                    <td style="padding: 10px; font-weight: bold; border: 1px solid #e2e8f0;">Tranche couverte</td>
+                    <td style="padding: 10px; border: 1px solid #e2e8f0;">Tranche ${trancheCouverte}</td>
+                  </tr>
+                  <tr>
+                    <td style="padding: 10px; font-weight: bold; border: 1px solid #e2e8f0;">N° de reçu</td>
+                    <td style="padding: 10px; border: 1px solid #e2e8f0;">#${payment.idPaie}</td>
+                  </tr>
+                </table>
+                <p style="color: #475569; font-size: 13px;">Conservez ce message comme confirmation. Votre reçu officiel est disponible dans votre espace parent.</p>
+              </div>
+              <div style="background: #3C3489; color: #c7d2fe; padding: 10px; border-radius: 0 0 8px 8px; text-align: center; font-size: 12px;">
+                DIGISCHOOL EcoleApp — Ne pas répondre à cet email
+              </div>
+            </div>
+          `;
+          await sendInternalMail(
+            parentPerson.email,
+            `✅ Confirmation de paiement — Tranche ${trancheCouverte} — ${nomEleve}`,
+            htmlContent
+          );
+        }
+      }
+    } catch (mailErr) {
+      // Ne pas bloquer la réponse si l'email échoue
+      console.error('[PAYMENT EMAIL] Failed to send notification:', mailErr);
+    }
 
     res.status(201).json({ success: true, data: payment });
   } catch (err) {

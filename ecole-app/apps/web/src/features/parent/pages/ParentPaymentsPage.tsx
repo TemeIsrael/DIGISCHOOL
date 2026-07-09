@@ -197,55 +197,92 @@ export const ParentPaymentsPage: React.FC = () => {
         </div>
       </Card>
 
-      {/* Payment Info Modal */}
+      {/* Payment Info Modal with Auto-Tranche */}
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={isEn ? 'Make a Payment' : 'Effectuer un Paiement'} size="sm">
-        <form onSubmit={(e) => {
-          e.preventDefault();
-          // Simulation de l'envoi de la preuve
-          setIsModalOpen(false);
-          alert(isEn ? 'Payment proof sent to administration!' : 'Preuve de paiement envoyée à la scolarité !');
-        }} className="space-y-4">
-          
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-slate-700">
-              {isEn ? 'Select Payment Method' : 'Choisir le moyen de paiement'}
-            </label>
-            <select className="w-full h-10 rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-digi-purple/50 focus:border-digi-purple" required onChange={(e) => {
-              const el = document.getElementById('payment-info');
-              if (el) {
-                if (e.target.value === 'MTN') el.innerHTML = '<strong>MTN Mobile Money :</strong> +237 670 00 00 00 (Nom: ECOLE DIGISCHOOL)';
-                else if (e.target.value === 'ORANGE') el.innerHTML = '<strong>Orange Money :</strong> +237 690 00 00 00 (Nom: ECOLE DIGISCHOOL)';
-                else if (e.target.value === 'BANK') el.innerHTML = '<strong>Virement Bancaire :</strong> IBAN CM21 1000 0000 0000 0000 (Banque Atlantique)';
-                else el.innerHTML = '';
-              }
-            }}>
-              <option value="">-- {isEn ? 'Select' : 'Sélectionner'} --</option>
-              <option value="MTN">MTN Mobile Money</option>
-              <option value="ORANGE">Orange Money</option>
-              <option value="BANK">Virement Bancaire</option>
-            </select>
-          </div>
+        {(() => {
+          // Auto-detect next tranche
+          const paidTranches = [...new Set(activePayments.map(p => p.trancheCouverte))].sort();
+          let nextTranche = 1;
+          while (paidTranches.includes(nextTranche)) nextTranche++;
+          // Default tranche amounts (can be configured by admin)
+          const trancheAmounts: Record<number, number> = { 1: 65000, 2: 65000, 3: 65000 };
+          const suggestedAmount = trancheAmounts[nextTranche] || 65000;
 
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl min-h-[60px] flex items-center justify-center text-sm text-slate-600">
-            <p id="payment-info">{isEn ? 'Select a method to see account details.' : 'Sélectionnez un moyen de paiement pour voir les informations.'}</p>
-          </div>
+          return (
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              setIsModalOpen(false);
+              alert(isEn ? 'Payment proof sent to administration!' : 'Preuve de paiement envoyée à la scolarité !');
+            }} className="space-y-4">
+              {/* Auto-tranche info */}
+              <div className="p-4 bg-digi-purple-bg rounded-xl border border-digi-purple/20">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      {isEn ? 'Next installment' : 'Prochaine tranche'}
+                    </span>
+                    <p className="text-xl font-extrabold text-digi-purple mt-0.5">
+                      {isEn ? `Installment ${nextTranche}` : `Tranche ${nextTranche}`}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                      {isEn ? 'Amount' : 'Montant'}
+                    </span>
+                    <p className="text-xl font-extrabold text-digi-success mt-0.5">
+                      {suggestedAmount.toLocaleString('fr-FR')} XAF
+                    </p>
+                  </div>
+                </div>
+                {paidTranches.length > 0 && (
+                  <p className="text-xs text-slate-500 mt-2 pt-2 border-t border-digi-purple/10">
+                    ✅ {isEn ? 'Already paid' : 'Déjà payé'} : {paidTranches.map(t => isEn ? `Installment ${t}` : `Tranche ${t}`).join(', ')}
+                  </p>
+                )}
+              </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-slate-700">
-              {isEn ? 'Transaction Reference (Proof)' : 'Référence de transaction (Preuve)'}
-            </label>
-            <input type="text" required placeholder="Ex: TXN123456789" className="w-full h-10 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-digi-purple/50 focus:border-digi-purple" />
-          </div>
+              <div className="space-y-1.5">
+                <label className="block text-sm font-semibold text-slate-700">
+                  {isEn ? 'Select Payment Method' : 'Choisir le moyen de paiement'}
+                </label>
+                <select className="w-full h-10 rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-digi-purple/50 focus:border-digi-purple" required onChange={(e) => {
+                  const el = document.getElementById('payment-info');
+                  if (el) {
+                    if (e.target.value === 'MTN') el.innerHTML = '<strong>MTN Mobile Money :</strong> +237 670 00 00 00 (Nom: ECOLE DIGISCHOOL)';
+                    else if (e.target.value === 'ORANGE') el.innerHTML = '<strong>Orange Money :</strong> +237 690 00 00 00 (Nom: ECOLE DIGISCHOOL)';
+                    else if (e.target.value === 'BANK') el.innerHTML = '<strong>Virement Bancaire :</strong> IBAN CM21 1000 0000 0000 0000 (Banque Atlantique)';
+                    else el.innerHTML = '';
+                  }
+                }}>
+                  <option value="">-- {isEn ? 'Select' : 'Sélectionner'} --</option>
+                  <option value="MTN">MTN Mobile Money</option>
+                  <option value="ORANGE">Orange Money</option>
+                  <option value="BANK">Virement Bancaire</option>
+                </select>
+              </div>
 
-          <div className="pt-2 flex gap-3">
-            <Button type="button" variant="outline" className="w-full" onClick={() => setIsModalOpen(false)}>
-              {isEn ? 'Cancel' : 'Annuler'}
-            </Button>
-            <Button type="submit" variant="primary" className="w-full">
-              {isEn ? 'Send Proof' : 'Envoyer la preuve'}
-            </Button>
-          </div>
-        </form>
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl min-h-[60px] flex items-center justify-center text-sm text-slate-600">
+                <p id="payment-info">{isEn ? 'Select a method to see account details.' : 'Sélectionnez un moyen de paiement pour voir les informations.'}</p>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-sm font-semibold text-slate-700">
+                  {isEn ? 'Transaction Reference (Proof)' : 'Référence de transaction (Preuve)'}
+                </label>
+                <input type="text" required placeholder="Ex: TXN123456789" className="w-full h-10 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-digi-purple/50 focus:border-digi-purple" />
+              </div>
+
+              <div className="pt-2 flex gap-3">
+                <Button type="button" variant="outline" className="w-full" onClick={() => setIsModalOpen(false)}>
+                  {isEn ? 'Cancel' : 'Annuler'}
+                </Button>
+                <Button type="submit" variant="primary" className="w-full">
+                  {isEn ? 'Send Proof' : 'Envoyer la preuve'}
+                </Button>
+              </div>
+            </form>
+          );
+        })()}
       </Modal>
     </div>
   );

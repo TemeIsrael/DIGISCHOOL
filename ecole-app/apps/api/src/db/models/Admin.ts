@@ -9,6 +9,7 @@ export class Admin extends Model {
   declare actif: boolean;
   declare isDelete: boolean;
   declare langue: string;
+  declare signatureUrl: string | null;
 }
 
 Admin.init(
@@ -46,6 +47,11 @@ Admin.init(
       type: DataTypes.STRING(10),
       allowNull: false,
       defaultValue: 'fr',
+    },
+    signatureUrl: {
+      type: DataTypes.STRING(500),
+      allowNull: true,
+      defaultValue: null,
     },
   },
   {

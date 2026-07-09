@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Epreuve, Evaluation, Enseignant, Frequente, Cours, NatureEpreuve, Eleve, Salle } from '../../db/models';
+import { Epreuve, Evaluation, Enseignant, Frequente, Cours, NatureEpreuve, Eleve, Salle, Titulaire, Personne, Admin } from '../../db/models';
 import { authenticate } from '../../middlewares/auth';
 import { requireRole } from '../../middlewares/rbac';
 import { upload } from '../../middlewares/upload';
@@ -216,17 +216,40 @@ router.get('/bulletins/:matricule/download', async (req, res, next) => {
 
     const salle = await Salle.findByPk(Number(idSalle));
 
+    // Récupérer l'enseignant titulaire de la salle
+    let titulaireNom: string | undefined;
+    try {
+      const titulaireRecord = await (Titulaire as any).findOne({
+        where: { idSalle: Number(idSalle) },
+        include: [{ model: Personne, as: 'personne' }]
+      });
+      if (titulaireRecord?.personne) {
+        const p = titulaireRecord.personne;
+        titulaireNom = `${p.prenom || ''} ${p.nom || ''}`.trim();
+      }
+    } catch (_) { /* table Titulaire peut ne pas avoir l'association définie */ }
+
+    // Récupérer la signature du directeur
+    let signatureUrl: string | undefined;
+    try {
+      const director = await Admin.findOne({ where: { typeAdmin: 4 } });
+      if (director?.signatureUrl) signatureUrl = director.signatureUrl;
+    } catch (_) { /* ignore if admin table doesn't have signatureUrl yet */ }
+
 
     const bulletinData = {
       matricule,
       nom: eleve.nom,
       prenom: eleve.prenom,
       classe: salle?.libelle || 'Classe',
-      anneeLibelle: '2026',
-      trimestreLibelle: 'Trimestre',
+      anneeLibelle: '2025-2026',
+      trimestreLibelle: `Trimestre ${idSession || 1}`,
       notes: bulletinNotes,
       moyenne,
-      rang
+      rang,
+      effectif: averages.length,
+      titulaire: titulaireNom,
+      signatureUrl,
     };
 
     res.setHeader('Content-Type', 'application/pdf');

@@ -8,6 +8,7 @@ import { authenticate } from '../../middlewares/auth';
 import { validateBody } from '../../middlewares/validate';
 import { logAction } from '../../lib/audit';
 import { LIMITS } from '../../config/constants';
+import { upload } from '../../middlewares/upload';
 
 const router = Router();
 
@@ -278,4 +279,43 @@ router.put('/profile', authenticate, async (req, res, next) => {
   }
 });
 
+// UPLOAD DIRECTOR SIGNATURE
+// Only DIRECTEUR or ADMIN_ROOT can upload/update signature
+router.put('/signature', authenticate, upload.single('signature'), async (req, res, next) => {
+  const userContext = req.user!;
+  const allowedRoles = ['DIRECTEUR', 'ADMIN_ROOT', 'ROOT'];
+
+  if (!allowedRoles.includes(userContext.role)) {
+    res.status(403).json({ error: { code: 'FORBIDDEN', message: 'Seul le directeur peut mettre à jour la signature' } });
+    return;
+  }
+
+  if (!req.file) {
+    res.status(400).json({ error: { code: 'BAD_REQUEST', message: 'Image de signature requise (PNG ou JPEG)' } });
+    return;
+  }
+
+  try {
+    const signatureUrl = `/uploads/${req.file.filename}`;
+    await Admin.update({ signatureUrl }, { where: { ID: userContext.id } });
+
+    logAction(userContext.id, 'UPDATE_SIGNATURE', 'auth:signature', req.ip || 'unknown');
+    res.json({ success: true, data: { signatureUrl }, message: 'Signature mise à jour avec succès' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET DIRECTOR SIGNATURE (for other admin roles reading it)
+router.get('/signature', authenticate, async (req, res, next) => {
+  try {
+    // Find any DIRECTEUR admin and return their signatureUrl
+    const director = await Admin.findOne({ where: { typeAdmin: 4 } });
+    res.json({ success: true, data: { signatureUrl: director?.signatureUrl || null } });
+  } catch (err) {
+    next(err);
+  }
+});
+
 export default router;
+
