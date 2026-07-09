@@ -34,8 +34,8 @@ import { HomeWork } from './HomeWork';
 // Associations Setup
 
 // Admin <-> Personne
-Admin.hasOne(Personne, { foreignKey: 'idAdmin', as: 'personne' });
-Personne.belongsTo(Admin, { foreignKey: 'idAdmin', as: 'admin' });
+Admin.hasOne(Personne, { foreignKey: 'idAdmin', as: 'personne', onDelete: 'CASCADE' });
+Personne.belongsTo(Admin, { foreignKey: 'idAdmin', as: 'admin', onDelete: 'CASCADE' });
 
 // Personne <-> Parents
 Personne.hasMany(Parents, { foreignKey: 'idPers', as: 'parents' });

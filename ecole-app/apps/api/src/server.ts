@@ -20,14 +20,6 @@ const startServer = async () => {
       }
       await sequelize.query("UPDATE `Admin` SET `login` = CONCAT('admin_', `ID`) WHERE `login` = '' OR `login` IS NULL");
       logger.info('Successfully populated login column');
-
-      // Corriger la colonne idAdmin dans Personne qui doit accepter NULL pour la contrainte ON DELETE SET NULL
-      try {
-        await sequelize.query("ALTER TABLE `Personne` MODIFY COLUMN `idAdmin` INT NULL");
-        logger.info('Successfully modified Personne.idAdmin to allow NULL');
-      } catch (innerError) {
-        logger.info('Failed to modify Personne.idAdmin (might not exist yet): ' + (innerError as Error).message);
-      }
     } catch (e) {
       logger.warn('Failed to fix empty logins', e);
     }
