@@ -13,6 +13,7 @@ const envSchema = z.object({
   DB_NAME: z.string().default('ecole2026'),
   DB_USER: z.string().default('ecole'),
   DB_PASSWORD: z.string().default('peda2026'),
+  DB_SSL: z.union([z.string(), z.boolean()]).optional(),
   JWT_ACCESS_SECRET: z.string().min(32),
   JWT_REFRESH_SECRET: z.string().min(32),
   JWT_ACCESS_TTL: z.string().default('15m'),
