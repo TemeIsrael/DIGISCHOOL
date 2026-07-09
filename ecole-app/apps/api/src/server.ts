@@ -9,6 +9,13 @@ const startServer = async () => {
     await sequelize.authenticate();
     logger.info('Database connection established successfully.');
 
+    logger.info('Fixing duplicate empty logins in Admin table before sync...');
+    try {
+      await sequelize.query("UPDATE Admin SET login = CONCAT('admin_', ID) WHERE login = '' OR login IS NULL");
+    } catch (e) {
+      logger.warn('Failed to fix empty logins (table might not exist yet)', e);
+    }
+
     logger.info('Synchronizing database schema (alter: true)...');
     await sequelize.sync({ alter: true });
     logger.info('Database models synced.');

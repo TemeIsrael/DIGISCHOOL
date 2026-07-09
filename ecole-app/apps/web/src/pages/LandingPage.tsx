@@ -76,8 +76,8 @@ export const LandingPage: React.FC = () => {
       <section
         className="relative min-h-[560px] flex flex-col lg:flex-row items-center justify-center overflow-hidden bg-slate-950"
         style={{
-          backgroundImage: 'url(/images/acceuil.jpeg)',
-          backgroundSize: 'contain',
+          backgroundImage: 'url(/images/acceuil.png)',
+          backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat'
         }}
