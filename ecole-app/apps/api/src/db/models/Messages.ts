@@ -33,7 +33,7 @@ Messages.init(
     },
     contenu: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     type: {
       type: DataTypes.TINYINT,
