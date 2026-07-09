@@ -26,32 +26,28 @@ const labelCls = 'block text-xs font-bold text-slate-600 uppercase mb-1';
 const AddBookForm: React.FC<{ onSuccess: () => void; onCancel: () => void; allCategories: string[] }> = ({ onSuccess, onCancel, allCategories }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
-  const [newBook, setNewBook] = useState({ titre: '', auteur: '', fichierUrl: '', specialty: 'Général' });
+  const [newBook, setNewBook] = useState({ titre: '', auteur: '', specialty: 'Général' });
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddBook = async () => {
-    if (!newBook.titre || !newBook.auteur) {
-      toast({ type: 'danger', title: t('common.error', 'Erreur'), description: t('library.fillRequired', 'Veuillez remplir tous les champs obligatoires.') });
+    if (!newBook.titre || !newBook.auteur || !pdfFile) {
+      toast({ type: 'danger', title: t('common.error', 'Erreur'), description: 'Titre, auteur et fichier PDF sont obligatoires.' });
       return;
     }
     try {
       setIsSubmitting(true);
-      let fichierUrl = newBook.fichierUrl || '#';
-      if (pdfFile) {
-        fichierUrl = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.readAsDataURL(pdfFile);
-        });
-      }
-      await api.post('/library', {
-        titre: newBook.titre,
-        auteur: newBook.auteur,
-        fichierUrl,
-        specialty: newBook.specialty,
-        idSpecialite: 1
+      const formData = new FormData();
+      formData.append('titre', newBook.titre);
+      formData.append('auteur', newBook.auteur);
+      formData.append('specialty', newBook.specialty);
+      formData.append('idSpecialite', '1');
+      formData.append('fichier', pdfFile);
+
+      await api.post('/library', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
+      
       toast({ type: 'success', title: t('library.bookAdded', 'Livre ajouté'), description: t('library.bookAddedDesc', 'Le livre a été inséré dans le catalogue.') });
       onSuccess();
     } catch (err: any) {
@@ -76,8 +72,8 @@ const AddBookForm: React.FC<{ onSuccess: () => void; onCancel: () => void; allCa
         <input type="text" className={inputCls} value={newBook.specialty} onChange={(e) => setNewBook({ ...newBook, specialty: e.target.value })} placeholder="ex: Français, Mathématiques..." />
       </div>
       <div>
-        <label className={labelCls}>{t('library.bookFile', 'Fichier PDF')} (Optionnel)</label>
-        <p className="text-xs text-slate-500 mb-1">Sélectionnez le fichier PDF du livre à téléverser.</p>
+        <label className={labelCls}>{t('library.bookFile', 'Fichier PDF')} *</label>
+        <p className="text-xs text-slate-500 mb-1">Sélectionnez le fichier PDF du livre à téléverser sur le serveur.</p>
         <input
           type="file"
           accept=".pdf,application/pdf"
@@ -86,13 +82,9 @@ const AddBookForm: React.FC<{ onSuccess: () => void; onCancel: () => void; allCa
         />
         {pdfFile && <p className="text-xs text-emerald-600 mt-1 font-semibold">✓ {pdfFile.name} ({(pdfFile.size / 1024).toFixed(0)} Ko)</p>}
       </div>
-      <div>
-        <label className={labelCls}>{t('library.bookUrl', 'Ou lien externe')} (Optionnel)</label>
-        <input type="url" className={inputCls} value={newBook.fichierUrl} onChange={(e) => setNewBook({ ...newBook, fichierUrl: e.target.value })} placeholder="https://drive.google.com/..." />
-      </div>
       <div className="flex justify-end gap-2 pt-2">
         <Button variant="ghost" onClick={onCancel}>{t('common.cancel', 'Annuler')}</Button>
-        <Button onClick={handleAddBook} disabled={!newBook.titre || !newBook.auteur || isSubmitting}>
+        <Button onClick={handleAddBook} disabled={!newBook.titre || !newBook.auteur || !pdfFile || isSubmitting}>
           {isSubmitting ? 'Ajout...' : t('library.addBook', 'Ajouter')}
         </Button>
       </div>

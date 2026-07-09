@@ -84,9 +84,8 @@ Personne.init(
       defaultValue: '',
     },
     photoURL: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.TEXT('long'),
       allowNull: true,
-      defaultValue: '/uploads/anonym.png',
     },
     telephone1: {
       type: DataTypes.STRING(30),

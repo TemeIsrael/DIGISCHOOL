@@ -5,22 +5,35 @@ import { authenticate } from '../../middlewares/auth';
 import { requireRole } from '../../middlewares/rbac';
 import { validateBody } from '../../middlewares/validate';
 
-const router = Router();
+import { upload } from '../../middlewares/upload';
 
-const createBookSchema = z.object({
-  idSpecialite: z.number(),
-  titre: z.string().min(2),
-  auteur: z.string().min(2),
-  fichierUrl: z.string(),
-  specialty: z.string().optional()
-});
+const router = Router();
 
 router.use(authenticate);
 
-// 1. ADD BOOK
-router.post('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), validateBody(createBookSchema), async (req, res, next) => {
+// 1. ADD BOOK (with PDF upload)
+router.post('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), upload.single('fichier'), async (req, res, next) => {
   try {
-    const book = await Livres.create(req.body);
+    const { idSpecialite, titre, auteur, specialty } = req.body;
+    
+    if (!req.file) {
+      return res.status(400).json({ error: { code: 'BAD_REQUEST', message: 'Le fichier PDF du livre est requis.' } });
+    }
+
+    if (!titre || !auteur || !idSpecialite) {
+      return res.status(400).json({ error: { code: 'BAD_REQUEST', message: 'Titre, auteur et spécialité sont requis.' } });
+    }
+
+    const fichierUrl = `/uploads/${req.file.filename}`;
+
+    const book = await Livres.create({
+      idSpecialite: parseInt(idSpecialite, 10),
+      titre,
+      auteur,
+      fichierUrl,
+      specialty
+    });
+    
     res.status(201).json({ success: true, data: book });
   } catch (err) {
     next(err);

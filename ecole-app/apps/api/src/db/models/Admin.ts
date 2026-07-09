@@ -67,7 +67,7 @@ Admin.init(
       allowNull: true,
     },
     photoUrl: {
-      type: DataTypes.STRING(500),
+      type: DataTypes.TEXT('long'),
       allowNull: true,
     }
   },
