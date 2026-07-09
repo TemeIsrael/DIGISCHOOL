@@ -54,8 +54,27 @@ const startServer = async () => {
     }
 
     logger.info('Synchronizing database schema (alter: true)...');
-    await sequelize.sync({ alter: true });
-    logger.info('Database models synced.');
+    try {
+      // Désactiver les clés étrangères pendant le sync pour éviter les erreurs de contrainte
+      await sequelize.query("SET FOREIGN_KEY_CHECKS = 0");
+
+      // Corriger le type de la colonne matricule dans les tables existantes
+      // (historiquement INT, doit être VARCHAR(50) pour correspondre à Eleve.matricule)
+      const tablesToFixMatricule = ['Parents', 'Frequente', 'Evaluation', 'Paiement', 'Rapport'];
+      for (const table of tablesToFixMatricule) {
+        try {
+          await sequelize.query(`ALTER TABLE \`${table}\` MODIFY COLUMN \`matricule\` VARCHAR(50) NOT NULL`);
+          logger.info(`Fixed matricule column type in ${table}`);
+        } catch (e) {
+          logger.info(`Could not fix matricule in ${table}: ${(e as Error).message}`);
+        }
+      }
+
+      await sequelize.sync({ alter: true });
+      logger.info('Database models synced.');
+    } finally {
+      await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
+    }
     
     // Create demo accounts
     const { seedDemoAccounts } = require('./scripts/seedDemoAccounts');

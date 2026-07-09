@@ -5,7 +5,7 @@ export class Frequente extends Model {
   declare idFrequente: number;
   declare idSalle: number;
   declare idAcademi: number;
-  declare matricule: number;
+  declare matricule: string;
   declare salle?: any;
   declare eleve?: any;
 }
@@ -34,7 +34,7 @@ Frequente.init(
       },
     },
     matricule: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.STRING(50),
       allowNull: false,
       references: {
         model: 'Eleve',

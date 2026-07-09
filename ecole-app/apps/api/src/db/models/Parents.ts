@@ -4,7 +4,7 @@ import { sequelize } from '../index';
 export class Parents extends Model {
   declare idParent: number;
   declare idPers: number;
-  declare matricule: number;
+  declare matricule: string;
 }
 
 Parents.init(
@@ -23,7 +23,7 @@ Parents.init(
       },
     },
     matricule: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.STRING(50),
       allowNull: false,
       references: {
         model: 'Eleve',
