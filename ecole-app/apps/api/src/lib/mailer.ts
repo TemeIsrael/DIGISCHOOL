@@ -44,7 +44,7 @@ export const sendInternalMail = async (
     const transporter = await createTransporter();
     
     const info = await transporter.sendMail({
-      from: '"DIGISCHOOL" <no-reply@digischool.cm>', // sender address
+      from: `"DIGISCHOOL" <${env.SMTP_USER || 'no-reply@digischool.cm'}>`, // sender address
       to: toEmail, // list of receivers
       subject, // Subject line
       html: content, // html body
