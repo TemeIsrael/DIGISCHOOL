@@ -52,7 +52,7 @@ console.log("ROLE:", role);
     if (['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'].includes(role)) {
       user = await Admin.findOne({
         where: { login, actif: true, isDelete: false },
-        attributes: ['ID', 'login', 'password', 'typeAdmin', 'actif', 'isDelete', 'langue']
+        attributes: ['ID', 'login', 'password', 'typeAdmin', 'actif', 'isDelete', 'langue', 'nom', 'email', 'photoUrl']
       });
 
       if (!user || !user.password) {
@@ -74,7 +74,7 @@ console.log("ROLE:", role);
       const expectedType = role === 'PARENT' ? 2 : 1;
       user = await Personne.findOne({
         where: { login, typePersonne: expectedType, actif: true, isDelete: false },
-        attributes: ['idPers', 'login', 'password', 'typePersonne', 'actif', 'isDelete', 'langue']
+        attributes: ['idPers', 'login', 'password', 'typePersonne', 'actif', 'isDelete', 'langue', 'nom', 'email', 'photoURL']
       });
 
       if (!user || !user.password) {
@@ -130,7 +130,10 @@ console.log("ROLE:", role);
           role,
           typeAdmin,
           typePersonne,
-          langue: user.dataValues.langue || 'fr'
+          langue: user.dataValues.langue || 'fr',
+          nom: user.dataValues.nom || null,
+          email: user.dataValues.email || null,
+          photoUrl: user.dataValues.photoUrl || user.dataValues.photoURL || null
         }
       }
     });
