@@ -19,7 +19,8 @@ const startServer = async () => {
         logger.info('ALTER TABLE skipped or failed (column might already exist): ' + (innerError as Error).message);
       }
       await sequelize.query("UPDATE `Admin` SET `login` = CONCAT('admin_', `ID`) WHERE `login` = '' OR `login` IS NULL");
-      logger.info('Successfully populated login column');
+      await sequelize.query("UPDATE `Personne` SET `login` = CONCAT('user_', `idPers`) WHERE `login` = '' OR `login` IS NULL");
+      logger.info('Successfully populated login column for Admin and Personne');
 
       try {
         // Désactiver temporairement le mode strict pour éviter l'erreur "Out of range value"
