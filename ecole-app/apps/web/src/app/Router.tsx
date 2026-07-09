@@ -162,8 +162,8 @@ export const Router: React.FC = () => {
             <Route path="/students/:id/assign"       element={<RequireAdminType allowedTypes={[1,4]}><StudentAssignPage /></RequireAdminType>} />
             <Route path="/students/:id/parents"      element={<RequireAdminType allowedTypes={[1,4]}><StudentParentsPage /></RequireAdminType>} />
 
-            {/* ── Personnel — Secretary(1), Director(4) ── */}
-            <Route path="/personnel" element={<RequireAdminType allowedTypes={[1,4]}><PersonnelListPage /></RequireAdminType>} />
+            {/* ── Personnel — Admin Root(0), Secretary(1), Director(4) ── */}
+            <Route path="/personnel" element={<RequireAdminType allowedTypes={[0,1,4]}><PersonnelListPage /></RequireAdminType>} />
 
             {/* ── Payments — Secretary(1), Scolarite(2), Founder(3), Director(4) ── */}
             <Route path="/payments" element={<RequireAdminType allowedTypes={[1,2,3,4]}><PaymentListPage /></RequireAdminType>} />

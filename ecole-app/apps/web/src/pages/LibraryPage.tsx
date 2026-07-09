@@ -8,7 +8,7 @@ import { FilterDropdown } from '../shared/components/tables/FilterDropdown';
 import { PublicNavbar } from '../shared/components/layout/PublicNavbar';
 import { PublicFooter } from '../shared/components/layout/PublicFooter';
 import { Modal } from '../shared/components/ui/Modal';
-import { api } from '../shared/lib/api';
+import { api, getFileUrl } from '../shared/lib/api';
 
 /* ─── BookReaderModal ─────────────────────────────────────────────── */
 interface BookReaderModalProps {
@@ -38,7 +38,7 @@ const BookReaderModal: React.FC<BookReaderModalProps> = ({ book, onClose }) => {
           <h2 className="text-xl font-bold text-slate-700">{book.titre}</h2>
           <p className="text-slate-500 mb-4">{book.auteur}</p>
           {book.fichierUrl ? (
-            <Button onClick={() => window.open(book.fichierUrl, '_blank')} className="gap-2">
+            <Button onClick={() => window.open(getFileUrl(book.fichierUrl), '_blank')} className="gap-2">
               <Download className="w-4 h-4" /> Télécharger
             </Button>
           ) : (
@@ -162,7 +162,7 @@ export const LibraryPage: React.FC = () => {
                   </div>
                   <Button variant="primary" size="sm" className="w-full mt-2" onClick={() => {
                      if (book.fichierUrl) {
-                        window.open(book.fichierUrl, '_blank');
+                        window.open(getFileUrl(book.fichierUrl), '_blank');
                      } else {
                         setOpenBook(book);
                      }

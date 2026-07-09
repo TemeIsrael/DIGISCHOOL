@@ -10,6 +10,14 @@ export const api = axios.create({
   }
 });
 
+// Helper to get full URL for uploaded files
+export const getFileUrl = (path: string) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  const baseUrl = API_URL.replace(/\/api\/v1\/?$/, '');
+  return `${baseUrl}${path.startsWith('/') ? path : '/' + path}`;
+};
+
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().accessToken;

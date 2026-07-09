@@ -9,7 +9,7 @@ import { BookOpen, Search, FilePlus, Star, Eye, Users, Home, Trash2, Loader2, Do
 import { BookCard } from '../../../shared/components/business/BookCard';
 import { Modal } from '../../../shared/components/ui/Modal';
 import { useToast } from '../../../shared/components/ui/Toast';
-import { api } from '../../../shared/lib/api';
+import { api, getFileUrl } from '../../../shared/lib/api';
 
 type BookItem = {
   id: number;
@@ -258,7 +258,7 @@ export const LibraryManagePage: React.FC = () => {
           
           <div className="flex flex-col gap-3">
              {selectedBook?.fichierUrl && selectedBook.fichierUrl !== '#' && (
-               <Button onClick={() => window.open(selectedBook.fichierUrl, '_blank')} className="gap-2">
+               <Button onClick={() => window.open(getFileUrl(selectedBook.fichierUrl || ''), '_blank')} className="gap-2">
                  <Download className="w-4 h-4" /> Télécharger / Lire
                </Button>
              )}

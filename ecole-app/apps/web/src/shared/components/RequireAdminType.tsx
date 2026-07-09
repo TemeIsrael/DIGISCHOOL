@@ -22,8 +22,8 @@ export const RequireAdminType: React.FC<RequireAdminTypeProps> = ({ allowedTypes
 
   const typeAdmin = user?.typeAdmin ?? -1;
 
-  // typeAdmin === 0 is the Root Admin, they have access to everything
-  if (typeAdmin === 0 || allowedTypes.includes(typeAdmin)) {
+  // Only ROOT role has access to everything. ADMIN_ROOT (type 0) must be explicitly allowed.
+  if (user?.role === 'ROOT' || allowedTypes.includes(typeAdmin)) {
     return <>{children}</>;
   }
 

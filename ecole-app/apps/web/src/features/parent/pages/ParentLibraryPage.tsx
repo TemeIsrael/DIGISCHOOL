@@ -4,7 +4,7 @@ import { Card } from '../../../shared/components/ui/Card';
 import { BookOpen, Search, Eye, Loader2 } from 'lucide-react';
 import { Modal } from '../../../shared/components/ui/Modal';
 import { Button } from '../../../shared/components/ui/Button';
-import { api } from '../../../shared/lib/api';
+import { api, getFileUrl } from '../../../shared/lib/api';
 
 interface Book {
   id: number;
@@ -97,7 +97,7 @@ export const ParentLibraryPage: React.FC = () => {
                 className="w-full mt-2 gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
                 onClick={() => {
                    if (b.fichierUrl) {
-                      window.open(b.fichierUrl, '_blank');
+                      window.open(getFileUrl(b.fichierUrl), '_blank');
                    } else {
                       setSelectedBook(b);
                    }
