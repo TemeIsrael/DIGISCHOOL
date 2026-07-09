@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import { z } from 'zod';
 import { ROLES } from '../../config/constants';
-import { Messages, Parents } from '../../db/models';
+import { Messages, Parents, Personne } from '../../db/models';
 import { authenticate } from '../../middlewares/auth';
 import { requireRole, requireAdminType } from '../../middlewares/rbac';
 import { validateBody } from '../../middlewares/validate';
 import { ADMIN_TYPES } from '../../config/constants';
+import { sendInternalMail } from '../../lib/mailer';
 
 const router = Router();
 
@@ -18,8 +19,6 @@ const sendMessageSchema = z.object({
 
 router.use(authenticate);
 
-import { sendEmail } from '../../lib/brevo';
-import { Personne } from '../../db/models';
 
 // 1. CREATE MESSAGE (Rule: Message type 1 → champ valider=false jusqu'à validation Directeur)
 router.post('/', requireRole(Object.values(ROLES)), validateBody(sendMessageSchema), async (req, res, next) => {
@@ -49,7 +48,7 @@ router.post('/', requireRole(Object.values(ROLES)), validateBody(sendMessageSche
     if (valider) {
       const email = (parent as any).personne?.email;
       if (email) {
-        await sendEmail(email, objet, contenu).catch(e => console.error('Failed to send email:', e));
+        await sendInternalMail(email, objet, contenu).catch((e: Error) => console.error('Failed to send email:', e.message));
       }
     }
 
