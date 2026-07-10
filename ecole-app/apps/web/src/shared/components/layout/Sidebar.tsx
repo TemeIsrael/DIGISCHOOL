@@ -38,9 +38,9 @@ const allLinks: SidebarLink[] = [
   { to: '/livres',     labelKey: 'sidebar.library',    icon: <BookOpen className="w-5 h-5" />,      adminTypes: [3, 4],    roles: ['ADMIN'] },
   // Stats – Fondateur(3) + Directeur(4)
   { to: '/stats',         labelKey: 'sidebar.stats',          icon: <BarChart3 className="w-5 h-5" />,     adminTypes: [3, 4], roles: ['ADMIN'] },
-  // Messages & Notifications – tous les admins
-  { to: '/messages',      labelKey: 'sidebar.messages',       icon: <MessageSquare className="w-5 h-5" />, roles: ['ADMIN'] },
-  { to: '/notifications', labelKey: 'sidebar.notifications',  icon: <Bell className="w-5 h-5" />,          roles: ['ADMIN'] },
+  // Messages & Notifications – adminTypes excludes 0 (ROOT)
+  { to: '/messages',      labelKey: 'sidebar.messages',       icon: <MessageSquare className="w-5 h-5" />, adminTypes: [1, 2, 3, 4], roles: ['ADMIN'] },
+  { to: '/notifications', labelKey: 'sidebar.notifications',  icon: <Bell className="w-5 h-5" />,          adminTypes: [1, 2, 3, 4], roles: ['ADMIN'] },
 
   // ─── Teacher links ───────────────────────────────────────────────────
   { to: '/teacher/dashboard',  labelKey: 'navbar.teacher_space', icon: <LayoutDashboard className="w-5 h-5" />, roles: ['TEACHER'] },

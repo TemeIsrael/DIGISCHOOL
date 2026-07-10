@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Paiement, Evaluation, Eleve, Personne, Classe, Parents } from '../../db/models';
+import { Paiement, Evaluation, Eleve, Personne, Classe, Parents, Frequente, Salle, Scolarite, Tranches, Messages } from '../../db/models';
 import { authenticate } from '../../middlewares/auth';
 import { requireRole } from '../../middlewares/rbac';
 
@@ -58,14 +58,65 @@ router.get('/teacher', requireRole(['TEACHER', 'ADMIN']), async (req, res, next)
 // 3. PARENT DASHBOARD STATS
 router.get('/parent', requireRole(['PARENT', 'ADMIN']), async (req, res, next) => {
   try {
-    // Parents see stats for their children
-    const childrenCount = 2; // In reality, count Eleve linked to Parents
-    
+    const userId = req.user!.id;
+
+    // Fetch actual children linked to this parent (Personne) via the Parents join table
+    const parentLinks = await Parents.findAll({
+      where: { idPers: userId },
+      include: [{
+        model: Eleve,
+        as: 'eleve',
+        where: { isDelete: false },
+        required: false,
+        include: [{
+          model: Frequente,
+          as: 'frequentations',
+          include: [{
+            model: Salle,
+            as: 'salle',
+            include: [{ model: Classe, as: 'classe' }]
+          }]
+        }]
+      }]
+    });
+
+    // Build children array with class info
+    const children = parentLinks
+      .filter((pl: any) => pl.eleve)
+      .map((pl: any) => {
+        const e = pl.eleve;
+        const freq = e.frequentations?.[0];
+        const classeLabel = freq?.salle?.classe?.libelle || '';
+        const salleLabel = freq?.salle?.libelle || '';
+        return {
+          matricule: e.matricule,
+          nom: e.nom,
+          prenom: e.prenom,
+          classe: classeLabel,
+          salle: salleLabel,
+          statut: e.statut || 'INSCRIT'
+        };
+      });
+
+    const childrenCount = children.length;
+
+    // Count unread messages for this parent
+    let unreadMessages = 0;
+    try {
+      const parentRecord = await Parents.findOne({ where: { idPers: userId } });
+      if (parentRecord) {
+        unreadMessages = await Messages.count({ where: { idParent: parentRecord.idParent, lu: false } });
+      }
+    } catch (_) {
+      // Messages.lu may not exist, fallback to 0
+    }
+
     res.json({
       success: true,
       data: {
         childrenCount,
-        unreadMessages: 0,
+        children,
+        unreadMessages,
         upcomingEvals: [],
         homeworks: []
       }

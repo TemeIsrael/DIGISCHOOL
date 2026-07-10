@@ -13,6 +13,7 @@ const router = Router();
 const createAdminSchema = z.object({
   login: z.string().min(3),
   password: z.string().min(6),
+  email: z.string().email('Adresse email invalide'),
   typeAdmin: z.number().min(1).max(5) // Root (0) can only be created via seed
 });
 
@@ -23,7 +24,7 @@ router.use(requireAdminType([ADMIN_TYPES.SUPER])); // Only typeAdmin === 0
 
 // CREATE
 router.post('/', validateBody(createAdminSchema), async (req, res, next) => {
-  const { login, password, typeAdmin } = req.body;
+  const { login, password, email, typeAdmin } = req.body;
   try {
     const existing = await Admin.findOne({ where: { login } });
     if (existing) {
@@ -35,14 +36,31 @@ router.post('/', validateBody(createAdminSchema), async (req, res, next) => {
     const admin = await Admin.create({
       login,
       password: hashedPassword,
+      email,
       typeAdmin
     });
+
+    const typeLabels: Record<number, string> = {
+      1: 'Secrétaire (Inscriptions)',
+      2: 'Scolarité (Registrar)',
+      3: 'Fondateur',
+      4: 'Directeur',
+      5: 'Auditeur'
+    };
+
+    // Send credentials by email
+    await sendInternalMail(
+      email,
+      'Vos identifiants de connexion DIGISCHOOL',
+      `Bonjour,\n\nVotre compte administrateur a été créé avec les accès suivants :\n\nLien de connexion : ${process.env.FRONT_URL || 'http://localhost:5173'}\nLogin : ${login}\nMot de passe : ${password}\nType  : ${typeLabels[typeAdmin] ?? 'Administrateur'}\n\nVeuillez vous connecter à la plateforme et changer votre mot de passe dès la première connexion.\n\nCordialement,\nLe Super Administrateur DIGISCHOOL`
+    );
 
     res.status(201).json({
       success: true,
       data: {
         id: admin.ID,
         login: admin.login,
+        email: admin.email,
         typeAdmin: admin.typeAdmin,
         actif: admin.actif
       }
@@ -57,7 +75,7 @@ router.get('/', async (req, res, next) => {
   try {
     const list = await Admin.findAll({
       where: { isDelete: false },
-      attributes: ['ID', 'login', 'typeAdmin', 'actif']
+      attributes: ['ID', 'login', 'email', 'typeAdmin', 'actif']
     });
     res.json({ success: true, data: list });
   } catch (err) {
@@ -75,6 +93,11 @@ router.post('/:id/send-credentials', async (req, res, next) => {
       return;
     }
 
+    if (!admin.email) {
+      res.status(400).json({ error: { code: 'BAD_REQUEST', message: 'Cet administrateur n\'a pas d\'adresse e-mail renseignée.' } });
+      return;
+    }
+
     const typeLabels: Record<number, string> = {
       1: 'Secrétaire (Inscriptions)',
       2: 'Scolarité (Registrar)',
@@ -84,12 +107,12 @@ router.post('/:id/send-credentials', async (req, res, next) => {
     };
 
     await sendInternalMail(
-      admin.login,
-      'Vos identifiants de connexion DIGISCHOOL',
-      `Bonjour,\n\nVotre compte administrateur a été créé avec les accès suivants :\n\nLogin : ${admin.login}\nType  : ${typeLabels[admin.typeAdmin] ?? 'Administrateur'}\n\nVeuillez vous connecter à la plateforme et changer votre mot de passe dès la première connexion.\n\nCordialement,\nLe Super Administrateur DIGISCHOOL`
+      admin.email,
+      'Vos identifiants de connexion DIGISCHOOL (Rappel)',
+      `Bonjour,\n\nSuite à votre demande, voici le rappel de vos accès administrateur :\n\nLien de connexion : ${process.env.FRONT_URL || 'http://localhost:5173'}\nLogin : ${admin.login}\nType  : ${typeLabels[admin.typeAdmin] ?? 'Administrateur'}\n\nSi vous avez oublié votre mot de passe, utilisez la fonction "Mot de passe oublié" ou demandez au Super Administrateur de le réinitialiser.\n\nCordialement,\nLe Super Administrateur DIGISCHOOL`
     );
 
-    res.json({ success: true, message: `Identifiants envoyés par mail à : ${admin.login}` });
+    res.json({ success: true, message: `Identifiants envoyés par mail à : ${admin.email}` });
   } catch (err) {
     next(err);
   }

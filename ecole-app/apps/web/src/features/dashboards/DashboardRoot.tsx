@@ -12,6 +12,7 @@ import {
 interface AdminAccount {
   id: number;
   login: string;
+  email?: string;
   typeAdmin: number;
   actif: boolean;
 }
@@ -29,9 +30,6 @@ const ADMIN_TYPE_COLORS: Record<number, string> = {
   3: 'bg-emerald-50 text-emerald-700 border-emerald-200',
   4: 'bg-violet-50 text-violet-700 border-violet-200'
 };
-
-/* ─── Initial mock admin accounts ───────────────────────────────── */
-// Removed mock data; admins are loaded from the API.
 
 /* ─── System Audit Log ──────────────────────────────────────────── */
 const systemAuditLog = [
@@ -68,6 +66,7 @@ export const DashboardRoot: React.FC = () => {
   const [admins, setAdmins]                 = useState<AdminAccount[]>([]);
   const [newLogin, setNewLogin]             = useState('');
   const [newPassword, setNewPassword]       = useState('');
+  const [newEmail, setNewEmail]             = useState('');
   const [newTypeAdmin, setNewTypeAdmin]     = useState<number>(1);
   const [showPassword, setShowPassword]     = useState(false);
   const [createStatus, setCreateStatus]     = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -87,7 +86,7 @@ export const DashboardRoot: React.FC = () => {
       const res = await fetch('/api/admins');
       if (!res.ok) throw new Error('Failed to load admins');
       const json = await res.json();
-      setAdmins(json.data.map((a: any) => ({ id: a.ID, login: a.login, typeAdmin: a.typeAdmin, actif: a.actif })));
+      setAdmins(json.data.map((a: any) => ({ id: a.ID, login: a.login, email: a.email, typeAdmin: a.typeAdmin, actif: a.actif })));
     } catch (err) {
       console.error(err);
     }
@@ -105,7 +104,7 @@ export const DashboardRoot: React.FC = () => {
     const res = await fetch('/api/admins', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login: newLogin, password: newPassword, typeAdmin: newTypeAdmin })
+      body: JSON.stringify({ login: newLogin, password: newPassword, email: newEmail, typeAdmin: newTypeAdmin })
     });
     if (!res.ok) {
       const err = await res.json();
@@ -113,7 +112,7 @@ export const DashboardRoot: React.FC = () => {
     }
     const json = await res.json();
     const created = json.data;
-    setAdmins((prev) => [...prev, { id: created.id, login: created.login, typeAdmin: created.typeAdmin, actif: created.actif }]);
+    setAdmins((prev) => [...prev, { id: created.id, login: created.login, email: created.email, typeAdmin: created.typeAdmin, actif: created.actif }]);
     setCreateStatus('success');
     setCreateMsg(t('dashboardRoot.success.adminCreated', 'Compte « {{login}} » créé avec succès !', { login: newLogin }));
   } catch (err: any) {
@@ -122,6 +121,7 @@ export const DashboardRoot: React.FC = () => {
   } finally {
     setNewLogin('');
     setNewPassword('');
+    setNewEmail('');
     setNewTypeAdmin(1);
     setTimeout(() => setCreateStatus('idle'), 4000);
   }
@@ -256,6 +256,19 @@ export const DashboardRoot: React.FC = () => {
                     {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
+              </div>
+
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-wider">Adresse e-mail *</label>
+                <input
+                  type="email"
+                  required
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  placeholder="Ex: admin@ecole.com"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm font-medium focus:ring-2 focus:ring-digi-purple focus:border-digi-purple outline-none transition-all bg-slate-50 focus:bg-white"
+                />
               </div>
 
               {/* Admin type */}

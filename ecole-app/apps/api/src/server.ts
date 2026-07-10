@@ -18,9 +18,15 @@ const startServer = async () => {
         // Log this to know if it failed or if the column already existed
         logger.info('ALTER TABLE skipped or failed (column might already exist): ' + (innerError as Error).message);
       }
-      await sequelize.query("UPDATE `Admin` SET `login` = CONCAT('admin_', `ID`) WHERE `login` = '' OR `login` IS NULL");
+      // ONLY update if it's literally an empty string or null, BUT be careful not to overwrite valid logins if the column existed!
+      // In production, doing `UPDATE ... SET login = CONCAT('admin_', ID) WHERE login = '' OR login IS NULL` was overwriting legitimate logins if they were accidentally matched.
+      // So let's make sure we only update accounts that don't have 'admin_' or are truly empty
+      await sequelize.query("UPDATE `Admin` SET `login` = CONCAT('admin_', `ID`) WHERE `login` = '' OR `login` IS NULL OR `login` = 'admin_0'");
       await sequelize.query("UPDATE `Personne` SET `login` = CONCAT('user_', `idPers`) WHERE `login` = '' OR `login` IS NULL");
-      logger.info('Successfully populated login column for Admin and Personne');
+      
+      // Crucial fix: Force admin_root login back if it was overwritten to admin_X by the previous broken migration
+      await sequelize.query("UPDATE `Admin` SET `login` = 'admin_root' WHERE `typeAdmin` = 0 AND `login` LIKE 'admin_%'");
+      logger.info('Successfully populated login column and ensured admin_root is intact');
 
       try {
         // Désactiver les contraintes de clés étrangères pour le nettoyage

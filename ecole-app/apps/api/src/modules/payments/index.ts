@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { Paiement, Scolarite, Frequente, Salle, Classe, AnneeAcademique, Mode, Eleve, Personne, Parents } from '../../db/models';
+import { Paiement, Scolarite, Frequente, Salle, Classe, AnneeAcademique, Mode, Eleve, Personne, Parents, Tranches } from '../../db/models';
 import { authenticate } from '../../middlewares/auth';
 import { requireRole } from '../../middlewares/rbac';
 import { validateBody } from '../../middlewares/validate';
@@ -157,18 +157,113 @@ router.get('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', '
   try {
     let list;
     if (user.role === 'PARENT') {
+      // Find children linked to this parent
+      const parentLinks = await Parents.findAll({ where: { idPers: user.id } });
+      const childMatricules = parentLinks.map((pl: any) => pl.matricule);
+      
+      if (childMatricules.length === 0) {
+        return res.json({ success: true, data: [] });
+      }
+      
+      const { Op } = require('sequelize');
       list = await Paiement.findAll({ 
-        where: { actif: true },
-        include: [{ model: AnneeAcademique, as: 'anneeAcademique' }] // mock
+        where: { matricule: { [Op.in]: childMatricules }, actif: true },
+        include: [{ model: AnneeAcademique, as: 'anneeAcademique' }],
+        order: [['createdAt', 'DESC']]
       });
     } else {
       list = await Paiement.findAll({
         include: [
           { model: AnneeAcademique, as: 'anneeAcademique' }
-        ]
+        ],
+        order: [['createdAt', 'DESC']]
       });
     }
     res.json({ success: true, data: list });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// 2b. GET SCOLARITE INFO FOR PARENT (tranches, total, etc.)
+router.get('/scolarite-info', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE', 'FONDATEUR', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT', 'PARENT']), async (req, res, next) => {
+  const user = req.user!;
+  try {
+    let matricules: string[] = [];
+    
+    if (user.role === 'PARENT') {
+      const parentLinks = await Parents.findAll({ where: { idPers: user.id } });
+      matricules = parentLinks.map((pl: any) => pl.matricule);
+    } else if (req.query.matricule) {
+      matricules = [req.query.matricule as string];
+    }
+
+    if (matricules.length === 0) {
+      return res.json({ success: true, data: { totalScolarite: 0, tranches: [], payments: [] } });
+    }
+
+    // For each child, find their cycle → scolarite → tranches
+    const results: any[] = [];
+    
+    for (const matricule of matricules) {
+      const enrollment = await Frequente.findOne({
+        where: { matricule },
+        include: [{
+          model: Salle,
+          as: 'salle',
+          include: [{ model: Classe, as: 'classe' }]
+        }]
+      });
+
+      if (!enrollment?.salle?.classe?.idCycle) continue;
+
+      const scolarite = await Scolarite.findOne({
+        where: { idCycle: enrollment.salle.classe.idCycle },
+        include: [{ model: Tranches, as: 'tranches' }]
+      });
+
+      if (!scolarite) continue;
+
+      const totalScolarite = scolarite.montantInscription + scolarite.pension;
+      const tranchesList = (scolarite as any).tranches || [];
+
+      // Get payments for this student
+      const payments = await Paiement.findAll({
+        where: { matricule, actif: true },
+        order: [['createdAt', 'DESC']]
+      });
+
+      const totalPaid = payments.reduce((s: number, p: any) => s + (p.montant || 0), 0);
+
+      // Find student name
+      const student = await Eleve.findByPk(matricule);
+
+      results.push({
+        matricule,
+        nom: student ? `${student.nom} ${student.prenom}` : matricule,
+        totalScolarite,
+        montantInscription: scolarite.montantInscription,
+        pension: scolarite.pension,
+        totalPaid,
+        remaining: totalScolarite - totalPaid,
+        rate: totalScolarite > 0 ? Math.round((totalPaid / totalScolarite) * 100) : 0,
+        tranches: tranchesList.map((t: any) => ({
+          numero: t.numero,
+          montant: t.montant,
+          dateEcheance: t.dateEcheance
+        })),
+        payments: payments.map((p: any) => ({
+          idPaie: p.idPaie,
+          montant: p.montant,
+          trancheCouverte: p.trancheCouverte,
+          date: p.date,
+          createdAt: p.createdAt,
+          actif: p.actif
+        }))
+      });
+    }
+
+    res.json({ success: true, data: results });
   } catch (err) {
     next(err);
   }

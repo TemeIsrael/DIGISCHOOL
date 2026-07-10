@@ -9,6 +9,8 @@ export const DashboardParent: React.FC = () => {
   const { t } = useTranslation();
   const { stats, isLoading } = useDashboardStats('PARENT');
 
+  const children: any[] = stats?.children || [];
+
   return (
     <div className="space-y-8">
       <div>
@@ -32,24 +34,33 @@ export const DashboardParent: React.FC = () => {
             {t('dashboards.myChildren', 'Mes Enfants')}
           </h3>
           <div className="space-y-4">
-            {/* Real children would be listed here from API */}
-            <div className="p-4 rounded-xl border border-slate-100 hover:border-digi-purple/30 transition-all flex items-center justify-between group cursor-pointer bg-slate-50">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-digi-purple-bg text-digi-purple flex items-center justify-center font-bold text-lg">
-                  E
+            {isLoading ? (
+              <p className="text-sm text-slate-400 italic">Chargement...</p>
+            ) : children.length === 0 ? (
+              <p className="text-sm text-slate-500 italic">Aucun enfant inscrit trouvé.</p>
+            ) : (
+              children.map((child: any) => (
+                <div key={child.matricule} className="p-4 rounded-xl border border-slate-100 hover:border-digi-purple/30 transition-all flex items-center justify-between group cursor-pointer bg-slate-50">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-digi-purple-bg text-digi-purple flex items-center justify-center font-bold text-lg">
+                      {(child.prenom?.[0] || child.nom?.[0] || 'E').toUpperCase()}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-slate-800">{child.nom} {child.prenom}</h4>
+                      <p className="text-xs font-semibold text-slate-500">
+                        {child.classe ? `${child.classe}` : ''}{child.salle ? ` — ${child.salle}` : ''}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
+                      <CheckCircle2 className="w-3 h-3" />
+                      {child.statut === 'PRE_INSCRIT' ? 'Pré-inscrit' : 'Inscrit'}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-bold text-slate-800">Élève 1</h4>
-                  <p className="text-xs font-semibold text-slate-500">CM1 A</p>
-                </div>
-              </div>
-              <div className="text-right">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
-                  <CheckCircle2 className="w-3 h-3" />
-                  Inscrit
-                </span>
-              </div>
-            </div>
+              ))
+            )}
           </div>
         </Card>
 
@@ -80,3 +91,4 @@ export const DashboardParent: React.FC = () => {
   );
 };
 export default DashboardParent;
+
