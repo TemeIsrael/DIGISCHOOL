@@ -75,7 +75,7 @@ export const GradeEntryPage: React.FC = () => {
         prenom: s.prenom,
         note: existingEval ? existingEval.note : null,
         noteMax: selectedSection === 'Francophone' ? 20 : 100, // standard scale depending on system
-        photoUrl: s.photoUrl || s.photoURL,
+        photoUrl: s.photo,
         idCours,
         idSession
       };

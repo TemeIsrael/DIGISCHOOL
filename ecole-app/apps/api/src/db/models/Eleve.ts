@@ -10,6 +10,7 @@ export class Eleve extends Model {
   declare sexe: number;
   declare idVilleNaissance: number;
   declare langue: string;
+  declare photo: string | null;
 
   declare actif: boolean;
   declare isDelete: boolean;
@@ -47,6 +48,10 @@ Eleve.init(
       type: DataTypes.STRING(30),
       allowNull: false,
       defaultValue: 'NON DEFINI',
+    },
+    photo: {
+      type: DataTypes.TEXT('long'),
+      allowNull: true,
     },
 
     actif: {
