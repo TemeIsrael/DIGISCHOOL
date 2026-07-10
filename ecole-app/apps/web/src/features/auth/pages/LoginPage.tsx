@@ -25,6 +25,17 @@ const loginFormSchema = z.object({
 type LoginFormInput = z.infer<typeof loginFormSchema>;
 type RoleValue = LoginFormInput['role'];
 
+// Comptes démo fonctionnels (vrais comptes en base)
+const demoAccounts: { label: string; role: RoleValue; login: string; password: string }[] = [
+  { label: 'ROOT',         role: 'ADMIN_ROOT',        login: 'admin_root', password: 'admin123' },
+  { label: 'INSCRIPTIONS', role: 'ADMIN_INSCRIPTIONS', login: 'admin_insc', password: 'admin123' },
+  { label: 'SCOLARITE',    role: 'ADMIN_SCOLARITE',    login: 'admin_scol', password: 'admin123' },
+  { label: 'FONDATEUR',    role: 'FONDATEUR',          login: 'admin_fond', password: 'admin123' },
+  { label: 'DIRECTEUR',    role: 'DIRECTEUR',          login: 'admin_dir',  password: 'admin123' },
+  { label: 'ENSEIGNANT',   role: 'TEACHER',            login: 'teacher1',   password: 'admin123' },
+  { label: 'PARENT',       role: 'PARENT',             login: 'parent1',    password: 'admin123' },
+];
+
 const slides = [
   { src: '/images/ecole1.jpg', caption: 'Un espace d\'apprentissage bienveillant' },
   { src: '/images/ecole2.jpg', caption: 'Des élèves épanouis, avenir radieux' },
@@ -49,11 +60,18 @@ export const LoginPage: React.FC = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors }
   } = useForm<LoginFormInput>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: { role: 'ADMIN_ROOT' }
   });
+
+  const fillDemo = (acc: typeof demoAccounts[0]) => {
+    setValue('login', acc.login);
+    setValue('password', acc.password);
+    setValue('role', acc.role);
+  };
 
   const onSubmit = async (data: LoginFormInput) => {
     try {
@@ -191,6 +209,30 @@ export const LoginPage: React.FC = () => {
               </button>
             </div>
           </Card>
+
+          {/* ═══ Comptes démo cliquables ═══ */}
+          <div className="mt-6 bg-white/60 backdrop-blur-sm border border-slate-200 rounded-xl p-4 shadow-sm">
+            <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider text-center mb-3">
+              Comptes de Démonstration — cliquez pour remplir
+            </h3>
+            <div className="grid grid-cols-2 gap-2">
+              {demoAccounts.map((acc) => (
+                <button
+                  key={acc.login}
+                  type="button"
+                  onClick={() => fillDemo(acc)}
+                  className="text-left bg-white hover:bg-digi-purple/5 border border-slate-100 hover:border-digi-purple/30 rounded-xl p-3 shadow-sm transition-all group"
+                >
+                  <div className="font-bold text-digi-purple text-xs mb-1 group-hover:text-digi-purple-dark">{acc.label}</div>
+                  <div className="text-slate-500 text-[11px]">
+                    <span className="font-semibold text-slate-700">{acc.login}</span>
+                    {' · '}
+                    <span className="font-mono">{acc.password}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
