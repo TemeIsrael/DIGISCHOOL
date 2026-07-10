@@ -24,6 +24,7 @@ export interface BulletinData {
   effectif?: number;
   titulaire?: string;       // Nom de l'enseignant titulaire de la classe
   signatureUrl?: string;   // URL ou chemin vers l'image de signature du directeur
+  photoUrl?: string;       // Photo de l'élève
   schoolName?: string;     // Nom de l'école (optionnel, défaut: DIGISCHOOL)
 }
 
@@ -91,13 +92,28 @@ export const generateBulletinPDF = (stream: Writable, data: BulletinData): Promi
       doc.font('Helvetica').text(data.matricule, MARGIN + 65, y + 16);
 
       // Right column: Classe, Titulaire
-      const col2X = MARGIN + CONTENT_W / 2 + 10;
+      const col2X = MARGIN + CONTENT_W / 2 - 20;
       doc.font('Helvetica-Bold').text('Classe :', col2X, y);
       doc.font('Helvetica').text(data.classe, col2X + 45, y);
 
       if (data.titulaire) {
         doc.font('Helvetica-Bold').text('Titulaire :', col2X, y + 16);
         doc.font('Helvetica').text(data.titulaire, col2X + 50, y + 16);
+      }
+
+      // Photo (Rightmost)
+      if (data.photoUrl) {
+        const photoPath = data.photoUrl.startsWith('/') 
+          ? path.join(process.cwd(), 'public', data.photoUrl) 
+          : data.photoUrl;
+
+        if (fs.existsSync(photoPath)) {
+          try {
+            doc.image(photoPath, PAGE_W - MARGIN - 45, y - 5, { width: 40, height: 40, fit: [40, 40] });
+          } catch (_) {
+            // Invalid image silently ignored
+          }
+        }
       }
 
       y = 140 + 55 + 15;

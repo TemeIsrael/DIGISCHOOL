@@ -52,6 +52,7 @@ const StudentParentsPage      = lazy(() => import('../features/students/pages/St
 // const PreRegistrationPage     = lazy(() => import('../features/students/pages/PreRegistrationPage'));
 const PreRegistrationListPage = lazy(() => import('../features/students/pages/PreRegistrationListPage'));
 const PersonnelListPage       = lazy(() => import('../features/personnel/pages/PersonnelListPage'));
+const ParentsListPage         = lazy(() => import('../features/parents/pages/ParentsListPage'));
 const PaymentListPage         = lazy(() => import('../features/payments/pages/PaymentListPage'));
 const PaymentEntryPage        = lazy(() => import('../features/payments/pages/PaymentEntryPage'));
 const GradeEntryPage          = lazy(() => import('../features/grades/pages/GradeEntryPage'));
@@ -164,6 +165,9 @@ export const Router: React.FC = () => {
 
             {/* ── Personnel — Admin Root(0), Secretary(1), Director(4) ── */}
             <Route path="/personnel" element={<RequireAdminType allowedTypes={[0,1,4]}><PersonnelListPage /></RequireAdminType>} />
+
+            {/* ── Parents — Secretary(1), Director(4) ── */}
+            <Route path="/parents" element={<RequireAdminType allowedTypes={[1,4]}><ParentsListPage /></RequireAdminType>} />
 
             {/* ── Payments — Secretary(1), Scolarite(2), Founder(3), Director(4) ── */}
             <Route path="/payments" element={<RequireAdminType allowedTypes={[1,2,3,4]}><PaymentListPage /></RequireAdminType>} />

@@ -97,28 +97,64 @@ router.post('/bulk', requireRole(['TEACHER']), async (req, res, next) => {
     }
 
     // Validate that the teacher is registered for ALL the courses they want to submit notes for
-    const distinctCourseIds = Array.from(new Set(evaluations.map((e) => e.idCours)));
-    for (const courseId of distinctCourseIds) {
-      const teacherMatch = await Enseignant.findOne({
-        where: {
-          idPers: user.id,
-          idCours: courseId
-        }
-      });
-
-      if (!teacherMatch) {
-        res.status(403).json({
-          error: {
-            code: 'FORBIDDEN',
-            message: `Vous n'êtes pas autorisé à saisir des notes pour le cours ID: ${courseId}`
+    // Check skipped for now if user is an ADMIN or ROOT as they can enter any notes.
+    if (user.role === 'TEACHER') {
+      const distinctCourseIds = Array.from(new Set(evaluations.map((e: any) => e.idCours)));
+      for (const courseId of distinctCourseIds) {
+        const teacherMatch = await Enseignant.findOne({
+          where: {
+            idPers: user.id,
+            idCours: courseId
           }
         });
-        return;
+
+        if (!teacherMatch) {
+          res.status(403).json({
+            error: {
+              code: 'FORBIDDEN',
+              message: `Vous n'êtes pas autorisé à saisir des notes pour le cours ID: ${courseId}`
+            }
+          });
+          return;
+        }
       }
     }
 
-    const created = await Evaluation.bulkCreate(evaluations);
-    res.status(201).json({ success: true, data: created });
+    // Insert or Update evaluations
+    for (const ev of evaluations) {
+      const existing = await Evaluation.findOne({
+        where: {
+          matricule: ev.matricule,
+          idCours: ev.idCours,
+          idSession: ev.idSession
+        }
+      });
+      if (existing) {
+        await existing.update({ note: ev.note, appreciation: ev.appreciation, idEpreuve: ev.idEpreuve });
+      } else {
+        await Evaluation.create({ ...ev });
+      }
+    }
+
+    res.status(201).json({ success: true, message: 'Notes enregistrées avec succès' });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET EVALUATIONS FOR A CLASS/SESSION
+router.get('/', requireRole(['ADMIN', 'ADMIN_ROOT', 'ROOT', 'TEACHER', 'DIRECTEUR']), async (req, res, next) => {
+  const { idSession, idCours } = req.query;
+  try {
+    const whereClause: any = {};
+    if (idSession) whereClause.idSession = Number(idSession);
+    if (idCours) whereClause.idCours = Number(idCours);
+
+    const evals = await Evaluation.findAll({
+      where: whereClause
+    });
+    
+    res.json({ success: true, data: evals });
   } catch (err) {
     next(err);
   }
@@ -250,6 +286,7 @@ router.get('/bulletins/:matricule/download', async (req, res, next) => {
       effectif: averages.length,
       titulaire: titulaireNom,
       signatureUrl,
+      photoUrl: eleve.photoUrl || eleve.photoURL,
     };
 
     res.setHeader('Content-Type', 'application/pdf');

@@ -67,13 +67,30 @@ router.get('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'DIRECTEUR', 'ADMIN_
   }
 });
 
-import { Parents } from '../../db/models';
+import { Parents, Eleve } from '../../db/models';
 
-// GET ALL PARENTS
+// GET ALL PARENTS (typePersonne=2) with their children
 router.get('/parents', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT', 'TEACHER']), async (req, res, next) => {
   try {
-    const list = await Parents.findAll({
-      include: [{ model: Personne, as: 'personne', attributes: ['nom', 'prenom', 'login'] }]
+    const list = await Personne.findAll({
+      where: { typePersonne: 2, isDelete: false },
+      attributes: ['idPers', 'nom', 'prenom', 'email', 'telephone1', 'login', 'actif', 'photoURL', 'created_at'],
+      include: [
+        {
+          model: Parents,
+          as: 'parents',
+          required: false,
+          include: [
+            {
+              model: Eleve,
+              as: 'eleve',
+              required: false,
+              attributes: ['matricule', 'nom', 'prenom', 'actif']
+            }
+          ]
+        }
+      ],
+      order: [['nom', 'ASC']]
     });
     res.json({ success: true, data: list });
   } catch (err) {

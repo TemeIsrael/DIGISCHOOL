@@ -6,7 +6,7 @@ import { Avatar } from '../ui/Avatar';
 import {
   LayoutDashboard, Users, GraduationCap, CreditCard, MessageSquare,
   ShieldCheck, BookOpen, BarChart3, Settings, Clock,
-  ClipboardList, FileText, ChevronLeft, ChevronRight, Bell
+  ClipboardList, FileText, ChevronLeft, ChevronRight, Bell, Heart
 } from 'lucide-react';
 
 interface SidebarLink {
@@ -24,6 +24,8 @@ const allLinks: SidebarLink[] = [
   { to: '/students',   labelKey: 'sidebar.students',   icon: <GraduationCap className="w-5 h-5" />, adminTypes: [1, 4], roles: ['ADMIN'] },
   // Personnel – Admin Root(0) + Secrétariat(1) + Directeur(4)
   { to: '/personnel',  labelKey: 'sidebar.personnel',  icon: <Users className="w-5 h-5" />,         adminTypes: [0, 1, 4], roles: ['ADMIN'] },
+  // Parents d'élèves – Secrétariat(1) + Directeur(4)
+  { to: '/parents',    labelKey: 'sidebar.parents',    icon: <Heart className="w-5 h-5" />,          adminTypes: [1, 4],    roles: ['ADMIN'] },
   // Payments – Secrétariat(1) + Fondateur(3) + Directeur(4)
   { to: '/payments',   labelKey: 'sidebar.payments',   icon: <CreditCard className="w-5 h-5" />,    adminTypes: [1, 3, 4], roles: ['ADMIN'] },
   // Pédagogie (salles, cycles) – Scolarité(2) + Directeur(4)

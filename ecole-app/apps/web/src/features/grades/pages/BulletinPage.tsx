@@ -47,7 +47,7 @@ export const BulletinPage: React.FC = () => {
       
       const secMatch = selectedSection.toUpperCase() === sectionName.toUpperCase();
       const clsMatch = selectedClasse === classeName;
-      return secMatch && clsMatch && s.statut === 'INSCRIT';
+      return secMatch && clsMatch && s.actif !== false;
     });
   }, [students, selectedClasse, selectedSection]);
 

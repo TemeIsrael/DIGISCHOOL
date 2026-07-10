@@ -28,7 +28,7 @@ export const requireRole = (allowedRoles: string[]) => {
 
 export const requireAdminType = (allowedTypes: number[]) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (!req.user || (req.user.role !== 'ADMIN' && req.user.role !== 'ADMIN_ROOT')) {
+    if (!req.user || (req.user.role !== 'ADMIN' && req.user.role !== 'ADMIN_ROOT' && req.user.role !== 'ROOT')) {
       res.status(403).json({
         error: {
           code: 'FORBIDDEN',

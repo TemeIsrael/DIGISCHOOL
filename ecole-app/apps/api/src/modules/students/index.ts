@@ -337,20 +337,23 @@ router.post('/register', requireRole(['ADMIN','ADMIN_INSCRIPTIONS','ADMIN_SCOLAR
 router.get('/', requireRole(['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN','TEACHER']), async (req, res, next) => {
   try {
     const list = await Eleve.findAll({
-      where: { isDelete: false, statut: 'INSCRIT' },
+      where: { isDelete: false },
       include: [
         {
           model: Frequente,
           as: 'frequentations',
+          required: false,
           include: [
             {
               model: sequelize.models.Salle,
               as: 'salle',
-              include: [{ model: sequelize.models.Classe, as: 'classe' }]
+              required: false,
+              include: [{ model: sequelize.models.Classe, as: 'classe', required: false }]
             }
           ]
         }
-      ]
+      ],
+      order: [['nom', 'ASC']]
     });
     res.json({ success: true, data: list });
   } catch (err) {

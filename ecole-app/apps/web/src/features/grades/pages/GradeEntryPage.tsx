@@ -42,11 +42,17 @@ export const GradeEntryPage: React.FC = () => {
   const [selectedSession, setSelectedSession] = useState(isEn ? sessionsEn[2] : sessionsFr[2]);
 
   const { students, isLoading: isLoadingStudents } = useStudents();
-  const { submitGrades, isSubmitting } = useEvaluations();
+  
+  // Convert selectedSession to a mock ID. E.g. "Séquence 1" -> 1
+  const idSession = parseInt(selectedSession.replace(/[^0-9]/g, '')) || 1;
+  // Convert selectedCours to a mock ID based on index for demo purposes.
+  const idCours = Math.max(1, (selectedSection === 'Francophone' ? coursesFrancophones : coursesAnglophones).indexOf(selectedCours) + 1);
+
+  const { evaluations, isLoadingEvaluations, submitGrades, isSubmitting } = useEvaluations(idSession, idCours);
 
   const [grades, setGrades] = useState<GradeEntry[]>([]);
 
-  // Map API students to UI rows when filters change
+  // Map API students to UI rows when filters change or evaluations load
   useEffect(() => {
     if (!students) return;
     
@@ -58,20 +64,23 @@ export const GradeEntryPage: React.FC = () => {
       
       const secMatch = selectedSection.toUpperCase() === sectionName.toUpperCase();
       const clsMatch = selectedClasse === classeName;
-      return secMatch && clsMatch && s.statut === 'INSCRIT';
+      return secMatch && clsMatch && s.actif !== false;
     });
 
-    setGrades(filteredStudents.map((s: any) => ({
-      matricule: s.matricule,
-      nom: s.nom,
-      prenom: s.prenom,
-      note: null,
-      noteMax: selectedSection === 'Francophone' ? 20 : 100, // standard scale depending on system
-      photoUrl: s.photo,
-      idCours: 1, // Mocked until we fetch real courses
-      idSession: 1 // Mocked until we fetch real sessions
-    })));
-  }, [students, selectedClasse, selectedSection]);
+    setGrades(filteredStudents.map((s: any) => {
+      const existingEval = evaluations?.find((e: any) => e.matricule === s.matricule);
+      return {
+        matricule: s.matricule,
+        nom: s.nom,
+        prenom: s.prenom,
+        note: existingEval ? existingEval.note : null,
+        noteMax: selectedSection === 'Francophone' ? 20 : 100, // standard scale depending on system
+        photoUrl: s.photoUrl || s.photoURL,
+        idCours,
+        idSession
+      };
+    }));
+  }, [students, evaluations, selectedClasse, selectedSection, selectedSession, selectedCours]);
 
   const coursOptions  = selectedSection === 'Francophone' ? coursesFrancophones : coursesAnglophones;
   const sessionOptions = selectedSection === 'Francophone' ? (isEn ? sessionsEn : sessionsFr) : sessionsEn;
@@ -232,8 +241,8 @@ export const GradeEntryPage: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50 text-slate-600 bg-white">
-              {isLoadingStudents ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400">Chargement des élèves...</td></tr>
+              {isLoadingStudents || isLoadingEvaluations ? (
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400">Chargement des données...</td></tr>
               ) : grades.length === 0 ? (
                 <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400">Aucun élève trouvé pour cette classe.</td></tr>
               ) : (
