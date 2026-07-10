@@ -12,6 +12,9 @@
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@types/node": "^20.19.41",
+    "mysql2": "^3.22.3",
+    "sequelize": "^6.37.8",
+    "sequelize-cli": "^6.6.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5"
   },

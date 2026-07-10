@@ -27,11 +27,11 @@ export const NotificationsPage: React.FC = () => {
         const messages = res.data?.data || [];
         // Map messages to notification format
         setNotifications(messages.map((m: any) => ({
-          id: m.idMsg || m.id,
-          message: m.contenu || m.message || m.titre || '',
+          id: m.idMessages || m.id,
+          message: m.objet || m.contenu || m.titre || '',
           type: m.type,
           read: m.lu || false,
-          createdAt: m.createdAt || new Date().toISOString()
+          createdAt: m.dateEnvoi || new Date().toISOString()
         })));
       } catch {
         // If no messages API, show empty

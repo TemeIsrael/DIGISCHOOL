@@ -66,8 +66,8 @@ export const NotificationDetailPage: React.FC = () => {
     <div className="p-4 max-w-2xl mx-auto">
       <h2 className="text-2xl font-bold text-slate-800 mb-4">{t('notifications.detail', 'Détail de la notification')}</h2>
       <Card className="p-6 space-y-4">
-        <p className="text-lg font-semibold text-slate-700">{notification.titre || notification.objet || 'Notification'}</p>
-        <p className="text-sm text-slate-500">{timeAgo(notification.createdAt)}</p>
+                <p className="text-lg font-semibold text-slate-700">{notification.objet || notification.titre || 'Notification'}</p>
+        <p className="text-sm text-slate-500">{timeAgo(notification.dateEnvoi || notification.createdAt)}</p>
         <p className="text-base text-slate-600 whitespace-pre-wrap">{notification.contenu || notification.message}</p>
         <div className="pt-4 border-t border-slate-100">
           <Button onClick={() => navigate('/notifications')}>{t('common.back', 'Retour')}</Button>

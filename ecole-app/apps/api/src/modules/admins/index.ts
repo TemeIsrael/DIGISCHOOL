@@ -19,7 +19,7 @@ const createAdminSchema = z.object({
 
 // All admin management is restricted to the Root/Super Admin (typeAdmin = 0)
 router.use(authenticate);
-router.use(requireRole(['ADMIN']));
+router.use(requireRole(['ADMIN','ADMIN_ROOT']));
 router.use(requireAdminType([ADMIN_TYPES.SUPER])); // Only typeAdmin === 0
 
 // CREATE

@@ -33,7 +33,7 @@ Personne.init(
     login: {
       type: DataTypes.STRING(100),
       allowNull: false,
-      unique: true,
+      // unique: true, // supprimé pour respecter la limite de clés MySQL
     },
     password: {
       type: DataTypes.STRING(255),
