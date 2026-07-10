@@ -156,7 +156,8 @@ const startServer = async () => {
       }
 
       // Étape 4 : Synchroniser le schéma
-      await sequelize.sync({ alter: true });
+      // Disabled automatic sync to prevent re‑adding UNIQUE constraint on login
+      // await sequelize.sync({ alter: true });
       logger.info('Database models synced.');
     } finally {
       await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");

@@ -1,6 +1,6 @@
 // Sequelize configuration file for the DIGISCHOOL project
 const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '..', '..', '.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '..', '..', '.env.combined') });
 // This file is used by `sequelize-cli` to obtain DB connection details.
 // It reads the same environment variables that the app already uses (via env.ts).
 
