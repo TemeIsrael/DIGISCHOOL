@@ -108,7 +108,7 @@ const DashboardRedirect: React.FC = () => {
     case 'ROOT':
       return <DashboardRoot />;
     case 'ADMIN_ROOT':
-      return <DashboardAdmin />;
+      return <DashboardRoot />;
     case 'ADMIN_INSCRIPTIONS':
       return <DashboardAdmin />;
     case 'ADMIN_SCOLARITE':

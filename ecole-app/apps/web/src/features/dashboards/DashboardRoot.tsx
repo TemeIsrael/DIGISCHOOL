@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../shared/components/ui/Card';
 import { Button } from '../../shared/components/ui/Button';
+import { api } from '../../shared/lib/api';
 import {
   UserPlus, Send, CheckCircle2,
   AlertCircle, Users, Clock,
@@ -83,9 +84,9 @@ export const DashboardRoot: React.FC = () => {
   useEffect(() => {
   const fetchAdmins = async () => {
     try {
-      const res = await fetch('/api/admins');
-      if (!res.ok) throw new Error('Failed to load admins');
-      const json = await res.json();
+      const res = await api.get('/admins');
+      
+      const json = res.data;
       setAdmins(json.data.map((a: any) => ({ id: a.ID, login: a.login, email: a.email, typeAdmin: a.typeAdmin, actif: a.actif })));
     } catch (err) {
       console.error(err);
@@ -101,23 +102,16 @@ export const DashboardRoot: React.FC = () => {
   setCreateStatus('loading');
   setCreateMsg('');
   try {
-    const res = await fetch('/api/admins', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ login: newLogin, password: newPassword, email: newEmail, typeAdmin: newTypeAdmin })
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err?.error?.message || 'Erreur création');
-    }
-    const json = await res.json();
+    const res = await api.post('/admins', { login: newLogin, password: newPassword, email: newEmail, typeAdmin: newTypeAdmin });
+    
+    const json = res.data;
     const created = json.data;
     setAdmins((prev) => [...prev, { id: created.id, login: created.login, email: created.email, typeAdmin: created.typeAdmin, actif: created.actif }]);
     setCreateStatus('success');
     setCreateMsg(t('dashboardRoot.success.adminCreated', 'Compte « {{login}} » créé avec succès !', { login: newLogin }));
   } catch (err: any) {
     setCreateStatus('error');
-    setCreateMsg(err.message || t('dashboardRoot.errors.unknown', 'Erreur inconnue'));
+    setCreateMsg(err.response?.data?.error?.message || err.message || t('dashboardRoot.errors.unknown', 'Erreur inconnue'));
   } finally {
     setNewLogin('');
     setNewPassword('');
@@ -131,11 +125,8 @@ export const DashboardRoot: React.FC = () => {
   const handleSendCredentials = async (admin: AdminAccount) => {
     setSendingId(admin.id);
     try {
-      const response = await fetch(`/api/admins/${admin.id}/send-credentials`, { method: 'POST' });
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err?.error?.message || 'Erreur d\'envoi des identifiants');
-      }
+      const response = await api.post(`/admins/${admin.id}/send-credentials`);
+      
     } catch (err) {
       console.error(err);
     } finally {
@@ -150,12 +141,8 @@ export const DashboardRoot: React.FC = () => {
   const admin = admins.find((a) => a.id === id);
   if (!admin) return;
   try {
-    const res = await fetch(`/api/admins/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ actif: !admin.actif })
-    });
-    if (!res.ok) throw new Error('Failed to toggle');
+    const res = await api.put(`/admins/${id}`, { actif: !admin.actif });
+    
     setAdmins((prev) => prev.map((a) => a.id === id ? { ...a, actif: !a.actif } : a));
   } catch (err) {
     console.error(err);
@@ -165,8 +152,8 @@ export const DashboardRoot: React.FC = () => {
   /* Delete */
   const handleDelete = async (id: number) => {
   try {
-    const res = await fetch(`/api/admins/${id}`, { method: 'DELETE' });
-    if (!res.ok) throw new Error('Failed to delete');
+    const res = await api.delete(`/admins/${id}`);
+    
     setAdmins((prev) => prev.filter((a) => a.id !== id));
   } catch (err) {
     console.error(err);
