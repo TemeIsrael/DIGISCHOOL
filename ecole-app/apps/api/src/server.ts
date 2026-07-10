@@ -134,7 +134,28 @@ const startServer = async () => {
         }
       }
 
-      // Étape 3 : Synchroniser le schéma
+      // Étape 3 : Nettoyer les index dupliqués sur Admin.login qui causent ER_TOO_MANY_KEYS
+      try {
+        const [indexes] = await sequelize.query(`
+          SELECT INDEX_NAME 
+          FROM INFORMATION_SCHEMA.STATISTICS 
+          WHERE TABLE_SCHEMA = DATABASE() 
+            AND TABLE_NAME = 'Admin' 
+            AND COLUMN_NAME = 'login' 
+            AND INDEX_NAME != 'PRIMARY'
+        `);
+        if (indexes.length > 1) {
+          for (let i = 1; i < indexes.length; i++) {
+            const idxName = (indexes[i] as any).INDEX_NAME;
+            await sequelize.query(`ALTER TABLE \`Admin\` DROP INDEX \`${idxName}\``);
+            logger.info(`Dropped duplicate index ${idxName} on Admin.login`);
+          }
+        }
+      } catch (e) {
+        logger.info(`Could not clean duplicate indexes on Admin: ${(e as Error).message}`);
+      }
+
+      // Étape 4 : Synchroniser le schéma
       await sequelize.sync({ alter: true });
       logger.info('Database models synced.');
     } finally {
