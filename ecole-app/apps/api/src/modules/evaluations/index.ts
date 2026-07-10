@@ -286,7 +286,7 @@ router.get('/bulletins/:matricule/download', async (req, res, next) => {
       effectif: averages.length,
       titulaire: titulaireNom,
       signatureUrl,
-      photoUrl: eleve.photo || null,
+      photoUrl: eleve.photo || undefined,
     };
 
     res.setHeader('Content-Type', 'application/pdf');
