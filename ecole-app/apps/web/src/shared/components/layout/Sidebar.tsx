@@ -31,7 +31,7 @@ const allLinks: SidebarLink[] = [
   // Pédagogie (salles, cycles) – Scolarité(2) + Directeur(4)
   { to: '/academic',   labelKey: 'sidebar.academic',   icon: <Settings className="w-5 h-5" />,      adminTypes: [2, 4], roles: ['ADMIN'] },
   { to: '/schedules',  labelKey: 'sidebar.schedules',  icon: <Clock className="w-5 h-5" />,         adminTypes: [2, 4], roles: ['ADMIN'] },
-  { to: '/grades',     labelKey: 'sidebar.grades',     icon: <ClipboardList className="w-5 h-5" />, adminTypes: [2, 4], roles: ['ADMIN'] },
+
   { to: '/bulletins',  labelKey: 'sidebar.bulletins',  icon: <FileText className="w-5 h-5" />,      adminTypes: [2, 4], roles: ['ADMIN'] },
   { to: '/discipline', labelKey: 'sidebar.discipline', icon: <ShieldCheck className="w-5 h-5" />,   adminTypes: [2, 4], roles: ['ADMIN'] },
   // Bibliothèque – Secrétariat(1) + Scolarité(2)
@@ -77,26 +77,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ collapsed = false, onToggle })
   const { user } = useAuthStore();
   const location = useLocation();
 
-  // Filter links based on role and admin sub-type
+  // Filtre les liens en fonction du rôle et du type d'administrateur
   const visibleLinks = allLinks.filter((link) => {
     const isAdminUser = user && ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'].includes(user.role);
 
-    if (link.roles) {
-      if (isAdminUser && link.roles.includes('ADMIN')) {
-        // ADMIN_ROOT (typeAdmin=0) sees only links where 0 is in adminTypes
-        // No universal bypass – each link must explicitly include type 0
-
-        // Other admin sub-types filtered by adminTypes
-        if (link.adminTypes) {
-          return link.adminTypes.includes(user?.typeAdmin ?? -1);
-        }
-        return true; // Links without adminTypes restriction visible to all admins
-      }
-
-      // Pour les autres rôles (TEACHER, PARENT)
-      if (!link.roles.includes(user?.role || '')) {
+    // Filtre les liens de type ADMIN en fonction du typeAdmin
+    if (link.roles && link.roles.includes('ADMIN')) {
+      // Exclure le lien Personnel pour ADMIN_ROOT
+      if (user?.role === 'ADMIN_ROOT' && link.labelKey === 'sidebar.personnel') {
         return false;
       }
+      // Filtrer par les types d'admin si spécifié
+      if (link.adminTypes) {
+        return link.adminTypes.includes(user?.typeAdmin ?? -1);
+      }
+      return true;
+    }
+
+    // Pour les autres rôles (TEACHER, PARENT)
+    if (link.roles && !link.roles.includes(user?.role || '')) {
+      return false;
     }
     return true;
   });
