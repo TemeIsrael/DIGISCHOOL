@@ -251,8 +251,10 @@ export const generateBulletinPDF = (stream: Writable, data: BulletinData): Promi
       doc.lineWidth(0.5).strokeColor('#e2e8f0')
          .moveTo(MARGIN, footerY - 5).lineTo(PAGE_W - MARGIN, footerY - 5).stroke();
 
+      // Ensure stream resolves on finish and handles errors
+      stream.on('finish', resolve);
+      stream.on('error', reject);
       doc.end();
-      resolve();
     } catch (error) {
       reject(error);
     }

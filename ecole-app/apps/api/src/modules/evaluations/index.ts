@@ -292,10 +292,7 @@ router.get('/bulletins/:matricule/download', async (req, res, next) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename=bulletin_${matricule}.pdf`);
 
-    const passthrough = new PassThrough();
-    passthrough.pipe(res);
-
-    await generateBulletinPDF(passthrough, bulletinData);
+    await generateBulletinPDF(res, bulletinData);
   } catch (err) {
     next(err);
   }

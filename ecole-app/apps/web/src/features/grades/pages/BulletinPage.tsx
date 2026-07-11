@@ -62,10 +62,11 @@ export const BulletinPage: React.FC = () => {
           idSalle: currentFreq?.idSalle || 1,
           idAcademi: currentFreq?.idAcademi || 1
         },
-        responseType: 'blob'
+        responseType: 'arraybuffer'
       });
       
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `bulletin_${matricule}.pdf`);
