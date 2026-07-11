@@ -278,7 +278,7 @@ router.put('/language', authenticate, async (req, res, next) => {
 });
 
 // UPDATE PROFILE
-router.put('/profile', authenticate, async (req, res, _next) => {
+router.put('/profile', authenticate, async (req, res, next) => {
   const { nom, email, login, photoUrl, idALNYA } = req.body;
   const userContext = req.user!;
 
