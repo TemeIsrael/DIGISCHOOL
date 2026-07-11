@@ -45,6 +45,7 @@ export const ProfilePage: React.FC = () => {
   const [name, setName] = useState(user?.nom || '');
   const [email, setEmail] = useState(user?.email || '');
   const [username, setUsername] = useState(user?.login?.toUpperCase() || '');
+  const [idALNYA, setIdALNYA] = useState(user?.idALNYA || '');
   // Initialiser la photo depuis le store (photo déjà enregistrée)
   const [photo, setPhoto] = useState<string | null>(user?.photoUrl || null);
   const [saved, setSaved] = useState(false);
@@ -52,7 +53,16 @@ export const ProfilePage: React.FC = () => {
   const handleSaveInfo = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.put('/auth/profile', { nom: name, email, login: username, photoUrl: photo });
+      // Validation idALNYA : chiffres uniquement, max 15
+    if (!/^\d{0,15}$/.test(idALNYA)) {
+      toast({
+        type: 'danger',
+        title: 'Erreur',
+        description: 'Le champ idALNYA doit contenir uniquement des chiffres (max 15).'
+      });
+      return;
+    }
+    await api.put('/auth/profile', { nom: name, email, login: username, photoUrl: photo, idALNYA });
       // Persister dans le store (affiché partout : Topbar, Avatar, etc.)
       updateUser({ nom: name, email, login: username, photoUrl: photo ?? undefined });
       setSaved(true);
@@ -192,6 +202,12 @@ export const ProfilePage: React.FC = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   leftIcon={<Mail className="w-4 h-4" />}
                   className="md:col-span-2"
+                />
+                <Input
+                  label="idALNYA (identifiant interne)"
+                  value={idALNYA}
+                  onChange={(e) => setIdALNYA(e.target.value)}
+                  leftIcon={<User className="w-4 h-4" />}
                 />
               </div>
 

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { Personne } from '../../db/models';
+import { Personne, Enseignant, Cours } from '../../db/models';
+import { Op } from 'sequelize';
 import { authenticate } from '../../middlewares/auth';
 import { requireRole } from '../../middlewares/rbac';
 import { hashPassword } from '../../lib/bcrypt';
@@ -58,10 +59,38 @@ router.post('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'DIRECTEUR', 'ADMIN
 router.get('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
   try {
     const list = await Personne.findAll({
-      where: { isDelete: false },
-      attributes: ['idPers', 'idAdmin', 'login', 'typePersonne', 'actif', 'nom', 'prenom']
+      where: { isDelete: false, typePersonne: { [Op.ne]: 2 } },
+      attributes: ['idPers', 'idAdmin', 'login', 'typePersonne', 'actif', 'nom', 'prenom'],
+      include: [
+        {
+          model: Enseignant,
+          as: 'enseignements',
+          required: false,
+          include: [
+            {
+              model: Cours,
+              as: 'cours',
+              attributes: ['libelle']
+            }
+          ]
+        }
+      ]
     });
-    res.json({ success: true, data: list });
+    
+    // Transform to flatten the course name
+    const formattedList = list.map((p: any) => {
+      const pJson = p.toJSON();
+      let matiere = 'N/A';
+      if (pJson.enseignements && pJson.enseignements.length > 0 && pJson.enseignements[0].cours) {
+        matiere = pJson.enseignements[0].cours.libelle;
+      }
+      return {
+        ...pJson,
+        coursLibelle: matiere
+      };
+    });
+
+    res.json({ success: true, data: formattedList });
   } catch (err) {
     next(err);
   }

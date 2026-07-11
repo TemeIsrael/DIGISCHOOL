@@ -146,7 +146,7 @@ const PersonnelListPage: React.FC = () => {
     nom: p.nom || '',
     prenom: p.prenom || '',
     type: getTypeString(p.typePersonne),
-    cours: 'N/A', // Assuming no cours in DB
+    cours: p.coursLibelle || 'N/A',
     login: p.login,
     actif: p.actif,
     photoUrl: ''

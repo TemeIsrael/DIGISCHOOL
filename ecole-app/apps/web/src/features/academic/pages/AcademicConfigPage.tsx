@@ -24,7 +24,8 @@ export const AcademicConfigPage: React.FC = () => {
     createCycle,
     createClass,
     createSalle,
-    createYear
+    createYear,
+    deleteCycle
   } = useAcademicConfig();
 
   const [isAddModalOpen, setAddModalOpen] = useState(false);
@@ -79,8 +80,19 @@ export const AcademicConfigPage: React.FC = () => {
     }
   };
 
-  const handleDeleteItem = (id: number, type: Tab) => {
-    toast({ type: 'danger', title: 'Non implémenté', description: "La suppression n'est pas encore disponible via l'API." });
+  const handleDeleteItem = async (id: number, type: Tab) => {
+    if (type === 'cycles') {
+      if (confirm(t('academic.confirmDeleteCycle', 'Êtes-vous sûr de vouloir supprimer ce cycle ?'))) {
+        try {
+          await deleteCycle(id);
+          toast({ type: 'success', title: 'Succès', description: 'Le cycle a été supprimé.' });
+        } catch (err: any) {
+          toast({ type: 'danger', title: 'Erreur', description: err.response?.data?.error?.message || 'Erreur lors de la suppression' });
+        }
+      }
+    } else {
+      toast({ type: 'danger', title: 'Non implémenté', description: "La suppression n'est pas encore disponible via l'API." });
+    }
   };
 
   const inputCls = 'w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:border-digi-purple focus:ring-2 focus:ring-digi-purple outline-none transition-all';

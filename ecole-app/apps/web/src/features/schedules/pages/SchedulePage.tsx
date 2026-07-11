@@ -15,7 +15,7 @@ export const SchedulePage: React.FC = () => {
   const { t } = useTranslation();
   const { canAddPersonnelOrStudentsOrSchedules } = usePermissions();
 
-  const [selectedSection, setSelectedSection] = useState('Francophone');
+  const [selectedSection, setSelectedSection] = useState('FRANCOPHONE');
   const [selectedClasse,  setSelectedClasse]  = useState('');
   const [isAddModalOpen,  setAddModalOpen]    = useState(false);
   
@@ -53,7 +53,7 @@ export const SchedulePage: React.FC = () => {
           heureFin: s.heureFin,
           cours: crs ? crs.libelle : `Cours #${s.idCours}`,
           salle: cls ? cls.libelle : `Classe #${s.idClasse}`,
-          section: cls ? cls.section : 'Francophone'
+          section: cls ? cls.section : 'FRANCOPHONE'
         };
       });
       setScheduleData(mapped);
@@ -68,8 +68,8 @@ export const SchedulePage: React.FC = () => {
     fetchSchedules();
   }, []);
 
-  const isSectionEn   = selectedSection === 'Anglophone';
-  const classeOptions = classesList.filter(c => (isSectionEn ? c.section === 'Anglophone' : c.section === 'Francophone')).map(c => c.libelle);
+  const isSectionEn   = selectedSection === 'ANGLOPHONE';
+  const classeOptions = classesList.filter(c => (isSectionEn ? c.section === 'ANGLOPHONE' : c.section === 'FRANCOPHONE')).map(c => c.libelle);
   const dayOptions    = isSectionEn ? ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] : ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
 
   const filtered = scheduleData.filter((s) => {
@@ -201,8 +201,8 @@ export const SchedulePage: React.FC = () => {
             label="Section"
             value={selectedSection}
             options={[
-              { value: 'Francophone', label: '🇫🇷 Francophone' },
-              { value: 'Anglophone',  label: '🇬🇧 Anglophone' },
+              { value: 'FRANCOPHONE', label: '🇫🇷 Francophone' },
+              { value: 'ANGLOPHONE',  label: '🇬🇧 Anglophone' },
             ]}
             onChange={(v) => { setSelectedSection(v); setSelectedClasse(''); }}
           />

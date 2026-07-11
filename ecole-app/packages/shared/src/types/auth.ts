@@ -13,6 +13,7 @@ export interface UserSession {
   email?: string;
   photoUrl?: string;
   langue?: string;
+  idALNYA?: string;
 }
 
 export interface LoginResponse {

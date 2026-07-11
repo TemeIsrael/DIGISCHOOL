@@ -26,6 +26,19 @@ router.post('/cycles', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'AD
   }
 });
 
+router.delete('/cycles/:id', requireRole(['ADMIN', 'ADMIN_SCOLARITE', 'DIRECTEUR', 'ADMIN_ROOT', 'ROOT']), async (req, res, next) => {
+  try {
+    const item = await Cycle.findByPk(req.params.id);
+    if (!item) {
+      return res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Cycle introuvable' } });
+    }
+    await item.destroy();
+    res.json({ success: true, message: 'Cycle supprimé' });
+  } catch (err) {
+    next(err);
+  }
+});
+
 // --- Classes ---
 router.get('/classes', async (req, res, next) => {
   try {

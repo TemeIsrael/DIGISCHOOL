@@ -183,8 +183,8 @@ export const Router: React.FC = () => {
             <Route path="/bulletins"  element={<RequireAdminType allowedTypes={[2,4]}><BulletinPage /></RequireAdminType>} />
             <Route path="/discipline" element={<RequireAdminType allowedTypes={[2,4]}><DisciplinePage /></RequireAdminType>} />
 
-            {/* ── Library — all except Root(0) ── */}
-            <Route path="/library" element={<RequireAdminType allowedTypes={[1,2,3,4]}><LibraryManagePage /></RequireAdminType>} />
+            {/* ── Library — all including Root(0) ── */}
+            <Route path="/library" element={<RequireAdminType allowedTypes={[0,1,2,3,4,5]}><LibraryManagePage /></RequireAdminType>} />
 
             {/* ── Stats — Founder(3), Director(4) ── */}
             <Route path="/stats" element={<RequireAdminType allowedTypes={[3,4]}><StatsPage /></RequireAdminType>} />

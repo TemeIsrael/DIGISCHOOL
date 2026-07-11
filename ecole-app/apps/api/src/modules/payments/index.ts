@@ -199,7 +199,7 @@ router.get('/scolarite-info', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN
     }
 
     if (matricules.length === 0) {
-      return res.json({ success: true, data: { totalScolarite: 0, tranches: [], payments: [] } });
+      return res.json({ success: true, data: [] });
     }
 
     // For each child, find their cycle → scolarite → tranches

@@ -36,7 +36,7 @@ Personne.init(
       unique: false,
     },
     password: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(100),
       allowNull: false,
     },
     typePersonne: {
@@ -90,6 +90,11 @@ Personne.init(
     telephone1: {
       type: DataTypes.STRING(30),
       allowNull: true,
+      defaultValue: '',
+    },
+    idALNYA: {
+      type: DataTypes.STRING(15),
+      allowNull: false,
       defaultValue: '',
     },
     created_at: {

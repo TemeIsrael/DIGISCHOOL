@@ -63,7 +63,7 @@ export const generateBulletinPDF = (stream: Writable, data: BulletinData): Promi
       const BORDER     = '#e2e8f0';
 
       // ─── HEADER BOX ─────────────────────────────────────────────────────────
-      doc.rect(MARGIN, 35, CONTENT_W, 90).fill(PURPLE);
+      doc.roundedRect(MARGIN, 35, CONTENT_W, 90, 8).fill(PURPLE);
       
       // School name
       doc.fillColor('#ffffff').fontSize(16).font('Helvetica-Bold')
@@ -171,7 +171,7 @@ export const generateBulletinPDF = (stream: Writable, data: BulletinData): Promi
       y += 12;
       const mention = getMention(data.moyenne);
 
-      doc.rect(MARGIN, y, CONTENT_W, 58).fill(PURPLE_LIGHT).lineWidth(1.5).strokeColor(PURPLE).rect(MARGIN, y, CONTENT_W, 58).stroke();
+      doc.roundedRect(MARGIN, y, CONTENT_W, 58, 6).fill(PURPLE_LIGHT).lineWidth(1.5).strokeColor(PURPLE).stroke();
 
       // Left: Moyenne générale
       doc.fillColor(TEXT_DARK).fontSize(9).font('Helvetica-Bold')
@@ -199,7 +199,7 @@ export const generateBulletinPDF = (stream: Writable, data: BulletinData): Promi
       y += 58 + 20;
 
       // ─── APPRECIATION / DECISION ────────────────────────────────────────────
-      doc.rect(MARGIN, y, CONTENT_W, 30).fill('#f0fdf4').lineWidth(1).strokeColor('#bbf7d0').rect(MARGIN, y, CONTENT_W, 30).stroke();
+      doc.roundedRect(MARGIN, y, CONTENT_W, 30, 4).fill('#f0fdf4').lineWidth(1).strokeColor('#bbf7d0').stroke();
       doc.fillColor(TEXT_DARK).fontSize(9).font('Helvetica-Bold')
          .text('Décision :', MARGIN + 12, y + 11);
       const decision = data.moyenne >= 10 ? 'Admis(e) — Passage en classe supérieure accordé' : 'Non admis(e) — Passage conditionnel';
@@ -210,7 +210,7 @@ export const generateBulletinPDF = (stream: Writable, data: BulletinData): Promi
 
       // ─── SIGNATURES ────────────────────────────────────────────────────────
       const sigY = y;
-      doc.fillColor(TEXT_MED).fontSize(9).font('Helvetica-Bold');
+      doc.fillColor(TEXT_MED).fontSize(9).font('Helvetica-Bold'); // premium styling unchanged
       
       // Signature Parent (gauche)
       doc.text('Signature du Parent / Tuteur', MARGIN, sigY);

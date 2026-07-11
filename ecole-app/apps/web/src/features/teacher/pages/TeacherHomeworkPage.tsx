@@ -177,7 +177,7 @@ export const TeacherHomeworkPage: React.FC = () => {
                       <Button variant="danger" size="sm" onClick={() => handleDelete(hw.id)}>
                         <Trash2 className="w-4 h-4" />
                       </Button>
-                      {hw.pdfUrl && (
+                      {hw.pdfUrl && hw.pdfUrl !== '#' && (
                         <Button variant="outline" size="sm" onClick={() => window.open(hw.pdfUrl, '_blank')}>
                           Open PDF
                         </Button>

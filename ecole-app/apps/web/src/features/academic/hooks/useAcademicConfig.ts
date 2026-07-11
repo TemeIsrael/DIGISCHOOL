@@ -23,6 +23,16 @@ export const useAcademicConfig = () => {
     }
   });
 
+  const deleteCycle = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await api.delete(`/academic/cycles/${id}`);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cycles'] });
+    }
+  });
+
   // --- Classes ---
   const fetchClasses = useQuery({
     queryKey: ['classes'],
@@ -84,6 +94,7 @@ export const useAcademicConfig = () => {
     cycles: fetchCycles.data || [],
     isLoadingCycles: fetchCycles.isLoading,
     createCycle: createCycle.mutateAsync,
+    deleteCycle: deleteCycle.mutateAsync,
 
     classes: fetchClasses.data || [],
     isLoadingClasses: fetchClasses.isLoading,

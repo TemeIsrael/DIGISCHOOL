@@ -216,6 +216,7 @@ router.get('/me', authenticate, async (req, res, next) => {
           nom: fullUser.nom,
           email: fullUser.email,
           photoUrl: fullUser.photoUrl || fullUser.photoURL,
+          idALNYA: fullUser.idALNYA ?? undefined
         }
       }
     });
@@ -277,30 +278,31 @@ router.put('/language', authenticate, async (req, res, next) => {
 });
 
 // UPDATE PROFILE
-router.put('/profile', authenticate, async (req, res, next) => {
-  const { nom, email, login, photoUrl } = req.body;
+router.put('/profile', authenticate, async (req, res, _next) => {
+  const { nom, email, login, photoUrl, idALNYA } = req.body;
   const userContext = req.user!;
-  
+
   try {
     const adminRoles = ['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'];
     if (adminRoles.includes(userContext.role)) {
       await Admin.update(
-        { 
+        {
           login: login || userContext.login,
           nom: nom || null,
           email: email || null,
-          photoUrl: photoUrl || null 
+          photoUrl: photoUrl || null
         },
         { where: { ID: userContext.id } }
       );
     } else {
       await Personne.update(
-        { 
+        {
           nom: nom,
           email: email,
           login: login || userContext.login,
-          photoURL: photoUrl 
-        }, 
+          photoURL: photoUrl,
+          idALNYA: idALNYA || ''
+        },
         { where: { idPers: userContext.id } }
       );
     }
