@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import path from 'path';
 import { requestId } from './middlewares/requestId';
 import { errorHandler } from './middlewares/error';
+import { env } from './config/env';
 
 // Import Routers
 import authRouter from './modules/auth';
