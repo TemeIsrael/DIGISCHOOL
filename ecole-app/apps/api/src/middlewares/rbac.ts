@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 
 export const requireRole = (allowedRoles: string[]) => {
+  // Ajouter le rôle FONDATEUR aux rôles autorisés si besoin
+  const expandedRoles = allowedRoles.includes('FONDATEUR') ? allowedRoles : [...allowedRoles, 'FONDATEUR'];
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({
@@ -12,7 +14,7 @@ export const requireRole = (allowedRoles: string[]) => {
       return;
     }
 
-    if (!allowedRoles.includes(req.user.role)) {
+    if (!expandedRoles.includes(req.user.role)) {
       res.status(403).json({
         error: {
           code: 'FORBIDDEN',

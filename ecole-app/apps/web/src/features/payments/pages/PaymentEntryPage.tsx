@@ -57,6 +57,22 @@ export const PaymentEntryPage: React.FC = () => {
       .slice(0, 8);
   }, [students, search]);
 
+  // Auto-fill amount based on selected student and next tranche
+  React.useEffect(() => {
+    if (selectedStudent) {
+      // Ideally this should be fetched from the backend (Tranches / Scolarite table)
+      // Here we provide a reasonable default based on the tranche
+      let defaultAmount = 50000;
+      if (trancheInfo.nextTranche === 1) defaultAmount = 75000;
+      else if (trancheInfo.nextTranche === 2) defaultAmount = 50000;
+      else if (trancheInfo.nextTranche === 3) defaultAmount = 25000;
+      
+      setMontant(defaultAmount.toString());
+    } else {
+      setMontant('');
+    }
+  }, [selectedStudent, trancheInfo.nextTranche]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedStudent || !montant) return;

@@ -4,15 +4,15 @@ import { Livres } from '../../db/models';
 import { authenticate } from '../../middlewares/auth';
 import { requireRole } from '../../middlewares/rbac';
 import { validateBody } from '../../middlewares/validate';
-
+import path from 'path';
+import fs from 'fs';
+import { env } from '../../config/env';
 import { upload } from '../../middlewares/upload';
 
 const router = Router();
 
-router.use(authenticate);
-
 // 1. ADD BOOK (with PDF upload)
-router.post('/', requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), upload.single('fichier'), async (req, res, next) => {
+router.post('/', authenticate, requireRole(['ADMIN', 'ADMIN_INSCRIPTIONS', 'ADMIN_SCOLARITE']), upload.single('fichier'), async (req, res, next) => {
   try {
     const { idSpecialite, titre, auteur, specialty } = req.body;
     
@@ -59,7 +59,22 @@ router.get('/:id/download', async (req, res, next) => {
       res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Livre introuvable' } });
       return;
     }
-    res.json({ success: true, data: { downloadUrl: book.fichierUrl } });
+    // Determine absolute path of the file
+    const filePath = path.resolve(env.UPLOAD_DIR, path.basename(book.fichierUrl));
+    // Verify file exists
+    if (!fs.existsSync(filePath)) {
+      res.status(404).json({ error: { code: 'NOT_FOUND', message: 'Fichier PDF introuvable' } });
+      return;
+    }
+    // Set appropriate headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="${path.basename(book.fichierUrl)}"`);
+    // Stream the file to response
+    const stream = fs.createReadStream(filePath);
+    stream.on('error', (err) => {
+      next(err);
+    });
+    stream.pipe(res);
   } catch (err) {
     next(err);
   }

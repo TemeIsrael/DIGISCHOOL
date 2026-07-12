@@ -98,7 +98,7 @@ export const BulletinPage: React.FC = () => {
         <div className="flex items-center gap-4 flex-wrap">
           <FilterDropdown label={t('grades.section', 'Section')} value={selectedSection} options={['Francophone', 'Anglophone'].map(s => ({ value: s, label: s }))} onChange={setSelectedSection} />
           <FilterDropdown label={t('grades.class', 'Classe')} value={selectedClasse} options={classesOptions.map(c => ({ value: c, label: c }))} onChange={setSelectedClasse} />
-          <FilterDropdown label={t('bulletins.trimester', 'Trimestre')} value={selectedTrimestre} options={['Trimestre 1', 'Trimestre 2', 'Trimestre 3'].map(t => ({ value: t, label: t }))} onChange={setSelectedTrimestre} />
+          <FilterDropdown label={t('bulletins.trimester', 'Période')} value={selectedTrimestre} options={['Trimestre 1', 'Trimestre 2', 'Trimestre 3', 'Bilan Annuel'].map(t => ({ value: t, label: t }))} onChange={setSelectedTrimestre} />
           <span className="ml-auto text-sm text-slate-500 font-semibold flex items-center gap-2">
             <FileText className="w-4 h-4 text-digi-purple" />
             {isLoading ? '...' : filteredStudents.length} {t('bulletins.found', 'bulletin(s) trouvé(s)')}
@@ -122,6 +122,7 @@ export const BulletinPage: React.FC = () => {
                 moyenne={0} // Calculation is done on backend for the PDF
                 rang={0}
                 effectif={filteredStudents.length}
+                isAnnuel={selectedTrimestre === 'Bilan Annuel'}
                 onDownload={() => handleDownloadRealBulletin(s.matricule)} 
               />
             </Card>

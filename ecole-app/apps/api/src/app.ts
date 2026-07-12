@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { env } from './config/env';
+import path from 'path';
 import { requestId } from './middlewares/requestId';
 import { errorHandler } from './middlewares/error';
 
@@ -49,7 +49,12 @@ app.use(
 app.set('trust proxy', 1); // Trust first proxy (Render)
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use('/uploads', express.static(env.UPLOAD_DIR));
+
+// ...
+app.use('/uploads', express.static(path.resolve(process.cwd(), env.UPLOAD_DIR)));
+
+// Inside PublicNavbar component, retrieve user and generate navLinks accordingly
+
 app.use(requestId);
 
 if (env.NODE_ENV !== 'test') {
