@@ -52,7 +52,7 @@ console.log("ROLE:", role);
     if (['ROOT','ADMIN_ROOT','ADMIN_INSCRIPTIONS','ADMIN_SCOLARITE','FONDATEUR','DIRECTEUR','ADMIN'].includes(role)) {
       user = await Admin.findOne({
         where: { login, actif: true, isDelete: false },
-        attributes: ['ID', 'login', 'password', 'typeAdmin', 'actif', 'isDelete', 'langue', 'nom', 'email', 'photoUrl', 'idALNYA']
+        attributes: ['ID', 'login', 'password', 'typeAdmin', 'actif', 'isDelete', 'langue', 'nom', 'email', 'photoUrl']
       });
 
       if (!user || !user.password) {
